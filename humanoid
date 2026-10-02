@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+"""Opaque local CLI; deliberately imports no simulation or model modules."""
+import json
+import math
+import os
+import socket
+import sys
+
+
+def main():
+    args = sys.argv[1:]
+    try:
+        if args == ['zero']:
+            values = [0.0] * 33
+        elif len(args) == 34 and args[0] == 'act':
+            values = [float(v) for v in args[1:]]
+            if not all(math.isfinite(v) for v in values):
+                raise ValueError()
+        else:
+            raise ValueError()
+    except ValueError:
+        print('ERROR use act with 33 finite numbers, or zero', file=sys.stderr)
+        return 2
+    path = os.environ.get('HUMANOID_ACTUATOR_SOCKET', f'/tmp/humanoid-actuator-{os.getuid()}.sock')
+    try:
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
+            client.settimeout(5)
+            client.connect(path)
+            client.sendall((json.dumps({'values': values}, allow_nan=False) + '\n').encode())
+            reply = client.makefile('rb').readline(256).decode().strip()
+        if reply == 'OK':
+            print('OK')
+            return 0
+        print('ERROR invalid or busy request', file=sys.stderr)
+    except (OSError, UnicodeError):
+        print('ERROR runtime unavailable; command outcome unknown', file=sys.stderr)
+    return 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

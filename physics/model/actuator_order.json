@@ -1,0 +1,353 @@
+[
+  {
+    "name": "lumbar_x_motor",
+    "joint": "lumbar",
+    "type": "ball_axis",
+    "axis": "x",
+    "ctrlrange": [
+      -35.0,
+      35.0
+    ],
+    "class": "spine"
+  },
+  {
+    "name": "lumbar_y_motor",
+    "joint": "lumbar",
+    "type": "ball_axis",
+    "axis": "y",
+    "ctrlrange": [
+      -35.0,
+      35.0
+    ],
+    "class": "spine"
+  },
+  {
+    "name": "lumbar_z_motor",
+    "joint": "lumbar",
+    "type": "ball_axis",
+    "axis": "z",
+    "ctrlrange": [
+      -35.0,
+      35.0
+    ],
+    "class": "spine"
+  },
+  {
+    "name": "thoracic_x_motor",
+    "joint": "thoracic",
+    "type": "ball_axis",
+    "axis": "x",
+    "ctrlrange": [
+      -30.0,
+      30.0
+    ],
+    "class": "spine"
+  },
+  {
+    "name": "thoracic_y_motor",
+    "joint": "thoracic",
+    "type": "ball_axis",
+    "axis": "y",
+    "ctrlrange": [
+      -30.0,
+      30.0
+    ],
+    "class": "spine"
+  },
+  {
+    "name": "thoracic_z_motor",
+    "joint": "thoracic",
+    "type": "ball_axis",
+    "axis": "z",
+    "ctrlrange": [
+      -30.0,
+      30.0
+    ],
+    "class": "spine"
+  },
+  {
+    "name": "neck_x_motor",
+    "joint": "neck",
+    "type": "ball_axis",
+    "axis": "x",
+    "ctrlrange": [
+      -20.0,
+      20.0
+    ],
+    "class": "neck"
+  },
+  {
+    "name": "neck_y_motor",
+    "joint": "neck",
+    "type": "ball_axis",
+    "axis": "y",
+    "ctrlrange": [
+      -20.0,
+      20.0
+    ],
+    "class": "neck"
+  },
+  {
+    "name": "neck_z_motor",
+    "joint": "neck",
+    "type": "ball_axis",
+    "axis": "z",
+    "ctrlrange": [
+      -20.0,
+      20.0
+    ],
+    "class": "neck"
+  },
+  {
+    "name": "hip_l_x_motor",
+    "joint": "hip_l",
+    "type": "ball_axis",
+    "axis": "x",
+    "ctrlrange": [
+      -120.0,
+      120.0
+    ],
+    "class": "hip"
+  },
+  {
+    "name": "hip_l_y_motor",
+    "joint": "hip_l",
+    "type": "ball_axis",
+    "axis": "y",
+    "ctrlrange": [
+      -120.0,
+      120.0
+    ],
+    "class": "hip"
+  },
+  {
+    "name": "hip_l_z_motor",
+    "joint": "hip_l",
+    "type": "ball_axis",
+    "axis": "z",
+    "ctrlrange": [
+      -120.0,
+      120.0
+    ],
+    "class": "hip"
+  },
+  {
+    "name": "hip_r_x_motor",
+    "joint": "hip_r",
+    "type": "ball_axis",
+    "axis": "x",
+    "ctrlrange": [
+      -120.0,
+      120.0
+    ],
+    "class": "hip"
+  },
+  {
+    "name": "hip_r_y_motor",
+    "joint": "hip_r",
+    "type": "ball_axis",
+    "axis": "y",
+    "ctrlrange": [
+      -120.0,
+      120.0
+    ],
+    "class": "hip"
+  },
+  {
+    "name": "hip_r_z_motor",
+    "joint": "hip_r",
+    "type": "ball_axis",
+    "axis": "z",
+    "ctrlrange": [
+      -120.0,
+      120.0
+    ],
+    "class": "hip"
+  },
+  {
+    "name": "shoulder_l_x_motor",
+    "joint": "shoulder_l",
+    "type": "ball_axis",
+    "axis": "x",
+    "ctrlrange": [
+      -60.0,
+      60.0
+    ],
+    "class": "shoulder"
+  },
+  {
+    "name": "shoulder_l_y_motor",
+    "joint": "shoulder_l",
+    "type": "ball_axis",
+    "axis": "y",
+    "ctrlrange": [
+      -60.0,
+      60.0
+    ],
+    "class": "shoulder"
+  },
+  {
+    "name": "shoulder_l_z_motor",
+    "joint": "shoulder_l",
+    "type": "ball_axis",
+    "axis": "z",
+    "ctrlrange": [
+      -60.0,
+      60.0
+    ],
+    "class": "shoulder"
+  },
+  {
+    "name": "shoulder_r_x_motor",
+    "joint": "shoulder_r",
+    "type": "ball_axis",
+    "axis": "x",
+    "ctrlrange": [
+      -60.0,
+      60.0
+    ],
+    "class": "shoulder"
+  },
+  {
+    "name": "shoulder_r_y_motor",
+    "joint": "shoulder_r",
+    "type": "ball_axis",
+    "axis": "y",
+    "ctrlrange": [
+      -60.0,
+      60.0
+    ],
+    "class": "shoulder"
+  },
+  {
+    "name": "shoulder_r_z_motor",
+    "joint": "shoulder_r",
+    "type": "ball_axis",
+    "axis": "z",
+    "ctrlrange": [
+      -60.0,
+      60.0
+    ],
+    "class": "shoulder"
+  },
+  {
+    "name": "knee_l_motor",
+    "joint": "knee_l",
+    "type": "hinge",
+    "ctrlrange": [
+      -100.0,
+      100.0
+    ],
+    "class": "knee"
+  },
+  {
+    "name": "knee_r_motor",
+    "joint": "knee_r",
+    "type": "hinge",
+    "ctrlrange": [
+      -100.0,
+      100.0
+    ],
+    "class": "knee"
+  },
+  {
+    "name": "elbow_l_motor",
+    "joint": "elbow_l",
+    "type": "hinge",
+    "ctrlrange": [
+      -40.0,
+      40.0
+    ],
+    "class": "elbow"
+  },
+  {
+    "name": "elbow_r_motor",
+    "joint": "elbow_r",
+    "type": "hinge",
+    "ctrlrange": [
+      -40.0,
+      40.0
+    ],
+    "class": "elbow"
+  },
+  {
+    "name": "ankle_l_dp_motor",
+    "joint": "ankle_l_dp",
+    "type": "hinge",
+    "ctrlrange": [
+      -40.0,
+      40.0
+    ],
+    "class": "ankle"
+  },
+  {
+    "name": "ankle_l_ie_motor",
+    "joint": "ankle_l_ie",
+    "type": "hinge",
+    "ctrlrange": [
+      -40.0,
+      40.0
+    ],
+    "class": "ankle"
+  },
+  {
+    "name": "ankle_r_dp_motor",
+    "joint": "ankle_r_dp",
+    "type": "hinge",
+    "ctrlrange": [
+      -40.0,
+      40.0
+    ],
+    "class": "ankle"
+  },
+  {
+    "name": "ankle_r_ie_motor",
+    "joint": "ankle_r_ie",
+    "type": "hinge",
+    "ctrlrange": [
+      -40.0,
+      40.0
+    ],
+    "class": "ankle"
+  },
+  {
+    "name": "wrist_l_flex_motor",
+    "joint": "wrist_l_flex",
+    "type": "hinge",
+    "ctrlrange": [
+      -10.0,
+      10.0
+    ],
+    "class": "wrist"
+  },
+  {
+    "name": "wrist_l_dev_motor",
+    "joint": "wrist_l_dev",
+    "type": "hinge",
+    "ctrlrange": [
+      -10.0,
+      10.0
+    ],
+    "class": "wrist"
+  },
+  {
+    "name": "wrist_r_flex_motor",
+    "joint": "wrist_r_flex",
+    "type": "hinge",
+    "ctrlrange": [
+      -10.0,
+      10.0
+    ],
+    "class": "wrist"
+  },
+  {
+    "name": "wrist_r_dev_motor",
+    "joint": "wrist_r_dev",
+    "type": "hinge",
+    "ctrlrange": [
+      -10.0,
+      10.0
+    ],
+    "class": "wrist"
+  }
+]

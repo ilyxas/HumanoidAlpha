@@ -1,0 +1,305 @@
+{
+  "label": "ASSUMPTION unless noted",
+  "body_mass_kg": 60.0,
+  "masses_kg": {
+    "pelvis": 9.281045751633986,
+    "torso_lower": 6.862745098039215,
+    "torso_upper": 10.980392156862745,
+    "head": 5.294117647058824,
+    "upperarm_l": 1.8300653594771241,
+    "upperarm_r": 1.8300653594771241,
+    "lowerarm_l": 1.045751633986928,
+    "lowerarm_r": 1.045751633986928,
+    "hand_l": 0.39215686274509803,
+    "hand_r": 0.39215686274509803,
+    "thigh_l": 6.535947712418301,
+    "thigh_r": 6.535947712418301,
+    "calf_l": 3.0392156862745097,
+    "calf_r": 3.0392156862745097,
+    "foot_l": 0.9477124183006537,
+    "foot_r": 0.9477124183006537
+  },
+  "mass_fractions_raw_before_normalize": {
+    "pelvis": 0.142,
+    "torso_lower": 0.105,
+    "torso_upper": 0.168,
+    "head": 0.081,
+    "upperarm_l": 0.028,
+    "upperarm_r": 0.028,
+    "lowerarm_l": 0.016,
+    "lowerarm_r": 0.016,
+    "hand_l": 0.006,
+    "hand_r": 0.006,
+    "thigh_l": 0.1,
+    "thigh_r": 0.1,
+    "calf_l": 0.0465,
+    "calf_r": 0.0465,
+    "foot_l": 0.0145,
+    "foot_r": 0.0145
+  },
+  "mass_normalize_factor": 1.0893246187363834,
+  "radii_m": {
+    "pelvis": 0.08,
+    "torso_lower": 0.09,
+    "torso_upper": 0.1,
+    "head": 0.09,
+    "upperarm_l": 0.035,
+    "upperarm_r": 0.035,
+    "lowerarm_l": 0.028,
+    "lowerarm_r": 0.028,
+    "hand_l": 0.025,
+    "hand_r": 0.025,
+    "thigh_l": 0.055,
+    "thigh_r": 0.055,
+    "calf_l": 0.04,
+    "calf_r": 0.04,
+    "foot_l": 0.03,
+    "foot_r": 0.03
+  },
+  "densities_kg_m3": {
+    "pelvis": 4327.472052316454,
+    "torso_lower": 2247.388279033097,
+    "torso_upper": 2091.4236466497046,
+    "head": 1401.2098800265057,
+    "upperarm_l": 1967.5737374473367,
+    "upperarm_r": 1967.583725679284,
+    "lowerarm_l": 1854.3131015847428,
+    "lowerarm_r": 1854.3327466849187,
+    "hand_l": 3153.5344761242413,
+    "hand_r": 3153.5344761242413,
+    "thigh_l": 1727.3676171629002,
+    "thigh_r": 1727.370522101766,
+    "calf_l": 1650.3850985499298,
+    "calf_r": 1650.3834701492187,
+    "foot_l": 2754.6045326705485,
+    "foot_r": 2754.608663213622
+  },
+  "damping": 0.08,
+  "armature": 0.002,
+  "timestep": 0.002,
+  "integrator": "implicitfast",
+  "gravity": [
+    0.0,
+    0.0,
+    -9.81
+  ],
+  "floor_friction": [
+    0.8,
+    0.1,
+    0.1
+  ],
+  "torque_limits_Nm": {
+    "lumbar": [
+      -35.0,
+      35.0
+    ],
+    "thoracic": [
+      -30.0,
+      30.0
+    ],
+    "neck": [
+      -20.0,
+      20.0
+    ],
+    "hip": [
+      -120.0,
+      120.0
+    ],
+    "shoulder": [
+      -60.0,
+      60.0
+    ],
+    "knee": [
+      -100.0,
+      100.0
+    ],
+    "elbow": [
+      -40.0,
+      40.0
+    ],
+    "ankle": [
+      -40.0,
+      40.0
+    ],
+    "wrist": [
+      -10.0,
+      10.0
+    ]
+  },
+  "joint_limits": {
+    "knee_rad": [
+      -0.08726646259971647,
+      2.443460952792061
+    ],
+    "elbow_rad": [
+      0.0,
+      2.6179938779914944
+    ],
+    "ankle_dp_rad": [
+      -0.3490658503988659,
+      0.8726646259971648
+    ],
+    "ankle_ie_rad": [
+      -0.3490658503988659,
+      0.3490658503988659
+    ],
+    "wrist_flex_rad": [
+      -1.2217304763960306,
+      1.2217304763960306
+    ],
+    "wrist_dev_rad": [
+      -0.4363323129985824,
+      0.6108652381980153
+    ],
+    "ball_joints": "limited isotropic cone; see anatomical_ranges.json (ENGINEERING)",
+    "ball_cones_rad": {
+      "lumbar": 0.6981317007977318,
+      "thoracic": 0.4363323129985824,
+      "neck": 1.0471975511965976,
+      "shoulder_l": 2.6179938779914944,
+      "shoulder_r": 2.6179938779914944,
+      "hip_l": 2.0943951023931953,
+      "hip_r": 2.0943951023931953
+    },
+    "ball_cones_deg": {
+      "lumbar": 40,
+      "thoracic": 25,
+      "neck": 60,
+      "shoulder_l": 150,
+      "shoulder_r": 150,
+      "hip_l": 120,
+      "hip_r": 120
+    },
+    "soft_limit_solref": [
+      0.002,
+      1.0
+    ],
+    "soft_limit_solimp": [
+      0.95,
+      0.99,
+      0.001
+    ]
+  },
+  "axes": {
+    "knee_r": {
+      "source": "FACT",
+      "axis": [
+        0.9876751899719238,
+        -0.14625714719295502,
+        -0.0557362325489521
+      ],
+      "note": "-(calf_r local Z)"
+    },
+    "knee_l": {
+      "source": "ASSUMPTION_MIRROR",
+      "axis": [
+        0.9876750707626343,
+        0.14625635743141174,
+        0.05574089661240578
+      ],
+      "note": "-(calf_l local Z); flexion sign ASSUME same as R"
+    },
+    "elbow_l": {
+      "source": "ASSUMPTION_UNKNOWN_VALIDATION",
+      "axis": [
+        -0.806887686252594,
+        -0.05682603269815445,
+        -0.5879651308059692
+      ],
+      "note": "-(lowerarm_l local Z)"
+    },
+    "elbow_r": {
+      "source": "ASSUMPTION_UNKNOWN_VALIDATION",
+      "axis": [
+        -0.8068869113922119,
+        0.05681980028748512,
+        0.5879668593406677
+      ],
+      "note": "-(lowerarm_r local Z)"
+    },
+    "ankle_l_dp": {
+      "source": "ASSUMPTION",
+      "axis": [
+        0.9889708161354065,
+        0.14811058342456818,
+        2.4460254280711524e-05
+      ]
+    },
+    "ankle_l_ie": {
+      "source": "ASSUMPTION",
+      "axis": [
+        0.13235347807317768,
+        -0.8836825931081979,
+        -0.44898511275932534
+      ]
+    },
+    "ankle_r_dp": {
+      "source": "ASSUMPTION",
+      "axis": [
+        0.9889707565307617,
+        -0.14811094105243683,
+        -3.1135841709328815e-05
+      ]
+    },
+    "ankle_r_ie": {
+      "source": "ASSUMPTION",
+      "axis": [
+        -0.13235674551247611,
+        -0.8836819889885367,
+        -0.4489853385742227
+      ]
+    },
+    "wrist_l_flex": {
+      "source": "ASSUMPTION",
+      "axis": [
+        -0.5730020999908447,
+        -0.7708194255828857,
+        0.2783990502357483
+      ]
+    },
+    "wrist_l_dev": {
+      "source": "ASSUMPTION",
+      "axis": [
+        0.3840770721435547,
+        -0.5526478886604309,
+        -0.7396385073661804
+      ]
+    },
+    "wrist_r_flex": {
+      "source": "ASSUMPTION",
+      "axis": [
+        -0.5729995965957642,
+        0.7708184719085693,
+        -0.27840670943260193
+      ]
+    },
+    "wrist_r_dev": {
+      "source": "ASSUMPTION",
+      "axis": [
+        0.3840654194355011,
+        0.552655041217804,
+        0.739639163017273
+      ]
+    },
+    "ball_joints": {
+      "source": "ASSUMPTION",
+      "note": "MuJoCo ball local xyz; no anatomic remapping yet"
+    }
+  },
+  "engineering_welds": {
+    "clavicles": "welded into torso_upper",
+    "ball_toes": "welded into feet"
+  },
+  "apply_torques_max_duration_s": 1.0,
+  "anatomical_constraints_stage": {
+    "date": "2026-09-28",
+    "mechanism": "ball cone + stiff soft limits; hinge ranges unchanged",
+    "ranges_file": "anatomical_ranges.json"
+  },
+  "collision_geometry": {
+    "source": "assets/collision/*.obj generated from Xandra rest skin",
+    "documentation": "docs/COLLISIONS.md",
+    "legacy_radii_note": "radii_m describe the original inertial primitives; collision surfaces now use convex skin envelopes except head",
+    "contact_margin_m": 0.006
+  }
+}
