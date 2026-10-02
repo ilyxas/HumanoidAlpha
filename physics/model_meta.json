@@ -1,0 +1,306 @@
+{
+  "model_path": "model/humanoid_alpha.xml",
+  "nbody": 17,
+  "njnt": 20,
+  "nu": 33,
+  "nq": 47,
+  "nv": 39,
+  "body_names": [
+    "world",
+    "pelvis",
+    "torso_lower",
+    "torso_upper",
+    "head",
+    "upperarm_l",
+    "lowerarm_l",
+    "hand_l",
+    "upperarm_r",
+    "lowerarm_r",
+    "hand_r",
+    "thigh_l",
+    "calf_l",
+    "foot_l",
+    "thigh_r",
+    "calf_r",
+    "foot_r"
+  ],
+  "joint_names": [
+    "root",
+    "lumbar",
+    "thoracic",
+    "neck",
+    "shoulder_l",
+    "elbow_l",
+    "wrist_l_flex",
+    "wrist_l_dev",
+    "shoulder_r",
+    "elbow_r",
+    "wrist_r_flex",
+    "wrist_r_dev",
+    "hip_l",
+    "knee_l",
+    "ankle_l_dp",
+    "ankle_l_ie",
+    "hip_r",
+    "knee_r",
+    "ankle_r_dp",
+    "ankle_r_ie"
+  ],
+  "actuator_names": [
+    "lumbar_x_motor",
+    "lumbar_y_motor",
+    "lumbar_z_motor",
+    "thoracic_x_motor",
+    "thoracic_y_motor",
+    "thoracic_z_motor",
+    "neck_x_motor",
+    "neck_y_motor",
+    "neck_z_motor",
+    "hip_l_x_motor",
+    "hip_l_y_motor",
+    "hip_l_z_motor",
+    "hip_r_x_motor",
+    "hip_r_y_motor",
+    "hip_r_z_motor",
+    "shoulder_l_x_motor",
+    "shoulder_l_y_motor",
+    "shoulder_l_z_motor",
+    "shoulder_r_x_motor",
+    "shoulder_r_y_motor",
+    "shoulder_r_z_motor",
+    "knee_l_motor",
+    "knee_r_motor",
+    "elbow_l_motor",
+    "elbow_r_motor",
+    "ankle_l_dp_motor",
+    "ankle_l_ie_motor",
+    "ankle_r_dp_motor",
+    "ankle_r_ie_motor",
+    "wrist_l_flex_motor",
+    "wrist_l_dev_motor",
+    "wrist_r_flex_motor",
+    "wrist_r_dev_motor"
+  ],
+  "actuator_order": [
+    "lumbar_x_motor",
+    "lumbar_y_motor",
+    "lumbar_z_motor",
+    "thoracic_x_motor",
+    "thoracic_y_motor",
+    "thoracic_z_motor",
+    "neck_x_motor",
+    "neck_y_motor",
+    "neck_z_motor",
+    "hip_l_x_motor",
+    "hip_l_y_motor",
+    "hip_l_z_motor",
+    "hip_r_x_motor",
+    "hip_r_y_motor",
+    "hip_r_z_motor",
+    "shoulder_l_x_motor",
+    "shoulder_l_y_motor",
+    "shoulder_l_z_motor",
+    "shoulder_r_x_motor",
+    "shoulder_r_y_motor",
+    "shoulder_r_z_motor",
+    "knee_l_motor",
+    "knee_r_motor",
+    "elbow_l_motor",
+    "elbow_r_motor",
+    "ankle_l_dp_motor",
+    "ankle_l_ie_motor",
+    "ankle_r_dp_motor",
+    "ankle_r_ie_motor",
+    "wrist_l_flex_motor",
+    "wrist_l_dev_motor",
+    "wrist_r_flex_motor",
+    "wrist_r_dev_motor"
+  ],
+  "required_links": [
+    "pelvis",
+    "torso_lower",
+    "torso_upper",
+    "head",
+    "upperarm_l",
+    "upperarm_r",
+    "lowerarm_l",
+    "lowerarm_r",
+    "hand_l",
+    "hand_r",
+    "thigh_l",
+    "thigh_r",
+    "calf_l",
+    "calf_r",
+    "foot_l",
+    "foot_r"
+  ],
+  "missing_links": [],
+  "n_physical_links": 16,
+  "dof_check": {
+    "n_free": 1,
+    "n_ball": 7,
+    "n_hinge": 12,
+    "expected_nq": 47,
+    "expected_nv": 39,
+    "expected_nu": 33,
+    "actual_nq": 47,
+    "actual_nv": 39,
+    "actual_nu": 33,
+    "nq_ok": true,
+    "nv_ok": true,
+    "nu_ok": true
+  },
+  "joint_to_visual_bone": {
+    "root": {
+      "bones": [
+        "pelvis"
+      ],
+      "type": "free"
+    },
+    "lumbar": {
+      "bones": [
+        "spine_01",
+        "spine_02"
+      ],
+      "type": "ball",
+      "lead": "spine_01"
+    },
+    "thoracic": {
+      "bones": [
+        "spine_03",
+        "spine_04",
+        "spine_05"
+      ],
+      "type": "ball",
+      "lead": "spine_05"
+    },
+    "neck": {
+      "bones": [
+        "neck_01",
+        "neck_02",
+        "head"
+      ],
+      "type": "ball",
+      "lead": "head"
+    },
+    "shoulder_l": {
+      "bones": [
+        "upperarm_l"
+      ],
+      "type": "ball",
+      "lead": "upperarm_l"
+    },
+    "shoulder_r": {
+      "bones": [
+        "upperarm_r"
+      ],
+      "type": "ball",
+      "lead": "upperarm_r"
+    },
+    "elbow_l": {
+      "bones": [
+        "lowerarm_l"
+      ],
+      "type": "hinge",
+      "lead": "lowerarm_l",
+      "bridge": "Quaternion(local_Z, -q) ASSUMPTION"
+    },
+    "elbow_r": {
+      "bones": [
+        "lowerarm_r"
+      ],
+      "type": "hinge",
+      "lead": "lowerarm_r",
+      "bridge": "Quaternion(local_Z, -q) ASSUMPTION"
+    },
+    "wrist_l_flex": {
+      "bones": [
+        "hand_l"
+      ],
+      "type": "hinge_component",
+      "lead": "hand_l"
+    },
+    "wrist_l_dev": {
+      "bones": [
+        "hand_l"
+      ],
+      "type": "hinge_component",
+      "lead": "hand_l"
+    },
+    "wrist_r_flex": {
+      "bones": [
+        "hand_r"
+      ],
+      "type": "hinge_component",
+      "lead": "hand_r"
+    },
+    "wrist_r_dev": {
+      "bones": [
+        "hand_r"
+      ],
+      "type": "hinge_component",
+      "lead": "hand_r"
+    },
+    "hip_l": {
+      "bones": [
+        "thigh_l"
+      ],
+      "type": "ball",
+      "lead": "thigh_l"
+    },
+    "hip_r": {
+      "bones": [
+        "thigh_r"
+      ],
+      "type": "ball",
+      "lead": "thigh_r"
+    },
+    "knee_l": {
+      "bones": [
+        "calf_l"
+      ],
+      "type": "hinge",
+      "lead": "calf_l",
+      "bridge": "Quaternion((0,0,1), -q) ASSUMPTION mirror"
+    },
+    "knee_r": {
+      "bones": [
+        "calf_r"
+      ],
+      "type": "hinge",
+      "lead": "calf_r",
+      "bridge": "Quaternion((0,0,1), -q) FACT"
+    },
+    "ankle_l_dp": {
+      "bones": [
+        "foot_l"
+      ],
+      "type": "hinge_component",
+      "lead": "foot_l"
+    },
+    "ankle_l_ie": {
+      "bones": [
+        "foot_l"
+      ],
+      "type": "hinge_component",
+      "lead": "foot_l"
+    },
+    "ankle_r_dp": {
+      "bones": [
+        "foot_r"
+      ],
+      "type": "hinge_component",
+      "lead": "foot_r"
+    },
+    "ankle_r_ie": {
+      "bones": [
+        "foot_r"
+      ],
+      "type": "hinge_component",
+      "lead": "foot_r"
+    }
+  },
+  "total_mass_kg": 89.04373775048496,
+  "notes": "world body included in nbody; physical links = nbody-1 (excl world)",
+  "model_path_note": "Portable: relative to physics/. Runtime uses Path(__file__) in agent_api/env.py (DEFAULT_MODEL). Original absolute path was: /workspace/blender/body_lab/humanoid_alpha/model/humanoid_alpha.xml"
+}

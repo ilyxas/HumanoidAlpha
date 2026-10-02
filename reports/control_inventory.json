@@ -1,0 +1,1618 @@
+{
+  "bodies": [
+    {
+      "id": 0,
+      "name": "world",
+      "parent": 0,
+      "visual_bones": []
+    },
+    {
+      "id": 1,
+      "name": "pelvis",
+      "parent": 0,
+      "visual_bones": [
+        "pelvis"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "torso_lower",
+      "parent": 1,
+      "visual_bones": [
+        "spine_01",
+        "spine_02"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "torso_upper",
+      "parent": 2,
+      "visual_bones": [
+        "spine_05",
+        "spine_03",
+        "spine_04",
+        "neck_01",
+        "neck_02",
+        "clavicle_l",
+        "clavicle_r"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "head",
+      "parent": 3,
+      "visual_bones": [
+        "head",
+        "neck_01",
+        "neck_02"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "upperarm_l",
+      "parent": 3,
+      "visual_bones": [
+        "upperarm_l"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "lowerarm_l",
+      "parent": 5,
+      "visual_bones": [
+        "lowerarm_l"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "hand_l",
+      "parent": 6,
+      "visual_bones": [
+        "hand_l"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "upperarm_r",
+      "parent": 3,
+      "visual_bones": [
+        "upperarm_r"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "lowerarm_r",
+      "parent": 8,
+      "visual_bones": [
+        "lowerarm_r"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "hand_r",
+      "parent": 9,
+      "visual_bones": [
+        "hand_r"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "thigh_l",
+      "parent": 1,
+      "visual_bones": [
+        "thigh_l"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "calf_l",
+      "parent": 11,
+      "visual_bones": [
+        "calf_l"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "foot_l",
+      "parent": 12,
+      "visual_bones": [
+        "foot_l"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "thigh_r",
+      "parent": 1,
+      "visual_bones": [
+        "thigh_r"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "calf_r",
+      "parent": 14,
+      "visual_bones": [
+        "calf_r"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "foot_r",
+      "parent": 15,
+      "visual_bones": [
+        "foot_r"
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "id": 0,
+      "name": "root",
+      "type": "free",
+      "body": "pelvis",
+      "body_id": 1,
+      "region": "Root",
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "limited": false,
+      "range": [
+        0.0,
+        0.0
+      ],
+      "qpos_address": 0,
+      "qvel_address": 0,
+      "nq": 7,
+      "nv": 6,
+      "visual_bones": [
+        "pelvis"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 1,
+      "name": "lumbar",
+      "type": "ball",
+      "body": "torso_lower",
+      "body_id": 2,
+      "region": "Torso",
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        0.6981317007977318
+      ],
+      "qpos_address": 7,
+      "qvel_address": 6,
+      "nq": 4,
+      "nv": 3,
+      "visual_bones": [
+        "spine_01",
+        "spine_02"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 2,
+      "name": "thoracic",
+      "type": "ball",
+      "body": "torso_upper",
+      "body_id": 3,
+      "region": "Torso",
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        0.4363323129985824
+      ],
+      "qpos_address": 11,
+      "qvel_address": 9,
+      "nq": 4,
+      "nv": 3,
+      "visual_bones": [
+        "spine_05",
+        "spine_03",
+        "spine_04",
+        "neck_01",
+        "neck_02",
+        "clavicle_l",
+        "clavicle_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 3,
+      "name": "neck",
+      "type": "ball",
+      "body": "head",
+      "body_id": 4,
+      "region": "Head",
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        1.0471975511965976
+      ],
+      "qpos_address": 15,
+      "qvel_address": 12,
+      "nq": 4,
+      "nv": 3,
+      "visual_bones": [
+        "head",
+        "neck_01",
+        "neck_02"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 4,
+      "name": "shoulder_l",
+      "type": "ball",
+      "body": "upperarm_l",
+      "body_id": 5,
+      "region": "Left arm",
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        2.6179938779914944
+      ],
+      "qpos_address": 19,
+      "qvel_address": 15,
+      "nq": 4,
+      "nv": 3,
+      "visual_bones": [
+        "upperarm_l"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 5,
+      "name": "elbow_l",
+      "type": "hinge",
+      "body": "lowerarm_l",
+      "body_id": 6,
+      "region": "Left arm",
+      "axis": [
+        -0.8068877157982124,
+        -0.05682603181686994,
+        -0.587965148798712
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        2.6179938779914944
+      ],
+      "qpos_address": 23,
+      "qvel_address": 18,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "lowerarm_l"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 6,
+      "name": "wrist_l_flex",
+      "type": "hinge",
+      "body": "hand_l",
+      "body_id": 7,
+      "region": "Left arm",
+      "axis": [
+        -0.5730020910294125,
+        -0.7708194179324994,
+        0.2783990456415464
+      ],
+      "limited": true,
+      "range": [
+        -1.2217304763960306,
+        1.2217304763960306
+      ],
+      "qpos_address": 24,
+      "qvel_address": 19,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "hand_l"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 7,
+      "name": "wrist_l_dev",
+      "type": "hinge",
+      "body": "hand_l",
+      "body_id": 7,
+      "region": "Left arm",
+      "axis": [
+        0.38407706779227563,
+        -0.5526478868233089,
+        -0.7396385057484628
+      ],
+      "limited": true,
+      "range": [
+        -0.4363323129985824,
+        0.6108652381980153
+      ],
+      "qpos_address": 25,
+      "qvel_address": 20,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "hand_l"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 8,
+      "name": "shoulder_r",
+      "type": "ball",
+      "body": "upperarm_r",
+      "body_id": 8,
+      "region": "Right arm",
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        2.6179938779914944
+      ],
+      "qpos_address": 26,
+      "qvel_address": 21,
+      "nq": 4,
+      "nv": 3,
+      "visual_bones": [
+        "upperarm_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 9,
+      "name": "elbow_r",
+      "type": "hinge",
+      "body": "lowerarm_r",
+      "body_id": 9,
+      "region": "Right arm",
+      "axis": [
+        -0.8068869085235391,
+        0.05681979989602977,
+        0.5879668589241241
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        2.6179938779914944
+      ],
+      "qpos_address": 30,
+      "qvel_address": 24,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "lowerarm_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 10,
+      "name": "wrist_r_flex",
+      "type": "hinge",
+      "body": "hand_r",
+      "body_id": 10,
+      "region": "Right arm",
+      "axis": [
+        -0.5729996139048887,
+        0.7708184887053272,
+        -0.2784067167560506
+      ],
+      "limited": true,
+      "range": [
+        -1.2217304763960306,
+        1.2217304763960306
+      ],
+      "qpos_address": 31,
+      "qvel_address": 25,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "hand_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 11,
+      "name": "wrist_r_dev",
+      "type": "hinge",
+      "body": "hand_r",
+      "body_id": 10,
+      "region": "Right arm",
+      "axis": [
+        0.38406543400251064,
+        0.5526550601490623,
+        0.7396391869662527
+      ],
+      "limited": true,
+      "range": [
+        -0.4363323129985824,
+        0.6108652381980153
+      ],
+      "qpos_address": 32,
+      "qvel_address": 26,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "hand_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 12,
+      "name": "hip_l",
+      "type": "ball",
+      "body": "thigh_l",
+      "body_id": 11,
+      "region": "Left leg",
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        2.0943951023931953
+      ],
+      "qpos_address": 33,
+      "qvel_address": 27,
+      "nq": 4,
+      "nv": 3,
+      "visual_bones": [
+        "thigh_l"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 13,
+      "name": "knee_l",
+      "type": "hinge",
+      "body": "calf_l",
+      "body_id": 12,
+      "region": "Left leg",
+      "axis": [
+        0.9876750627540383,
+        0.14625635892700745,
+        0.05574089959106346
+      ],
+      "limited": true,
+      "range": [
+        -0.08726646259971647,
+        2.443460952792061
+      ],
+      "qpos_address": 37,
+      "qvel_address": 30,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "calf_l"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 14,
+      "name": "ankle_l_dp",
+      "type": "hinge",
+      "body": "foot_l",
+      "body_id": 13,
+      "region": "Left leg",
+      "axis": [
+        0.9889708064917958,
+        0.1481105779769798,
+        2.4459999665904527e-05
+      ],
+      "limited": true,
+      "range": [
+        -0.3490658503988659,
+        0.8726646259971648
+      ],
+      "qpos_address": 38,
+      "qvel_address": 31,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "foot_l"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 15,
+      "name": "ankle_l_ie",
+      "type": "hinge",
+      "body": "foot_l",
+      "body_id": 13,
+      "region": "Left leg",
+      "axis": [
+        0.13235348049374923,
+        -0.8836825932966086,
+        -0.44898511167495453
+      ],
+      "limited": true,
+      "range": [
+        -0.3490658503988659,
+        0.3490658503988659
+      ],
+      "qpos_address": 39,
+      "qvel_address": 32,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "foot_l"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 16,
+      "name": "hip_r",
+      "type": "ball",
+      "body": "thigh_r",
+      "body_id": 14,
+      "region": "Right leg",
+      "axis": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "limited": true,
+      "range": [
+        0.0,
+        2.0943951023931953
+      ],
+      "qpos_address": 40,
+      "qvel_address": 33,
+      "nq": 4,
+      "nv": 3,
+      "visual_bones": [
+        "thigh_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 17,
+      "name": "knee_r",
+      "type": "hinge",
+      "body": "calf_r",
+      "body_id": 15,
+      "region": "Right leg",
+      "axis": [
+        0.9876752086659399,
+        -0.14625715276409412,
+        -0.05573623105335147
+      ],
+      "limited": true,
+      "range": [
+        -0.08726646259971647,
+        2.443460952792061
+      ],
+      "qpos_address": 44,
+      "qvel_address": 36,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "calf_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 18,
+      "name": "ankle_r_dp",
+      "type": "hinge",
+      "body": "foot_r",
+      "body_id": 16,
+      "region": "Right leg",
+      "axis": [
+        0.9889707522601364,
+        -0.14811093884085708,
+        -3.113999975629274e-05
+      ],
+      "limited": true,
+      "range": [
+        -0.3490658503988659,
+        0.8726646259971648
+      ],
+      "qpos_address": 45,
+      "qvel_address": 37,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "foot_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    },
+    {
+      "id": 19,
+      "name": "ankle_r_ie",
+      "type": "hinge",
+      "body": "foot_r",
+      "body_id": 16,
+      "region": "Right leg",
+      "axis": [
+        -0.13235674971835554,
+        -0.8836819881195962,
+        -0.4489853390445955
+      ],
+      "limited": true,
+      "range": [
+        -0.3490658503988659,
+        0.3490658503988659
+      ],
+      "qpos_address": 46,
+      "qvel_address": 38,
+      "nq": 1,
+      "nv": 1,
+      "visual_bones": [
+        "foot_r"
+      ],
+      "mapping_status": "configured \u2014 anatomical validation required"
+    }
+  ],
+  "actuators": [
+    {
+      "id": 0,
+      "name": "lumbar_x_motor",
+      "joint_id": 1,
+      "joint": "lumbar",
+      "region": "Torso",
+      "body": "torso_lower",
+      "visual_bones": [
+        "spine_01",
+        "spine_02"
+      ],
+      "ctrlrange": [
+        -35.0,
+        35.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 1,
+      "name": "lumbar_y_motor",
+      "joint_id": 1,
+      "joint": "lumbar",
+      "region": "Torso",
+      "body": "torso_lower",
+      "visual_bones": [
+        "spine_01",
+        "spine_02"
+      ],
+      "ctrlrange": [
+        -35.0,
+        35.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 2,
+      "name": "lumbar_z_motor",
+      "joint_id": 1,
+      "joint": "lumbar",
+      "region": "Torso",
+      "body": "torso_lower",
+      "visual_bones": [
+        "spine_01",
+        "spine_02"
+      ],
+      "ctrlrange": [
+        -35.0,
+        35.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 3,
+      "name": "thoracic_x_motor",
+      "joint_id": 2,
+      "joint": "thoracic",
+      "region": "Torso",
+      "body": "torso_upper",
+      "visual_bones": [
+        "spine_05",
+        "spine_03",
+        "spine_04",
+        "neck_01",
+        "neck_02",
+        "clavicle_l",
+        "clavicle_r"
+      ],
+      "ctrlrange": [
+        -30.0,
+        30.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 4,
+      "name": "thoracic_y_motor",
+      "joint_id": 2,
+      "joint": "thoracic",
+      "region": "Torso",
+      "body": "torso_upper",
+      "visual_bones": [
+        "spine_05",
+        "spine_03",
+        "spine_04",
+        "neck_01",
+        "neck_02",
+        "clavicle_l",
+        "clavicle_r"
+      ],
+      "ctrlrange": [
+        -30.0,
+        30.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 5,
+      "name": "thoracic_z_motor",
+      "joint_id": 2,
+      "joint": "thoracic",
+      "region": "Torso",
+      "body": "torso_upper",
+      "visual_bones": [
+        "spine_05",
+        "spine_03",
+        "spine_04",
+        "neck_01",
+        "neck_02",
+        "clavicle_l",
+        "clavicle_r"
+      ],
+      "ctrlrange": [
+        -30.0,
+        30.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 6,
+      "name": "neck_x_motor",
+      "joint_id": 3,
+      "joint": "neck",
+      "region": "Head",
+      "body": "head",
+      "visual_bones": [
+        "head",
+        "neck_01",
+        "neck_02"
+      ],
+      "ctrlrange": [
+        -20.0,
+        20.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 7,
+      "name": "neck_y_motor",
+      "joint_id": 3,
+      "joint": "neck",
+      "region": "Head",
+      "body": "head",
+      "visual_bones": [
+        "head",
+        "neck_01",
+        "neck_02"
+      ],
+      "ctrlrange": [
+        -20.0,
+        20.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 8,
+      "name": "neck_z_motor",
+      "joint_id": 3,
+      "joint": "neck",
+      "region": "Head",
+      "body": "head",
+      "visual_bones": [
+        "head",
+        "neck_01",
+        "neck_02"
+      ],
+      "ctrlrange": [
+        -20.0,
+        20.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 9,
+      "name": "hip_l_x_motor",
+      "joint_id": 12,
+      "joint": "hip_l",
+      "region": "Left leg",
+      "body": "thigh_l",
+      "visual_bones": [
+        "thigh_l"
+      ],
+      "ctrlrange": [
+        -120.0,
+        120.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 10,
+      "name": "hip_l_y_motor",
+      "joint_id": 12,
+      "joint": "hip_l",
+      "region": "Left leg",
+      "body": "thigh_l",
+      "visual_bones": [
+        "thigh_l"
+      ],
+      "ctrlrange": [
+        -120.0,
+        120.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 11,
+      "name": "hip_l_z_motor",
+      "joint_id": 12,
+      "joint": "hip_l",
+      "region": "Left leg",
+      "body": "thigh_l",
+      "visual_bones": [
+        "thigh_l"
+      ],
+      "ctrlrange": [
+        -120.0,
+        120.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 12,
+      "name": "hip_r_x_motor",
+      "joint_id": 16,
+      "joint": "hip_r",
+      "region": "Right leg",
+      "body": "thigh_r",
+      "visual_bones": [
+        "thigh_r"
+      ],
+      "ctrlrange": [
+        -120.0,
+        120.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 13,
+      "name": "hip_r_y_motor",
+      "joint_id": 16,
+      "joint": "hip_r",
+      "region": "Right leg",
+      "body": "thigh_r",
+      "visual_bones": [
+        "thigh_r"
+      ],
+      "ctrlrange": [
+        -120.0,
+        120.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 14,
+      "name": "hip_r_z_motor",
+      "joint_id": 16,
+      "joint": "hip_r",
+      "region": "Right leg",
+      "body": "thigh_r",
+      "visual_bones": [
+        "thigh_r"
+      ],
+      "ctrlrange": [
+        -120.0,
+        120.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 15,
+      "name": "shoulder_l_x_motor",
+      "joint_id": 4,
+      "joint": "shoulder_l",
+      "region": "Left arm",
+      "body": "upperarm_l",
+      "visual_bones": [
+        "upperarm_l"
+      ],
+      "ctrlrange": [
+        -60.0,
+        60.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 16,
+      "name": "shoulder_l_y_motor",
+      "joint_id": 4,
+      "joint": "shoulder_l",
+      "region": "Left arm",
+      "body": "upperarm_l",
+      "visual_bones": [
+        "upperarm_l"
+      ],
+      "ctrlrange": [
+        -60.0,
+        60.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 17,
+      "name": "shoulder_l_z_motor",
+      "joint_id": 4,
+      "joint": "shoulder_l",
+      "region": "Left arm",
+      "body": "upperarm_l",
+      "visual_bones": [
+        "upperarm_l"
+      ],
+      "ctrlrange": [
+        -60.0,
+        60.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 18,
+      "name": "shoulder_r_x_motor",
+      "joint_id": 8,
+      "joint": "shoulder_r",
+      "region": "Right arm",
+      "body": "upperarm_r",
+      "visual_bones": [
+        "upperarm_r"
+      ],
+      "ctrlrange": [
+        -60.0,
+        60.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 19,
+      "name": "shoulder_r_y_motor",
+      "joint_id": 8,
+      "joint": "shoulder_r",
+      "region": "Right arm",
+      "body": "upperarm_r",
+      "visual_bones": [
+        "upperarm_r"
+      ],
+      "ctrlrange": [
+        -60.0,
+        60.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 20,
+      "name": "shoulder_r_z_motor",
+      "joint_id": 8,
+      "joint": "shoulder_r",
+      "region": "Right arm",
+      "body": "upperarm_r",
+      "visual_bones": [
+        "upperarm_r"
+      ],
+      "ctrlrange": [
+        -60.0,
+        60.0
+      ],
+      "limited": true,
+      "gear": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 21,
+      "name": "knee_l_motor",
+      "joint_id": 13,
+      "joint": "knee_l",
+      "region": "Left leg",
+      "body": "calf_l",
+      "visual_bones": [
+        "calf_l"
+      ],
+      "ctrlrange": [
+        -100.0,
+        100.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 22,
+      "name": "knee_r_motor",
+      "joint_id": 17,
+      "joint": "knee_r",
+      "region": "Right leg",
+      "body": "calf_r",
+      "visual_bones": [
+        "calf_r"
+      ],
+      "ctrlrange": [
+        -100.0,
+        100.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 23,
+      "name": "elbow_l_motor",
+      "joint_id": 5,
+      "joint": "elbow_l",
+      "region": "Left arm",
+      "body": "lowerarm_l",
+      "visual_bones": [
+        "lowerarm_l"
+      ],
+      "ctrlrange": [
+        -40.0,
+        40.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 24,
+      "name": "elbow_r_motor",
+      "joint_id": 9,
+      "joint": "elbow_r",
+      "region": "Right arm",
+      "body": "lowerarm_r",
+      "visual_bones": [
+        "lowerarm_r"
+      ],
+      "ctrlrange": [
+        -40.0,
+        40.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 25,
+      "name": "ankle_l_dp_motor",
+      "joint_id": 14,
+      "joint": "ankle_l_dp",
+      "region": "Left leg",
+      "body": "foot_l",
+      "visual_bones": [
+        "foot_l"
+      ],
+      "ctrlrange": [
+        -40.0,
+        40.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 26,
+      "name": "ankle_l_ie_motor",
+      "joint_id": 15,
+      "joint": "ankle_l_ie",
+      "region": "Left leg",
+      "body": "foot_l",
+      "visual_bones": [
+        "foot_l"
+      ],
+      "ctrlrange": [
+        -40.0,
+        40.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 27,
+      "name": "ankle_r_dp_motor",
+      "joint_id": 18,
+      "joint": "ankle_r_dp",
+      "region": "Right leg",
+      "body": "foot_r",
+      "visual_bones": [
+        "foot_r"
+      ],
+      "ctrlrange": [
+        -40.0,
+        40.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 28,
+      "name": "ankle_r_ie_motor",
+      "joint_id": 19,
+      "joint": "ankle_r_ie",
+      "region": "Right leg",
+      "body": "foot_r",
+      "visual_bones": [
+        "foot_r"
+      ],
+      "ctrlrange": [
+        -40.0,
+        40.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 29,
+      "name": "wrist_l_flex_motor",
+      "joint_id": 6,
+      "joint": "wrist_l_flex",
+      "region": "Left arm",
+      "body": "hand_l",
+      "visual_bones": [
+        "hand_l"
+      ],
+      "ctrlrange": [
+        -10.0,
+        10.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 30,
+      "name": "wrist_l_dev_motor",
+      "joint_id": 7,
+      "joint": "wrist_l_dev",
+      "region": "Left arm",
+      "body": "hand_l",
+      "visual_bones": [
+        "hand_l"
+      ],
+      "ctrlrange": [
+        -10.0,
+        10.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 31,
+      "name": "wrist_r_flex_motor",
+      "joint_id": 10,
+      "joint": "wrist_r_flex",
+      "region": "Right arm",
+      "body": "hand_r",
+      "visual_bones": [
+        "hand_r"
+      ],
+      "ctrlrange": [
+        -10.0,
+        10.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    },
+    {
+      "id": 32,
+      "name": "wrist_r_dev_motor",
+      "joint_id": 11,
+      "joint": "wrist_r_dev",
+      "region": "Right arm",
+      "body": "hand_r",
+      "visual_bones": [
+        "hand_r"
+      ],
+      "ctrlrange": [
+        -10.0,
+        10.0
+      ],
+      "limited": true,
+      "gear": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "controllable": true,
+      "transmission": 0
+    }
+  ],
+  "nq": 47,
+  "nv": 39,
+  "nu": 33,
+  "timestep": 0.002,
+  "reference_qpos": [
+    -0.0,
+    -0.01795729,
+    0.92590946,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}

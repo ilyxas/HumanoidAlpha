@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Humanoid · Body Control</title>
+<link rel="stylesheet" href="console.css">
+<script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
+</head><body>
+<header><div><b>HUMANOID</b><span>Full body control / Xandra</span></div><span id="connection">Loading model…</span></header>
+<main><aside><section><h1>Physical control</h1><p>Click Xandra to select a body region, or choose a joint or actuator.</p>
+<div class="tabs"><button id="kinematic" class="active">Position</button><button id="dynamic">Torque</button><button id="assisted">Assisted</button></div>
+<div class="actions"><button id="reset">Reset reference</button><button id="pause">Pause</button><button id="resume">Resume</button></div>
+<button id="zero" class="danger">ZERO ALL TORQUES + PAUSE</button>
+<p id="modeInfo">Position mode freezes simulation time.</p><div id="inventoryCount"></div><p class="note"><a href="../reports/control_inventory.json" target="_blank">Model inventory (JSON)</a></p></section>
+<nav id="inventory" aria-label="Anatomical regions"></nav></aside>
+<div id="viewport"><canvas id="c"></canvas><div class="view-tools"><button id="frame">Frame character</button><button id="btnShot">Screenshot</button><label><input id="skel" type="checkbox" checked> Skeleton</label><label><input id="mjDebug" type="checkbox"> Physical links</label><label><input id="highlight" type="checkbox" checked> Highlight selection</label></div>
+<div class="legend">● <span>Amber: physical joint</span> <i>●</i> Cyan: mapped bones<br>Orbit: drag · Pan: right drag · Zoom: scroll</div><div id="stats"></div><div id="err" role="alert"></div></div>
+<aside id="detail"><section><h2 id="selectedName">Select a joint</h2><div id="selectedMeta"></div><div id="controls"></div><p class="note">Double-click / double-tap a slider to restore its reference value.</p><h3>Measured state</h3><pre id="measured">Waiting for physics…</pre><h3>Visual mapping</h3><div id="mapping"></div><p class="note">A low quaternion error verifies application of the mapper output. It does not prove anatomical correctness. Inspect the highlighted Xandra region and physical links.</p><div id="mappingMetrics"></div></section></aside></main>
+<div hidden><button id="btnManual"></button><button id="btnPhysics"></button><button id="btnReset"></button><input id="knee" value="0"><input id="shoulder" value="0"><input id="shoulderRoll" value="0"><span id="vKnee"></span><span id="vSh"></span><span id="vShR"></span></div>
+<script type="module" src="console.js?v=assisted-20261002"></script><script type="module" src="console-viewer.js"></script></body></html>

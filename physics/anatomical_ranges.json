@@ -1,0 +1,371 @@
+{
+  "schema": "humanoid_alpha anatomical ROM 2026-09-28",
+  "mechanism": {
+    "ball": "MuJoCo ball limited=true \u2192 isotropic cone about rest (range[1]=max angle). Soft via solreflimit/solimplimit.",
+    "hinge": "scalar range + limited=true (unchanged from build; CSV-aligned)",
+    "not_used": "3\u00d7hinge replacement rejected: would change nq and joint_angles observe (quat\u21923 floats) / break Agent API contract",
+    "anisotropic_coupling": "UNKNOWN / not modelled; cone is ENGINEERING envelope of max single-axis prior"
+  },
+  "solreflimit": [
+    0.002,
+    1.0
+  ],
+  "solimplimit": [
+    0.95,
+    0.99,
+    0.001
+  ],
+  "margin": 0.02,
+  "ball_cones": {
+    "lumbar": {
+      "cone_rad": 0.6981317007977318,
+      "cone_deg": 40.0,
+      "limited": true,
+      "axis_priors_deg": {
+        "flex_deg": [
+          -20,
+          40
+        ],
+        "lat_deg": [
+          -15,
+          15
+        ],
+        "twist_deg": [
+          -10,
+          10
+        ]
+      },
+      "label": "ENGINEERING",
+      "note": "cone = max |axis|; axes ASSUME X\u2248lat Y\u2248twist Z\u2248flex (UE\u2260anatomic)",
+      "mirror_of": null,
+      "needs_external_validation": true
+    },
+    "thoracic": {
+      "cone_rad": 0.4363323129985824,
+      "cone_deg": 25.0,
+      "limited": true,
+      "axis_priors_deg": {
+        "flex_deg": [
+          -15,
+          25
+        ],
+        "lat_deg": [
+          -12,
+          12
+        ],
+        "twist_deg": [
+          -15,
+          15
+        ]
+      },
+      "label": "ENGINEERING",
+      "note": null,
+      "mirror_of": null,
+      "needs_external_validation": true
+    },
+    "neck": {
+      "cone_rad": 1.0471975511965976,
+      "cone_deg": 59.99999999999999,
+      "limited": true,
+      "axis_priors_deg": {
+        "flex_deg": [
+          -40,
+          50
+        ],
+        "lat_deg": [
+          -35,
+          35
+        ],
+        "twist_deg": [
+          -60,
+          60
+        ]
+      },
+      "label": "ENGINEERING",
+      "note": "twist prior 60\u00b0 sets cone; flex/lat smaller",
+      "mirror_of": null,
+      "needs_external_validation": true
+    },
+    "shoulder_l": {
+      "cone_rad": 2.6179938779914944,
+      "cone_deg": 150.00000000000003,
+      "limited": true,
+      "axis_priors_deg": {
+        "flex_deg": [
+          -60,
+          180
+        ],
+        "abd_deg": [
+          -30,
+          120
+        ],
+        "rot_deg": [
+          -90,
+          90
+        ]
+      },
+      "label": "ENGINEERING",
+      "note": "anatomic max flex 180\u00b0; cone 150\u00b0 functional soft to reduce wraparound crumple",
+      "mirror_of": null,
+      "needs_external_validation": true
+    },
+    "shoulder_r": {
+      "cone_rad": 2.6179938779914944,
+      "cone_deg": 150.00000000000003,
+      "limited": true,
+      "axis_priors_deg": {
+        "flex_deg": [
+          -60,
+          180
+        ],
+        "abd_deg": [
+          -30,
+          120
+        ],
+        "rot_deg": [
+          -90,
+          90
+        ]
+      },
+      "label": "ENGINEERING",
+      "note": null,
+      "mirror_of": "shoulder_l",
+      "needs_external_validation": true
+    },
+    "hip_l": {
+      "cone_rad": 2.0943951023931953,
+      "cone_deg": 119.99999999999999,
+      "limited": true,
+      "axis_priors_deg": {
+        "flex_deg": [
+          -20,
+          120
+        ],
+        "abd_deg": [
+          -30,
+          45
+        ],
+        "rot_deg": [
+          -40,
+          40
+        ]
+      },
+      "label": "ENGINEERING",
+      "note": null,
+      "mirror_of": null,
+      "needs_external_validation": true
+    },
+    "hip_r": {
+      "cone_rad": 2.0943951023931953,
+      "cone_deg": 119.99999999999999,
+      "limited": true,
+      "axis_priors_deg": {
+        "flex_deg": [
+          -20,
+          120
+        ],
+        "abd_deg": [
+          -30,
+          45
+        ],
+        "rot_deg": [
+          -40,
+          40
+        ]
+      },
+      "label": "ENGINEERING",
+      "note": null,
+      "mirror_of": "hip_l",
+      "needs_external_validation": true
+    }
+  },
+  "hinge_ranges": {
+    "knee_l": {
+      "range_rad": [
+        -0.08726646259971647,
+        2.443460952792061
+      ],
+      "range_deg": [
+        -5.0,
+        140.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION_MIRROR axis; ENGINEERING limits",
+      "note": "same as R",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "knee_r": {
+      "range_rad": [
+        -0.08726646259971647,
+        2.443460952792061
+      ],
+      "range_deg": [
+        -5.0,
+        140.0
+      ],
+      "limited": true,
+      "label": "FACT axis; ENGINEERING limits",
+      "note": "CSV 0\u2026140 flex soft \u22125",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "elbow_l": {
+      "range_rad": [
+        0.0,
+        2.6179938779914944
+      ],
+      "range_deg": [
+        0.0,
+        150.00000000000003
+      ],
+      "limited": true,
+      "label": "ASSUMPTION axis; ENGINEERING limits",
+      "note": "0\u2026150",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "elbow_r": {
+      "range_rad": [
+        0.0,
+        2.6179938779914944
+      ],
+      "range_deg": [
+        0.0,
+        150.00000000000003
+      ],
+      "limited": true,
+      "label": "ASSUMPTION axis; ENGINEERING limits",
+      "note": "0\u2026150",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "ankle_l_dp": {
+      "range_rad": [
+        -0.3490658503988659,
+        0.8726646259971648
+      ],
+      "range_deg": [
+        -20.0,
+        50.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION",
+      "note": "\u221220\u2026+50 dorsi/plantar",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "ankle_l_ie": {
+      "range_rad": [
+        -0.3490658503988659,
+        0.3490658503988659
+      ],
+      "range_deg": [
+        -20.0,
+        20.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION",
+      "note": "\u00b120 inv/ev",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "ankle_r_dp": {
+      "range_rad": [
+        -0.3490658503988659,
+        0.8726646259971648
+      ],
+      "range_deg": [
+        -20.0,
+        50.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION",
+      "note": "\u221220\u2026+50",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "ankle_r_ie": {
+      "range_rad": [
+        -0.3490658503988659,
+        0.3490658503988659
+      ],
+      "range_deg": [
+        -20.0,
+        20.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION",
+      "note": "\u00b120",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "wrist_l_flex": {
+      "range_rad": [
+        -1.2217304763960306,
+        1.2217304763960306
+      ],
+      "range_deg": [
+        -70.0,
+        70.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION",
+      "note": "\u00b170",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "wrist_l_dev": {
+      "range_rad": [
+        -0.4363323129985824,
+        0.6108652381980153
+      ],
+      "range_deg": [
+        -25.0,
+        35.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION",
+      "note": "\u221225\u2026+35",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "wrist_r_flex": {
+      "range_rad": [
+        -1.2217304763960306,
+        1.2217304763960306
+      ],
+      "range_deg": [
+        -70.0,
+        70.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION",
+      "note": "\u00b170",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    },
+    "wrist_r_dev": {
+      "range_rad": [
+        -0.4363323129985824,
+        0.6108652381980153
+      ],
+      "range_deg": [
+        -25.0,
+        35.0
+      ],
+      "limited": true,
+      "label": "ASSUMPTION",
+      "note": "\u221225\u2026+35",
+      "changed_this_stage": false,
+      "needs_external_validation": true
+    }
+  },
+  "sources": {
+    "joints_dof_csv": "/workspace/blender/body_lab/physics_design/joints_dof.csv",
+    "knee_r_axis": "FACT (knee_diag local Z\u2212)",
+    "other_axes": "ASSUMPTION",
+    "numeric_limits": "ENGINEERING anatomic priors; needs_external_validation=yes in CSV",
+    "joints_dof_csv_note": "Historical absolute path from original Body Lab export (FACT). Not opened at browser/MuJoCo runtime. Source CSV not required to run POC."
+  }
+}

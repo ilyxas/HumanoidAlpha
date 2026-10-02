@@ -1,0 +1,117 @@
+[
+  {
+    "bone": "pelvis",
+    "glb_rest_error_corrected_rad": 1.1542389828584842e-07,
+    "previous_error_rad": 1.5707962356671976
+  },
+  {
+    "bone": "spine_01",
+    "glb_rest_error_corrected_rad": 1.3657139822709086e-07,
+    "previous_error_rad": 1.57079624259225
+  },
+  {
+    "bone": "spine_05",
+    "glb_rest_error_corrected_rad": 1.3328003749250115e-07,
+    "previous_error_rad": 1.5707962320143576
+  },
+  {
+    "bone": "head",
+    "glb_rest_error_corrected_rad": 1.032382731180714e-07,
+    "previous_error_rad": 1.570796257351801
+  },
+  {
+    "bone": "upperarm_l",
+    "glb_rest_error_corrected_rad": 2.210199382035633e-07,
+    "previous_error_rad": 1.5707964118176365
+  },
+  {
+    "bone": "upperarm_r",
+    "glb_rest_error_corrected_rad": 1.2352694139518164e-06,
+    "previous_error_rad": 1.5707972492282887
+  },
+  {
+    "bone": "lowerarm_l",
+    "glb_rest_error_corrected_rad": 1.2990531157078367e-07,
+    "previous_error_rad": 1.5707963630817692
+  },
+  {
+    "bone": "lowerarm_r",
+    "glb_rest_error_corrected_rad": 2.180055669889152e-06,
+    "previous_error_rad": 1.5707971175135864
+  },
+  {
+    "bone": "hand_l",
+    "glb_rest_error_corrected_rad": 2.475566823160076e-07,
+    "previous_error_rad": 1.5707962633529011
+  },
+  {
+    "bone": "hand_r",
+    "glb_rest_error_corrected_rad": 1.148700738855391e-05,
+    "previous_error_rad": 1.570803187377984
+  },
+  {
+    "bone": "thigh_l",
+    "glb_rest_error_corrected_rad": 1.5196262340524156e-07,
+    "previous_error_rad": 1.5707962567813027
+  },
+  {
+    "bone": "thigh_r",
+    "glb_rest_error_corrected_rad": 5.179091452653055e-07,
+    "previous_error_rad": 1.570796738526943
+  },
+  {
+    "bone": "calf_l",
+    "glb_rest_error_corrected_rad": 7.300048299977715e-08,
+    "previous_error_rad": 1.5707962624317557
+  },
+  {
+    "bone": "calf_r",
+    "glb_rest_error_corrected_rad": 5.322864979354085e-07,
+    "previous_error_rad": 1.5707967771622868
+  },
+  {
+    "bone": "foot_l",
+    "glb_rest_error_corrected_rad": 9.424321830774485e-08,
+    "previous_error_rad": 1.5707962496081738
+  },
+  {
+    "bone": "foot_r",
+    "glb_rest_error_corrected_rad": 5.196212462831361e-07,
+    "previous_error_rad": 1.5707967224912445
+  },
+  {
+    "bone": "spine_02",
+    "glb_rest_error_corrected_rad": 1.4600096599955432e-07,
+    "previous_error_rad": 1.5707962385629355
+  },
+  {
+    "bone": "spine_03",
+    "glb_rest_error_corrected_rad": 1.7881393432617193e-07,
+    "previous_error_rad": 1.570796229564832
+  },
+  {
+    "bone": "spine_04",
+    "glb_rest_error_corrected_rad": 1.1920928955078128e-07,
+    "previous_error_rad": 1.5707962474874357
+  },
+  {
+    "bone": "neck_01",
+    "glb_rest_error_corrected_rad": 1.3328003749250115e-07,
+    "previous_error_rad": 1.5707962581381771
+  },
+  {
+    "bone": "neck_02",
+    "glb_rest_error_corrected_rad": 1.3657139822709086e-07,
+    "previous_error_rad": 1.5707962590651072
+  },
+  {
+    "bone": "clavicle_l",
+    "glb_rest_error_corrected_rad": 1.7377590819732256e-07,
+    "previous_error_rad": 1.5707963738340998
+  },
+  {
+    "bone": "clavicle_r",
+    "glb_rest_error_corrected_rad": 8.795472719296113e-07,
+    "previous_error_rad": 1.5707972050100663
+  }
+]

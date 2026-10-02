@@ -1,0 +1,1082 @@
+[
+  {
+    "bone": "hand_l",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 3.70309350225708e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 2.2306198761614688e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 2.825837316356329e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 9.622934554843501e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 0,
+    "angle": 0.0,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 3.754455883151525e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 2.311877113404644e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 2.7670192137070604e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 9.165570750782235e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 0,
+    "angle": 0.2,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 3.885895814362959e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 2.702894128668609e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 2.64446974207423e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 8.48987267624686e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 0,
+    "angle": 0.7,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 4.042555564337734e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 3.512639526809506e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 2.587722584331617e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 9.228020398672961e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 0,
+    "angle": 1.5,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 4.0627566618253746e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 4.115335642890888e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 2.7288450300698304e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 1.1351981381529612e-06
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 0,
+    "angle": 2.3,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 3.70309350225708e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 2.2306198761614688e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 2.825837316356329e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 9.622934554843501e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 1,
+    "angle": 0.0,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 3.320815380164253e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 1.9052372631993128e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 2.8109058668690303e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 9.389986142596847e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 1,
+    "angle": 0.2,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 2.2824053055986353e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 1.3084893317933816e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 2.810975132930966e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 9.353497268538961e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 1,
+    "angle": 0.7,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 1.1045337105067936e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 1.8891778794285346e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 2.912474471642598e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 1.0739519122799063e-06
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 1,
+    "angle": 1.5,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 2.3519886513233725e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 3.1926452535754845e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 3.071595546292636e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 1.2739537098691783e-06
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 1,
+    "angle": 2.3,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 3.70309350225708e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 2.2306198761614688e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 2.825837316356329e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 9.622934554843501e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 2,
+    "angle": 0.0,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 3.799780163628217e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 2.3190187386856066e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 2.808723310354964e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 9.409078533606931e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 2,
+    "angle": 0.2,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 3.998021191215912e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 2.510015862884792e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 2.7513034367619485e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 8.836981710721384e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 2,
+    "angle": 0.7,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 4.118384469339188e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 2.663462854010038e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 2.6458193114812557e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 8.111240649660102e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 2,
+    "angle": 1.5,
+    "anchor_error_m": 1.1925692702534444e-07
+  },
+  {
+    "bone": "hand_l",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 3.9597219481891477e-07
+  },
+  {
+    "bone": "lowerarm_l",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 2.583675677929438e-07
+  },
+  {
+    "bone": "upperarm_l",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 2.920529807494706e-07
+  },
+  {
+    "bone": "hand_r",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 2.5811140541917925e-06
+  },
+  {
+    "bone": "lowerarm_r",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 8.067943990674466e-07
+  },
+  {
+    "bone": "upperarm_r",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 3.2729530290672143e-07
+  },
+  {
+    "bone": "foot_r",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 1.4682920552504791e-06
+  },
+  {
+    "bone": "calf_r",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 7.924668899047917e-07
+  },
+  {
+    "bone": "thigh_r",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 7.178120284851135e-08
+  },
+  {
+    "bone": "foot_l",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 1.0476181432277727e-07
+  },
+  {
+    "bone": "calf_l",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 9.641666263076482e-08
+  },
+  {
+    "bone": "thigh_l",
+    "axis": 2,
+    "angle": 2.3,
+    "anchor_error_m": 1.1925692702534444e-07
+  }
+]

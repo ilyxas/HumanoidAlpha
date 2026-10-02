@@ -1,0 +1,236 @@
+<!--
+  Humanoid Alpha — full body MuJoCo model for Xandra F4
+  Generated from measurements.json. MEASURED lengths/anchors; ASSUMPTION masses/axes/limits.
+  Clavicles welded into torso_upper; ball/toes welded into feet.
+  Torque-only actuators. NO walking skills / PID / IK / position control / pelvis lock.
+  Anatomical stage: ball joints use limited isotropic cone (ENGINEERING envelope of
+  direction-dependent ROM from physics_design/joints_dof.csv). Hinge ranges unchanged
+  (already CSV-aligned). Soft limits via solreflimit/solimplimit. nu=33 preserved.
+-->
+<mujoco model="humanoid_alpha">
+  <compiler angle="radian" coordinate="local" inertiafromgeom="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"
+          cone="elliptic" impratio="1"/>
+
+  <default>
+    <!-- solreflimit/solimplimit: stiff soft joint limits (ENGINEERING).
+         Ball limited=true uses isotropic cone about rest (MuJoCo fact). -->
+    <joint damping="0.08" armature="0.002"
+           solreflimit="0.002 1" solimplimit="0.95 0.99 0.001" margin="0.02"/>
+    <geom condim="3" friction="0.8 0.1 0.1"
+          rgba="0.7 0.55 0.45 1" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+    <motor ctrllimited="true"/>
+  </default>
+
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.2 0.3 0.4" rgb2="0.3 0.4 0.5"
+             width="512" height="512"/>
+    <material name="grid" texture="grid" texrepeat="4 4" reflectance="0.1"/>
+  </asset>
+
+  <worldbody>
+    <geom name="floor" type="plane" size="5 5 0.1" rgba="0.3 0.35 0.4 1"
+          friction="0.8 0.1 0.1"
+          condim="3" material="grid"/>
+    <light name="top" pos="0 0 3" dir="0 0 -1"/>
+
+    <!-- PELVIS free root -->
+    <body name="pelvis" pos="-0.00000000 -0.01795729 0.92590946">
+      <freejoint name="root"/>
+      <geom name="pelvis_geom" type="capsule" fromto="0 0 0 0.00000000 -0.00171871 0.02588642"
+            size="0.08" density="4327.472052"
+            rgba="0.6 0.4 0.5 1"/>
+      <site name="pelvis_site" pos="0 0 0" size="0.02"/>
+
+      <!-- TORSO LOWER (lumbar ball) -->
+      <body name="torso_lower" pos="0.00000000 -0.00171871 0.02588642">
+        <joint name="lumbar" type="ball" limited="true" range="0 0.6981317007977318" damping="0.08" armature="0.002"/>
+        <geom name="torso_lower_geom" type="capsule" fromto="0 0 0 -0.00000000 -0.02211192 0.12414080"
+              size="0.09" density="2247.388279"
+              rgba="0.55 0.5 0.45 1"/>
+
+        <!-- TORSO UPPER (thoracic ball); clavicles WELDED here -->
+        <body name="torso_upper" pos="-0.00000000 -0.02211192 0.12414080">
+          <joint name="thoracic" type="ball" limited="true" range="0 0.4363323129985824" damping="0.08" armature="0.002"/>
+          <geom name="torso_upper_geom" type="capsule" fromto="0 0 0 0.00000000 0.03915559 0.23048341"
+                size="0.1" density="2091.423647"
+                rgba="0.5 0.55 0.5 1"/>
+
+          <!-- HEAD (neck ball) -->
+          <body name="head" pos="0.00000000 0.03915559 0.23048341">
+            <joint name="neck" type="ball" limited="true" range="0 1.0471975511965976" damping="0.08" armature="0.002"/>
+            <geom name="head_geom" type="sphere" pos="0.00000000 0.00051436 0.10423660"
+                  size="0.09" density="1401.209880"
+                  rgba="0.85 0.7 0.6 1"/>
+          </body>
+
+          <!-- LEFT ARM (shoulder at upperarm; clavicle welded) -->
+          <body name="upperarm_l" pos="0.13750337 0.06080558 0.26143622">
+            <joint name="shoulder_l" type="ball" limited="true" range="0 2.6179938779914944" damping="0.08" armature="0.002"/>
+            <geom name="upperarm_l_geom" type="capsule" fromto="0 0 0 0.15628196 -0.00517103 -0.21397173"
+                  size="0.035" density="1967.573737"
+                  rgba="0.55 0.45 0.75 1"/>
+            <body name="lowerarm_l" pos="0.15628196 -0.00517103 -0.21397173">
+              <joint name="elbow_l" type="hinge" axis="-0.80688769 -0.05682603 -0.58796513"
+                     range="0.0 2.6179938779914944"
+                     limited="true" damping="0.08" armature="0.002"/>
+              <geom name="lowerarm_l_geom" type="capsule" fromto="0 0 0 0.12206694 -0.15186871 -0.15283889"
+                    size="0.028" density="1854.313102"
+                    rgba="0.45 0.55 0.75 1"/>
+              <body name="hand_l" pos="0.12206694 -0.15186871 -0.15283889">
+                <joint name="wrist_l_flex" type="hinge" axis="-0.57300210 -0.77081943 0.27839905"
+                       range="-1.2217304763960306 1.2217304763960306"
+                       limited="true" damping="0.08" armature="0.002"/>
+                <joint name="wrist_l_dev" type="hinge" axis="0.38407707 -0.55264789 -0.73963851"
+                       range="-0.4363323129985824 0.6108652381980153"
+                       limited="true" damping="0.08" armature="0.002"/>
+                <geom name="hand_l_geom" type="capsule" fromto="0 0 0 0.03943413 -0.04906169 -0.04937510"
+                      size="0.025" density="3153.534476"
+                      rgba="0.9 0.75 0.65 1"/>
+              </body>
+            </body>
+          </body>
+
+          <!-- RIGHT ARM -->
+          <body name="upperarm_r" pos="-0.13750440 0.06080503 0.26143265">
+            <joint name="shoulder_r" type="ball" limited="true" range="0 2.6179938779914944" damping="0.08" armature="0.002"/>
+            <geom name="upperarm_r_geom" type="capsule" fromto="0 0 0 -0.15628102 -0.00517101 -0.21397090"
+                  size="0.035" density="1967.583726"
+                  rgba="0.55 0.45 0.75 1"/>
+            <body name="lowerarm_r" pos="-0.15628102 -0.00517101 -0.21397090">
+              <joint name="elbow_r" type="hinge" axis="-0.80688691 0.05681980 0.58796686"
+                     range="0.0 2.6179938779914944"
+                     limited="true" damping="0.08" armature="0.002"/>
+              <geom name="lowerarm_r_geom" type="capsule" fromto="0 0 0 -0.12206578 -0.15186719 -0.15283740"
+                    size="0.028" density="1854.332747"
+                    rgba="0.45 0.55 0.75 1"/>
+              <body name="hand_r" pos="-0.12206578 -0.15186719 -0.15283740">
+                <joint name="wrist_r_flex" type="hinge" axis="-0.57299960 0.77081847 -0.27840671"
+                       range="-1.2217304763960306 1.2217304763960306"
+                       limited="true" damping="0.08" armature="0.002"/>
+                <joint name="wrist_r_dev" type="hinge" axis="0.38406542 0.55265504 0.73963916"
+                       range="-0.4363323129985824 0.6108652381980153"
+                       limited="true" damping="0.08" armature="0.002"/>
+                <geom name="hand_r_geom" type="capsule" fromto="0 0 0 -0.03943414 -0.04906167 -0.04937510"
+                      size="0.025" density="3153.534476"
+                      rgba="0.9 0.75 0.65 1"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- LEFT LEG -->
+      <body name="thigh_l" pos="0.08068123 -0.00746380 -0.02524692">
+        <joint name="hip_l" type="ball" limited="true" range="0 2.0943951023931953" damping="0.08" armature="0.002"/>
+        <geom name="thigh_l_geom" type="capsule" fromto="0 0 0 0.02357826 0.00623232 -0.43413386"
+              size="0.055" density="1727.367617"
+              rgba="0.55 0.45 0.75 1"/>
+        <body name="calf_l" pos="0.02357826 0.00623232 -0.43413386">
+          <joint name="knee_l" type="hinge" axis="0.98767507 0.14625636 0.05574090"
+                 range="-0.08726646259971647 2.443460952792061"
+                 limited="true" damping="0.08" armature="0.002"/>
+          <geom name="calf_l_geom" type="capsule" fromto="0 0 0 0.01905943 0.02069653 -0.39201690"
+                size="0.04" density="1650.385099"
+                rgba="0.45 0.65 0.85 1"/>
+          <body name="foot_l" pos="0.01905943 0.02069653 -0.39201690">
+            <joint name="ankle_l_dp" type="hinge" axis="0.98897082 0.14811058 0.00002446"
+                   range="-0.3490658503988659 0.8726646259971648"
+                   limited="true" damping="0.08" armature="0.002"/>
+            <joint name="ankle_l_ie" type="hinge" axis="0.13235348 -0.88368259 -0.44898511"
+                   range="-0.3490658503988659 0.3490658503988659"
+                   limited="true" damping="0.08" armature="0.002"/>
+            <geom name="foot_l_geom" type="box"
+                  pos="0.00764331 -0.06284077 -0.03179681"
+                  size="0.04000000 0.06284077 0.02000000"
+                  density="2754.604533"
+                  rgba="0.35 0.35 0.4 1"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- RIGHT LEG -->
+      <body name="thigh_r" pos="-0.08068430 -0.00743701 -0.02524543">
+        <joint name="hip_r" type="ball" limited="true" range="0 2.0943951023931953" damping="0.08" armature="0.002"/>
+        <geom name="thigh_r_geom" type="capsule" fromto="0 0 0 -0.02357824 0.00623231 -0.43413320"
+              size="0.055" density="1727.370522"
+              rgba="0.55 0.45 0.75 1"/>
+        <body name="calf_r" pos="-0.02357824 0.00623231 -0.43413320">
+          <joint name="knee_r" type="hinge" axis="0.98767519 -0.14625715 -0.05573623"
+                 range="-0.08726646259971647 2.443460952792061"
+                 limited="true" damping="0.08" armature="0.002"/>
+          <geom name="calf_r_geom" type="capsule" fromto="0 0 0 -0.01905945 0.02069654 -0.39201725"
+                size="0.04" density="1650.383470"
+                rgba="0.45 0.65 0.85 1"/>
+          <body name="foot_r" pos="-0.01905945 0.02069654 -0.39201725">
+            <joint name="ankle_r_dp" type="hinge" axis="0.98897076 -0.14811094 -0.00003114"
+                   range="-0.3490658503988659 0.8726646259971648"
+                   limited="true" damping="0.08" armature="0.002"/>
+            <joint name="ankle_r_ie" type="hinge" axis="-0.13235675 -0.88368199 -0.44898534"
+                   range="-0.3490658503988659 0.3490658503988659"
+                   limited="true" damping="0.08" armature="0.002"/>
+            <geom name="foot_r_geom" type="box"
+                  pos="-0.00764350 -0.06284065 -0.03179680"
+                  size="0.04000000 0.06284065 0.02000000"
+                  density="2754.608663"
+                  rgba="0.35 0.35 0.4 1"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+
+  <!-- Self-collision policy: keep limb↔torso contacts; exclude permanently
+       overlapping non-adjacent pairs measured at rest (filterparent does not
+       cover grandparent/uncle). Does NOT change nu / actuator API. -->
+  <contact>
+    <exclude body1="pelvis" body2="torso_upper"/>
+    <exclude body1="torso_lower" body2="thigh_l"/>
+    <exclude body1="torso_lower" body2="thigh_r"/>
+    <exclude body1="pelvis" body2="upperarm_l"/>
+    <exclude body1="pelvis" body2="upperarm_r"/>
+    <exclude body1="torso_lower" body2="upperarm_l"/>
+    <exclude body1="torso_lower" body2="upperarm_r"/>
+    <exclude body1="torso_upper" body2="thigh_l"/>
+    <exclude body1="torso_upper" body2="thigh_r"/>
+    <exclude body1="head" body2="torso_lower"/>
+    <exclude body1="head" body2="pelvis"/>
+  </contact>
+
+  <actuator>
+    <motor name="lumbar_x_motor" joint="lumbar" gear="1 0 0" ctrllimited="true" ctrlrange="-35.0 35.0"/>
+    <motor name="lumbar_y_motor" joint="lumbar" gear="0 1 0" ctrllimited="true" ctrlrange="-35.0 35.0"/>
+    <motor name="lumbar_z_motor" joint="lumbar" gear="0 0 1" ctrllimited="true" ctrlrange="-35.0 35.0"/>
+    <motor name="thoracic_x_motor" joint="thoracic" gear="1 0 0" ctrllimited="true" ctrlrange="-30.0 30.0"/>
+    <motor name="thoracic_y_motor" joint="thoracic" gear="0 1 0" ctrllimited="true" ctrlrange="-30.0 30.0"/>
+    <motor name="thoracic_z_motor" joint="thoracic" gear="0 0 1" ctrllimited="true" ctrlrange="-30.0 30.0"/>
+    <motor name="neck_x_motor" joint="neck" gear="1 0 0" ctrllimited="true" ctrlrange="-20.0 20.0"/>
+    <motor name="neck_y_motor" joint="neck" gear="0 1 0" ctrllimited="true" ctrlrange="-20.0 20.0"/>
+    <motor name="neck_z_motor" joint="neck" gear="0 0 1" ctrllimited="true" ctrlrange="-20.0 20.0"/>
+    <motor name="hip_l_x_motor" joint="hip_l" gear="1 0 0" ctrllimited="true" ctrlrange="-120.0 120.0"/>
+    <motor name="hip_l_y_motor" joint="hip_l" gear="0 1 0" ctrllimited="true" ctrlrange="-120.0 120.0"/>
+    <motor name="hip_l_z_motor" joint="hip_l" gear="0 0 1" ctrllimited="true" ctrlrange="-120.0 120.0"/>
+    <motor name="hip_r_x_motor" joint="hip_r" gear="1 0 0" ctrllimited="true" ctrlrange="-120.0 120.0"/>
+    <motor name="hip_r_y_motor" joint="hip_r" gear="0 1 0" ctrllimited="true" ctrlrange="-120.0 120.0"/>
+    <motor name="hip_r_z_motor" joint="hip_r" gear="0 0 1" ctrllimited="true" ctrlrange="-120.0 120.0"/>
+    <motor name="shoulder_l_x_motor" joint="shoulder_l" gear="1 0 0" ctrllimited="true" ctrlrange="-60.0 60.0"/>
+    <motor name="shoulder_l_y_motor" joint="shoulder_l" gear="0 1 0" ctrllimited="true" ctrlrange="-60.0 60.0"/>
+    <motor name="shoulder_l_z_motor" joint="shoulder_l" gear="0 0 1" ctrllimited="true" ctrlrange="-60.0 60.0"/>
+    <motor name="shoulder_r_x_motor" joint="shoulder_r" gear="1 0 0" ctrllimited="true" ctrlrange="-60.0 60.0"/>
+    <motor name="shoulder_r_y_motor" joint="shoulder_r" gear="0 1 0" ctrllimited="true" ctrlrange="-60.0 60.0"/>
+    <motor name="shoulder_r_z_motor" joint="shoulder_r" gear="0 0 1" ctrllimited="true" ctrlrange="-60.0 60.0"/>
+    <motor name="knee_l_motor" joint="knee_l" gear="1" ctrllimited="true" ctrlrange="-100.0 100.0"/>
+    <motor name="knee_r_motor" joint="knee_r" gear="1" ctrllimited="true" ctrlrange="-100.0 100.0"/>
+    <motor name="elbow_l_motor" joint="elbow_l" gear="1" ctrllimited="true" ctrlrange="-40.0 40.0"/>
+    <motor name="elbow_r_motor" joint="elbow_r" gear="1" ctrllimited="true" ctrlrange="-40.0 40.0"/>
+    <motor name="ankle_l_dp_motor" joint="ankle_l_dp" gear="1" ctrllimited="true" ctrlrange="-40.0 40.0"/>
+    <motor name="ankle_l_ie_motor" joint="ankle_l_ie" gear="1" ctrllimited="true" ctrlrange="-40.0 40.0"/>
+    <motor name="ankle_r_dp_motor" joint="ankle_r_dp" gear="1" ctrllimited="true" ctrlrange="-40.0 40.0"/>
+    <motor name="ankle_r_ie_motor" joint="ankle_r_ie" gear="1" ctrllimited="true" ctrlrange="-40.0 40.0"/>
+    <motor name="wrist_l_flex_motor" joint="wrist_l_flex" gear="1" ctrllimited="true" ctrlrange="-10.0 10.0"/>
+    <motor name="wrist_l_dev_motor" joint="wrist_l_dev" gear="1" ctrllimited="true" ctrlrange="-10.0 10.0"/>
+    <motor name="wrist_r_flex_motor" joint="wrist_r_flex" gear="1" ctrllimited="true" ctrlrange="-10.0 10.0"/>
+    <motor name="wrist_r_dev_motor" joint="wrist_r_dev" gear="1" ctrllimited="true" ctrlrange="-10.0 10.0"/>
+  </actuator>
+</mujoco>

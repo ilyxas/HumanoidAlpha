@@ -1,0 +1,317 @@
+[
+  {
+    "joint": "root",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "pelvis": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "root",
+    "axis": 1,
+    "mapped_rotation_change_rad": {
+      "pelvis": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "root",
+    "axis": 2,
+    "mapped_rotation_change_rad": {
+      "pelvis": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "lumbar",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "spine_01": 0.14999999999999564,
+      "spine_02": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "lumbar",
+    "axis": 1,
+    "mapped_rotation_change_rad": {
+      "spine_01": 0.1499999999999986,
+      "spine_02": 0.14999999999999267
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "lumbar",
+    "axis": 2,
+    "mapped_rotation_change_rad": {
+      "spine_01": 0.1499999999999986,
+      "spine_02": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "thoracic",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "spine_05": 0.1499999999999986,
+      "spine_03": 0.14999999999999564,
+      "spine_04": 0.14999999999999564,
+      "neck_01": 0.14999999999999564,
+      "neck_02": 0.14999999999999267,
+      "clavicle_l": 0.1499999999999986,
+      "clavicle_r": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "thoracic",
+    "axis": 1,
+    "mapped_rotation_change_rad": {
+      "spine_05": 0.1499999999999986,
+      "spine_03": 0.14999999999999267,
+      "spine_04": 0.14999999999999564,
+      "neck_01": 0.14999999999999564,
+      "neck_02": 0.14999999999999564,
+      "clavicle_l": 0.1499999999999986,
+      "clavicle_r": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "thoracic",
+    "axis": 2,
+    "mapped_rotation_change_rad": {
+      "spine_05": 0.14999999999999564,
+      "spine_03": 0.14999999999999267,
+      "spine_04": 0.14999999999999564,
+      "neck_01": 0.14999999999999564,
+      "neck_02": 0.1499999999999986,
+      "clavicle_l": 0.1499999999999986,
+      "clavicle_r": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "neck",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "head": 0.14999999999999564,
+      "neck_01": 0.07499999999999779,
+      "neck_02": 0.11549999999999752
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "neck",
+    "axis": 1,
+    "mapped_rotation_change_rad": {
+      "head": 0.1499999999999986,
+      "neck_01": 0.07499999999998003,
+      "neck_02": 0.11550000000000138
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "neck",
+    "axis": 2,
+    "mapped_rotation_change_rad": {
+      "head": 0.14999999999999564,
+      "neck_01": 0.07499999999999186,
+      "neck_02": 0.11549999999999368
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "shoulder_l",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "upperarm_l": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "shoulder_l",
+    "axis": 1,
+    "mapped_rotation_change_rad": {
+      "upperarm_l": 0.15000000000000155
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "shoulder_l",
+    "axis": 2,
+    "mapped_rotation_change_rad": {
+      "upperarm_l": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "elbow_l",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "lowerarm_l": 0.14999999999999267
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "wrist_l_flex",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "hand_l": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "wrist_l_dev",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "hand_l": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "shoulder_r",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "upperarm_r": 0.14999999999999267
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "shoulder_r",
+    "axis": 1,
+    "mapped_rotation_change_rad": {
+      "upperarm_r": 0.15000000000000155
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "shoulder_r",
+    "axis": 2,
+    "mapped_rotation_change_rad": {
+      "upperarm_r": 0.14999999999999267
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "elbow_r",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "lowerarm_r": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "wrist_r_flex",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "hand_r": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "wrist_r_dev",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "hand_r": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "hip_l",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "thigh_l": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "hip_l",
+    "axis": 1,
+    "mapped_rotation_change_rad": {
+      "thigh_l": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "hip_l",
+    "axis": 2,
+    "mapped_rotation_change_rad": {
+      "thigh_l": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "knee_l",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "calf_l": 0.1499999999999897
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "ankle_l_dp",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "foot_l": 0.15000000000000155
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "ankle_l_ie",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "foot_l": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "hip_r",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "thigh_r": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "hip_r",
+    "axis": 1,
+    "mapped_rotation_change_rad": {
+      "thigh_r": 0.14999999999999267
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "hip_r",
+    "axis": 2,
+    "mapped_rotation_change_rad": {
+      "thigh_r": 0.14999999999999564
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "knee_r",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "calf_r": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "ankle_r_dp",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "foot_r": 0.14999999999999267
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  },
+  {
+    "joint": "ankle_r_ie",
+    "axis": 0,
+    "mapped_rotation_change_rad": {
+      "foot_r": 0.1499999999999986
+    },
+    "anatomical_visual_status": "NOT VERIFIED"
+  }
+]

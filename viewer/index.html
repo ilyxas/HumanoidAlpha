@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Humanoid Alpha v0.2 — Browser Runtime POC</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #1a1a22; color: #e8e8f0; font-family: system-ui, sans-serif; }
+    #c { display: block; width: 100%; height: 100%; }
+    #ui {
+      position: absolute; top: 10px; left: 10px; width: 320px;
+      background: rgba(20,20,30,0.88); padding: 12px 14px; border-radius: 8px;
+      font-size: 13px; line-height: 1.4; max-height: calc(100% - 20px); overflow: auto;
+    }
+    #ui h1 { font-size: 14px; margin: 0 0 8px; }
+    #ui label { display: block; margin: 6px 0 2px; }
+    #ui input[type=range] { width: 100%; }
+    #ui .row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    #ui button { cursor: pointer; padding: 4px 10px; border-radius: 4px; border: 1px solid #556; background: #2a2a3a; color: #eee; }
+    #ui button.active { background: #3a5a8a; }
+    #stats { margin-top: 8px; font-family: ui-monospace, monospace; font-size: 11px; white-space: pre-wrap; color: #9cf; }
+    #err { color: #f88; white-space: pre-wrap; font-size: 11px; margin-top: 6px; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.js",
+      "three/addons/": "./vendor/three/addons/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div id="ui">
+    <h1>Humanoid Alpha v0.2</h1>
+    <div class="row">
+      <button id="btnManual" class="active">Manual</button>
+      <button id="btnPhysics">Physics WS</button>
+      <button id="btnReset">Reset</button>
+      <button id="btnShot">Screenshot</button>
+    </div>
+    <label>Knee calf_r (rad) <span id="vKnee">0.00</span></label>
+    <input type="range" id="knee" min="-2.2" max="0.1" step="0.01" value="0" />
+    <label>Shoulder upperarm_r pitch (rad) <span id="vSh">0.00</span></label>
+    <input type="range" id="shoulder" min="-1.5" max="1.5" step="0.01" value="0" />
+    <label>Shoulder upperarm_r roll (rad) <span id="vShR">0.00</span></label>
+    <input type="range" id="shoulderRoll" min="-1.2" max="1.2" step="0.01" value="0" />
+    <label><input type="checkbox" id="skel" checked /> SkeletonHelper</label>
+    <label><input type="checkbox" id="mjDebug" /> MuJoCo debug lines</label>
+    <div id="stats">loading…</div>
+    <div id="err"></div>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

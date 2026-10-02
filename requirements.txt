@@ -1,0 +1,10 @@
+# Pinned from /workspace/blender/body_lab/knee_physics/.venv (Python 3.13.5 on Linux VM)
+# Direct imports used by physics/agent_api/env.py, diagnostic_api, ws_bridge.py:
+mujoco==3.14.0
+numpy==2.5.3
+websockets==17.1
+# Transitive / commonly co-installed with mujoco in that venv (recommended pins):
+absl-py==2.5.0
+etils==1.14.0
+glfw==2.10.2
+PyOpenGL==3.1.10
