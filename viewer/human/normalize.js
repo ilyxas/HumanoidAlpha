@@ -16,6 +16,19 @@ export function applyDeadzone(x, dz = DEADZONE) {
 }
 
 /**
+ * FPV-style expo on an already-normalized stick in [-1, +1].
+ * shaped = sign(x) * abs(x)^gamma. gamma >= 1. gamma 1 is identity.
+ * x = 0 stays 0. |x| = 1 stays 1. No smoothing.
+ */
+export function applyExpo(x, gamma = 1) {
+  if (typeof x !== 'number' || !Number.isFinite(x)) return 0;
+  const g = Number.isFinite(gamma) && gamma >= 1 ? gamma : 1;
+  const ax = Math.min(1, Math.abs(x));
+  if (ax === 0) return 0;
+  return Math.sign(x) * Math.pow(ax, g);
+}
+
+/**
  * Map a normalized [-1, +1] command into an actuator ctrlrange.
  * If 0 is inside [lo, hi] (the usual symmetric and asymmetric cases):
  *   negative side maps linearly onto [lo, 0], positive side onto [0, hi].

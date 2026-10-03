@@ -10,17 +10,14 @@ No physical DualShock was attached during validation. Button indices and the Y-a
 ./START.command harness
 ```
 
-That is the existing harness launcher: observation viewer at http://127.0.0.1:8788/ and the control WebSocket at `ws://127.0.0.1:8766`. The clean viewer keeps the white floor, character, clock, and cameras. Two sticks, a one-line gamepad status, and `AUTHORITY 10%` are the only additions. There is no actuator table and no physics HUD.
+That is the existing harness launcher: observation viewer at http://127.0.0.1:8788/ and the control WebSocket at `ws://127.0.0.1:8766`. The clean viewer keeps the white floor, character, clock, and cameras. Two sticks, a one-line gamepad status, `EXPO 2`, and `AUTHORITY 10%` are the only additions. There is no actuator table and no physics HUD.
 
 Do not run `./humanoid act` in a loop for this. The browser sends the vector. Experiment (RAW) and Assisted do not consume it.
 
 ## Architecture
 
 ```
-gamepad input  \
-                 -> normalized HumanInput
-mouse / touch   /
-                 -> joint mapper -> u_cmd[33] -> existing WebSocket
+raw axis -> deadzone 0.08 -> expo (gamma) -> authority -> actuator ctrlrange -> u_cmd[33] -> human_cmd
 ```
 
 The gamepad module does not know MuJoCo or the socket. The mapper does not know whether a stick is a mouse or a gamepad. Transport only receives a finished 33-vector.
@@ -28,7 +25,7 @@ The gamepad module does not know MuJoCo or the socket. The mapper does not know 
 | Piece | File |
 | --- | --- |
 | Button / axis table, deadzone, authority, rate | `viewer/human/gamepad-map.js` |
-| Deadzone, ctrlrange map, gamepad read | `viewer/human/normalize.js` |
+| Deadzone, expo curve, ctrlrange map, gamepad read | `viewer/human/normalize.js` |
 | Joint cycles and `u[33]` | `viewer/human/joint-mapper.js` |
 | Slot A/B edges, per-stick device owner, authority steps | `viewer/human/session.js` |
 | JSON frame at 50 Hz | `viewer/human/transport.js` |
@@ -63,6 +60,14 @@ Default deadzone: **0.08**. `abs(x) <= 0.08` becomes 0. Outside, `sign(x) * (abs
 
 Default authority: **10% (0.10)**. Levels, clamped (no wrap): 5, 10, 20, 40, 60, 80, 100 percent. D-pad Up/Down or the small on-screen buttons. `effective = clip(mapped_ctrl * authority, lo, hi)`.
 
+## Expo
+
+One gamma for both sticks and every joint. It is not a physics change. The runtime stores the already-shaped 33-vector and does not apply a second curve.
+
+Order: raw axis, deadzone and rescale to [-1, +1], `shaped = sign(x) * abs(x)^gamma` (`gamma >= 1`), authority, that actuator's compiled ctrlrange, existing `human_cmd`. For every actuator in this model (0 is inside ctrlrange) that is `torque = actuator_limit * authority * sign(x) * abs(x)^gamma`. `x = 0` is 0. Full stick is still `± actuator_limit * authority` (100% authority is the full ctrlrange; 40% is 40% of it). `gamma = 1` is the old linear map.
+
+On-screen control, next to Authority, live while operating. **EXPO LINEAR** is Expo 0 (`gamma = 1`). Steps: 1, 1.5, 2, 3, 4. Default **EXPO 2** (`gamma = 2`). Top of the range is **EXPO 4** (`gamma = 4`). Example, limit ±60, authority 100%, gamma 2: 0.10 → 0.6, 0.25 → 3.75, 0.50 → 15, 0.75 → 33.75, 1.00 → 60. No smoothing, rate limit, or ramp.
+
 ## Sticks
 
 Slot A is the left stick. Slot B is the right stick. There is no left-body vs right-body joint list and no center-joint owner. Each widget is the mouse/touch control and the picture of the normalized stick, whichever device currently owns that stick. The label is the slot and the selected joint (`A · shoulder_l`, `B · shoulder_r`). If a selection is blocked, the label names the slot that already holds it.
@@ -85,7 +90,7 @@ A centered stick writes 0 for the axes of the joint that slot is writing. Mouse/
 
 ## ctrlrange
 
-Normalized input is in `[-1, +1]` after the deadzone. Limits come from the actuator inventory, not from hard-coded torques.
+Normalized input is in `[-1, +1]` after the deadzone, then expo (default gamma 2; gamma 1 is linear). Limits come from the actuator inventory, not from hard-coded torques.
 
 - If `0` is inside `[lo, hi]` (every actuator in this model): negative input maps linearly onto `[lo, 0]`, positive onto `[0, hi]`. Symmetric ranges therefore send `-1 → lo`, `0 → 0`, `+1 → hi`.
 - If `0` is outside `[lo, hi]`: `[-1, +1]` maps linearly across `[lo, hi]`. No current actuator does this (`zeroOutsideRange` is empty). It is implemented so a future motor that excludes 0 is not treated as centered.

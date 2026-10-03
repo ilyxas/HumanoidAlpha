@@ -4,6 +4,7 @@
  * the right stick is slot B; the label is the slot plus the selected joint.
  * No actuator table, no torque readout, no axis dump.
  */
+import { DEFAULT_EXPO_GAMMA, expoLabel } from './gamepad-map.js';
 import { clampStick } from './normalize.js';
 
 function el(tag, className, text) {
@@ -126,6 +127,16 @@ function stickWidget(side, session) {
 export function mountSticks(parent, session) {
   const bar = el('div', 'human-status');
   const padStatus = el('div', 'human-pad-status', 'GAMEPAD: NOT CONNECTED');
+  const controls = el('div', 'human-controls');
+  const expoBox = el('div', 'human-expo');
+  const expoDown = el('button', 'human-btn', '−');
+  expoDown.type = 'button';
+  expoDown.setAttribute('aria-label', 'Decrease expo');
+  const expoText = el('span', 'human-authority-label', expoLabel(DEFAULT_EXPO_GAMMA));
+  const expoUp = el('button', 'human-btn', '+');
+  expoUp.type = 'button';
+  expoUp.setAttribute('aria-label', 'Increase expo');
+  expoBox.append(expoDown, expoText, expoUp);
   const authority = el('div', 'human-authority');
   const down = el('button', 'human-btn', '−');
   down.type = 'button';
@@ -135,7 +146,8 @@ export function mountSticks(parent, session) {
   up.type = 'button';
   up.setAttribute('aria-label', 'Increase authority');
   authority.append(down, label, up);
-  bar.append(padStatus, authority);
+  controls.append(expoBox, authority);
+  bar.append(padStatus, controls);
 
   const left = stickWidget('left', session);
   const right = stickWidget('right', session);
@@ -143,6 +155,8 @@ export function mountSticks(parent, session) {
 
   down.addEventListener('click', () => session.stepAuthority(-1));
   up.addEventListener('click', () => session.stepAuthority(1));
+  expoDown.addEventListener('click', () => session.stepExpo(-1));
+  expoUp.addEventListener('click', () => session.stepExpo(1));
 
   let logged = false;
   let wasConnected = false;
@@ -151,6 +165,7 @@ export function mountSticks(parent, session) {
     right.paint(sample);
     const pct = Math.round(sample.authority * 100);
     label.textContent = `AUTHORITY ${pct}%`;
+    expoText.textContent = expoLabel(sample.expo);
     padStatus.textContent = sample.gamepadConnected ? 'GAMEPAD: CONNECTED' : 'GAMEPAD: NOT CONNECTED';
     padStatus.title = sample.gamepadConnected ? (sample.gamepadName || 'gamepad') : '';
     if (sample.gamepadConnected !== wasConnected) {

@@ -11,7 +11,7 @@
  *      (the mapper deadzones it). Torque is not latched.
  * Gamepad button indices are read from GAMEPAD_MAP only.
  */
-import { AUTHORITY_LEVELS, DEADZONE, DEFAULT_AUTHORITY, GAMEPAD_MAP } from './gamepad-map.js';
+import { AUTHORITY_LEVELS, DEADZONE, DEFAULT_AUTHORITY, DEFAULT_EXPO_GAMMA, EXPO_GAMMAS, GAMEPAD_MAP } from './gamepad-map.js';
 import { createMapper } from './joint-mapper.js';
 import { buttonDown, stickFromGamepadAxes } from './normalize.js';
 
@@ -25,6 +25,7 @@ export function createSession(actuators) {
   let gamepad = { connected: false, id: '', mapping: '', axes: [], buttons: [] };
   let prevButtons = [];
   let authorityIndex = Math.max(0, AUTHORITY_LEVELS.indexOf(DEFAULT_AUTHORITY));
+  let expoIndex = Math.max(0, EXPO_GAMMAS.indexOf(DEFAULT_EXPO_GAMMA));
 
   function setGamepad(next) {
     if (!next || !next.connected) {
@@ -55,6 +56,13 @@ export function createSession(actuators) {
     if (next < 0 || next >= AUTHORITY_LEVELS.length) return AUTHORITY_LEVELS[authorityIndex];
     authorityIndex = next;
     return AUTHORITY_LEVELS[authorityIndex];
+  }
+
+  function stepExpo(dir) {
+    const next = expoIndex + dir;
+    if (next < 0 || next >= EXPO_GAMMAS.length) return EXPO_GAMMAS[expoIndex];
+    expoIndex = next;
+    return EXPO_GAMMAS[expoIndex];
   }
 
   function applyGamepadEdges() {
@@ -107,12 +115,14 @@ export function createSession(actuators) {
     const left = resolve('left');
     const right = resolve('right');
     const authority = AUTHORITY_LEVELS[authorityIndex];
-    const built = mapper.command({ left, right, authority });
+    const expo = EXPO_GAMMAS[expoIndex];
+    const built = mapper.command({ left, right, authority, expo });
     return {
       u: built.u,
       view: built.view,
       zeroOutsideRange: built.zeroOutsideRange,
       authority,
+      expo,
       sticks: {
         left: { horizontal: left.horizontal, vertical: left.vertical, zModifier: left.zModifier, owner: left.owner },
         right: { horizontal: right.horizontal, vertical: right.vertical, zModifier: right.zModifier, owner: right.owner },
@@ -128,6 +138,7 @@ export function createSession(actuators) {
     sample,
     setGamepad,
     stepAuthority,
+    stepExpo,
     cycle(side) { return mapper.cycle(side); },
     select(side, name) { return mapper.select(side, name); },
     mouseDown(side, horizontal, vertical) {
@@ -153,5 +164,6 @@ export function createSession(actuators) {
       mouse[side].z = !!held;
     },
     get authority() { return AUTHORITY_LEVELS[authorityIndex]; },
+    get expo() { return EXPO_GAMMAS[expoIndex]; },
   };
 }

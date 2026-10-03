@@ -43,6 +43,23 @@ export const DEFAULT_AUTHORITY = 0.10;
 /** Discrete levels. D-pad Up/Down and the on-screen buttons step this list (clamped, no wrap). */
 export const AUTHORITY_LEVELS = [0.05, 0.10, 0.20, 0.40, 0.60, 0.80, 1];
 
+/**
+ * One expo for every joint and both sticks. Applied after the deadzone and
+ * before authority: shaped = sign(x) * abs(x)^gamma, gamma >= 1.
+ * gamma 1 is perfectly linear (on-screen EXPO LINEAR, Expo 0).
+ * Steps clamp. Default is gamma 2 (on-screen EXPO 2).
+ */
+export const EXPO_GAMMAS = [1, 1.5, 2, 3, 4];
+export const DEFAULT_EXPO_GAMMA = 2;
+
+/** Human-readable label. gamma 1 is EXPO LINEAR (Expo 0), not a power curve. */
+export function expoLabel(gamma) {
+  const g = Number(gamma);
+  if (!(g > 1)) return 'EXPO LINEAR';
+  const text = Number.isInteger(g) ? String(g) : String(Math.round(g * 10) / 10);
+  return `EXPO ${text}`;
+}
+
 /** Browser send rate. Not coupled to the MuJoCo timestep. */
 export const HUMAN_CMD_HZ = 50;
 
