@@ -16,6 +16,7 @@ from diagnostic_api.diag import HumanoidDiag
 from bridge_full.mapping_full import BODY_TO_BONE, DERIVED_BONE_SOURCES, extract_full_pose
 from collision_guard import PositionCollisionGuard
 from assisted_stand import AssistedStandController
+from harness import HarnessSupport
 
 SIZES = {0: (7, 6), 1: (4, 3), 2: (1, 1), 3: (1, 1)}
 TYPES = {0: 'free', 1: 'ball', 2: 'slide', 3: 'hinge'}
@@ -44,7 +45,7 @@ def quaternion(value, limit=math.pi):
     return q
 
 class Controller:
-    def __init__(self, assisted_stand=False):
+    def __init__(self, assisted_stand=False, harness=False):
         self.env = HumanoidEnv()
         self.diag = HumanoidDiag(self.env)
         self.m, self.d = self.env.model, self.env.data
@@ -55,9 +56,13 @@ class Controller:
         self.assisted = False
         # Capability always available in console; --assisted-stand only auto-enables on serve.
         self.assist = AssistedStandController(self.m)
+        # HARNESS is a separate launcher mode. Disabled means the step loop never
+        # calls it, so RAW/experiment leaves xfrc_applied alone.
+        self.harness = HarnessSupport(self.m)
         self.u_cmd = np.zeros(self.m.nu, dtype=float)
         self._assisted_capability = True
         self._auto_assist = bool(assisted_stand)
+        self._auto_harness = bool(harness)
         self.env.reset()
         self.inventory = self.discover()
 
@@ -238,6 +243,20 @@ class Controller:
         self.d.ctrl[:] = self.assist.compute(self.m, self.d, self.u_cmd)
         self.revision += 1
 
+    def enable_harness(self, seed=True):
+        """Turn on the pelvis harness. Optional stand seed is once, not per tick.
+
+        Does not change actuator ctrl ranges or gravity. After the seed, u_cmd
+        still reaches the actuators unchanged; the harness only adds xfrc.
+        """
+        if self.assisted:
+            raise ValueError('Disable assisted stand before enabling the harness')
+        if seed:
+            self.harness.seed_stand(self.m, self.d)
+            self.u_cmd[:] = 0
+        self.harness.enable()
+        self.revision += 1
+
     def assist_status(self):
         base = dict(
             capability=bool(self._assisted_capability),
@@ -254,6 +273,11 @@ class Controller:
         if self.mode == 'dynamic' and not self.paused:
             if self.assisted and self.assist is not None:
                 self.d.ctrl[:] = self.assist.compute(self.m, self.d, self.u_cmd)
+            # RAW/experiment: harness.enabled is false, so this block does not run
+            # and xfrc_applied is left at zero. HARNESS mode sets the wrench here,
+            # before mj_step, without writing qpos/qvel.
+            if self.harness.enabled:
+                self.harness.apply(self.m, self.d)
             mujoco.mj_step(self.m, self.d)
             if not np.isfinite(self.d.qpos).all() or not np.isfinite(self.d.qvel).all():
                 self.env.reset()
@@ -273,8 +297,10 @@ class Controller:
                 joint_anchors=self.d.xanchor.tolist(), joint_axes=self.d.xaxis.tolist(),
                 body_positions=self.d.xpos.tolist(), ncon=int(self.d.ncon)))
 
-async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_stand=False):
-    c = Controller(assisted_stand=assisted_stand)
+async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_stand=False, harness=False):
+    if assisted_stand and harness:
+        raise RuntimeError('harness and assisted stand cannot both auto-start')
+    c = Controller(assisted_stand=assisted_stand, harness=harness)
     queue = asyncio.Queue(maxsize=128)
     clients = set()
     api_owner = object() if actuator_socket else None
@@ -318,6 +344,9 @@ async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_sta
             c.handle({'op': 'mode', 'value': 'dynamic'})
             if assisted_stand or getattr(c, '_auto_assist', False):
                 c.set_assisted(True)
+            if harness or getattr(c, '_auto_harness', False):
+                # Stand seed once, then only external pelvis wrench each tick.
+                c.enable_harness(seed=True)
             c.handle({'op': 'resume'})
         await stack.enter_async_context(websockets.serve(handler, '127.0.0.1', port, max_size=16384,
             origins=[None, f'http://127.0.0.1:8788', f'http://localhost:8788'], ping_interval=10, ping_timeout=10))
@@ -363,12 +392,18 @@ if __name__ == '__main__':
     parser.add_argument('--actuator-socket', type=Path, default=default_socket())
     parser.add_argument('--actuator-log', type=Path, default=Path(__file__).resolve().parents[1] / 'reports/actuator_commands.jsonl')
     parser.add_argument('--assisted-stand', action='store_true',
-                        help='Auto-enable ASSISTED stand on start (experiment/assisted launch; capability always on)')
+                        help='Auto-enable ASSISTED stand on start (unadvertised assisted launch; capability always on)')
+    parser.add_argument('--harness', action='store_true',
+                        help='HARNESS mode: observation runtime plus pelvis xfrc support (not a pose weld)')
     args = parser.parse_args()
     if args.inventory:
         args.inventory.write_text(json.dumps(Controller().inventory, indent=2))
     else:
+        if args.assisted_stand and args.harness:
+            parser.error('--harness and --assisted-stand are mutually exclusive')
         if args.assisted_stand and not args.actuator_api:
             parser.error('--assisted-stand requires --actuator-api')
+        if args.harness and not args.actuator_api:
+            parser.error('--harness requires --actuator-api')
         asyncio.run(serve(args.port, args.actuator_socket if args.actuator_api else None,
-                          args.actuator_log, assisted_stand=args.assisted_stand))
+                          args.actuator_log, assisted_stand=args.assisted_stand, harness=args.harness))

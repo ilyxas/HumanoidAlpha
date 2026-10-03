@@ -4,7 +4,7 @@ Optional balance layer **above** RAW `./humanoid act` and above debug Torque mod
 When assist is off, behaviour is bit-identical RAW (`data.ctrl` ← command).
 
 Capability is **always available** in the developer console (`./START.command debug`).
-`./START.command assisted` still auto-enables assist for the experiment+CLI path.
+`./START.command assisted` still auto-enables assist for the experiment+CLI path, but it is no longer a launcher menu item. Menu item 3 is HARNESS (`./START.command harness`). Debug → Assisted is unchanged.
 
 ## Debug console (recommended)
 

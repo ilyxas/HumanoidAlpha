@@ -1,0 +1,174 @@
+{
+  "passes": {
+    "1_hold_vs_raw": true,
+    "2_lift_one_leg": true,
+    "3_return_foot_contact": true,
+    "4_xy_not_pinned": true,
+    "5_gravity_on": true,
+    "6_real_contacts": true,
+    "7_disable_falls": true,
+    "8_raw_path_no_harness": true,
+    "9_assisted_still_present": true,
+    "apply_does_not_write_qpos_qvel": true,
+    "actuator_ctrlrange_unchanged": true
+  },
+  "all_pass": true,
+  "numbers": {
+    "pelvis_id": 1,
+    "pelvis_name": "pelvis",
+    "nu": 33,
+    "timestep": 0.002,
+    "gravity": [
+      0.0,
+      0.0,
+      -9.81
+    ],
+    "z_des": 0.92590946,
+    "hold_s": 5.0,
+    "harness_min_pelvis_z": 0.8941690912936269,
+    "harness_end_pelvis_z": 0.9021242448574186,
+    "harness_end_tilt_rad": 0.05345685801136264,
+    "harness_max_tilt_rad": 0.11677542020314689,
+    "harness_z_samples": [
+      0.9269,
+      0.9027,
+      0.9015,
+      0.9042,
+      0.9026,
+      0.8988,
+      0.8995,
+      0.9023,
+      0.9053,
+      0.9049
+    ],
+    "harness_tilt_samples": [
+      0.0077,
+      0.0165,
+      0.0507,
+      0.0542,
+      0.0552,
+      0.0548,
+      0.0546,
+      0.0536,
+      0.0524,
+      0.0533
+    ],
+    "harness_end_xy": [
+      0.05234398950220482,
+      -0.22217894333958046
+    ],
+    "harness_end_ncon": 9,
+    "harness_floor_contact_pairs": [
+      [
+        "floor",
+        "foot_l_geom"
+      ],
+      [
+        "floor",
+        "foot_l_geom"
+      ],
+      [
+        "floor",
+        "foot_l_geom"
+      ],
+      [
+        "floor",
+        "foot_r_geom"
+      ],
+      [
+        "floor",
+        "foot_r_geom"
+      ],
+      [
+        "floor",
+        "foot_r_geom"
+      ]
+    ],
+    "raw_time_to_pelvis_below_m": {
+      "threshold": 0.55,
+      "seconds": 0.4820000000000004,
+      "end_z": 0.5486908638357354
+    },
+    "lift": {
+      "time": 0.8000000000000006,
+      "sole_l": 0.5084253282514664,
+      "sole_r": 0.005987491317891162,
+      "left": {
+        "n": 0,
+        "normal_force": 0.0,
+        "pairs": []
+      },
+      "right": {
+        "n": 1,
+        "normal_force": 50.8009050473513,
+        "pairs": [
+          [
+            "floor",
+            "foot_r_geom"
+          ]
+        ]
+      },
+      "pelvis_z": 0.8982472216263797,
+      "ctrl_knee": 70.0,
+      "ctrl_abs_sum_others": 0.0
+    },
+    "foot_return": {
+      "time": 1.1100000000000008,
+      "sole_l": 0.000880475517014534,
+      "left": {
+        "n": 1,
+        "normal_force": 5996.359905033597,
+        "pairs": [
+          [
+            "floor",
+            "foot_l_geom"
+          ]
+        ]
+      },
+      "right": {
+        "n": 2,
+        "normal_force": 226.83365946816366,
+        "pairs": [
+          [
+            "floor",
+            "foot_r_geom"
+          ],
+          [
+            "floor",
+            "foot_r_geom"
+          ]
+        ]
+      },
+      "ncon": 4
+    },
+    "horizontal_probe": {
+      "fx_N": 80.0,
+      "seconds": 1.5,
+      "dx": 0.20084406892563672,
+      "dy": -0.18834613996975869
+    },
+    "zero_command_drift_xy_over_hold": [
+      0.05234398950220482,
+      -0.20422165333958048
+    ],
+    "disable": {
+      "z_before": 0.9014540608138797,
+      "z_after_1_2s": 0.40145836127110013,
+      "z_if_harness_stayed_on_2_2s": 0.8992612519283659,
+      "drop": 0.49999569954277956
+    },
+    "gains": {
+      "kp_z": 30000.0,
+      "kd_z": 1600.0,
+      "kp_rp": 1800.0,
+      "kd_rp": 90.0,
+      "kd_yaw": 6.0,
+      "kd_xy": 25.0,
+      "max_force": 2200.0,
+      "max_horizontal_force": 400.0,
+      "max_torque": 350.0
+    },
+    "raw_controller_xfrc_max": 0.0,
+    "raw_controller_harness_enabled": false
+  }
+}

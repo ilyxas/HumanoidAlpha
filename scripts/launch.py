@@ -58,7 +58,7 @@ def run(args):
     http_started = False
     control_started = False
     path = control_path()
-    page = 'console.html' if args.mode == 'debug' else 'observation.html'  # experiment + assisted
+    page = 'console.html' if args.mode == 'debug' else 'observation.html'  # experiment, harness, assisted
     route = f'/viewer/{page}?wsPort={args.ws_port}'
 
     class Handler(SimpleHTTPRequestHandler):
@@ -135,10 +135,12 @@ def run(args):
                         '--inventory', str(ROOT / 'reports/control_inventory.json')],
                        cwd=ROOT, check=True)
         command = [sys.executable, str(ROOT / 'physics/control_console.py'), '--port', str(args.ws_port)]
-        if args.mode in ('experiment', 'assisted'):
+        if args.mode in ('experiment', 'harness', 'assisted'):
             command.extend(['--actuator-api', '--actuator-log', str(ROOT / 'reports/actuator_commands.jsonl')])
         if args.mode == 'assisted':
             command.append('--assisted-stand')
+        if args.mode == 'harness':
+            command.append('--harness')
         process = subprocess.Popen(command, cwd=ROOT)
         deadline = time.monotonic() + 15
         while not stop.is_set():
@@ -183,7 +185,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['debug', 'experiment', 'assisted'])
+    parser.add_argument('mode', choices=['debug', 'experiment', 'harness', 'assisted'])
     parser.add_argument('--no-open', action='store_true', help='Print the URL without opening a browser')
     parser.add_argument('--http-port', type=int, default=8788)
     parser.add_argument('--ws-port', type=int, default=8766)
