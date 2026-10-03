@@ -1,6 +1,10 @@
 <!-- Collision hulls from Xandra rest skin. Rebuild with
-scripts/build_collision_surfaces.py. Explicit inertias preserve
-baseline mass properties; joint/actuator definitions unchanged. -->
+scripts/build_collision_surfaces.py. Explicit inertials are the
+assumptions.json masses_kg values (60 kg total): each body's mass and
+diaginertia are the previous compiled values scaled by
+m_intended/m_compiled. Inertial pos/quat, joints and actuators unchanged.
+Re-running the collision rebuild restores the ~89 kg baseline from
+reports/collision/model_before.xml. -->
 <mujoco model="humanoid_alpha">
   <compiler angle="radian" coordinate="local" inertiafromgeom="auto" />
   <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast" cone="elliptic" impratio="1" />
@@ -56,7 +60,7 @@ baseline mass properties; joint/actuator definitions unchanged. -->
           <body name="head" pos="0.00000000 0.03915559 0.23048341">
             <joint name="neck" type="ball" limited="true" range="0 1.0471975511965976" damping="0.08" armature="0.002" />
             <geom name="head_geom" type="sphere" pos="0.00000000 0.00051436 0.10423660" size="0.09" density="1401.209880" rgba="0.85 0.7 0.6 1" />
-            <inertial pos="0 0.00051436 0.1042366" quat="1 0 0 0" mass="4.27877380652" diaginertia="0.0138632271331 0.0138632271331 0.0138632271331" />
+            <inertial pos="0 0.00051436 0.1042366" quat="1 0 0 0" mass="5.294117647058824" diaginertia="0.01715294117643991 0.01715294117643991 0.01715294117643991" />
           </body>
           <body name="upperarm_l" pos="0.13750337 0.06080558 0.26143622">
             <joint name="shoulder_l" type="ball" limited="true" range="0 2.6179938779914944" damping="0.08" armature="0.002" />
@@ -68,13 +72,13 @@ baseline mass properties; joint/actuator definitions unchanged. -->
                 <joint name="wrist_l_flex" type="hinge" axis="-0.57300210 -0.77081943 0.27839905" range="-1.2217304763960306 1.2217304763960306" limited="true" damping="0.08" armature="0.002" />
                 <joint name="wrist_l_dev" type="hinge" axis="0.38407707 -0.55264789 -0.73963851" range="-0.4363323129985824 0.6108652381980153" limited="true" damping="0.08" armature="0.002" />
                 <geom name="hand_l_geom" type="mesh" mesh="hand_l_surface" rgba="0.9 0.75 0.65 1" margin="0.006" />
-                <inertial pos="0.019717065 -0.024530845 -0.02468755" quat="0.89921875098 -0.341002174789 -0.274086035171 0" mass="0.701754406623" diaginertia="0.000878225044541 0.000878225044541 0.000206398355269" />
+                <inertial pos="0.019717065 -0.024530845 -0.02468755" quat="0.89921875098 -0.341002174789 -0.274086035171 0" mass="0.392156862745098" diaginertia="0.0004907728045609464 0.0004907728045609464 0.0001153402539608454" />
                 <geom name="hand_l_joint_guard" type="mesh" mesh="hand_l_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
               </body>
-              <inertial pos="0.06103347 -0.075934355 -0.076419445" quat="0.899218772783 -0.341002141727 -0.274086004774 0" mass="1.30151421445" diaginertia="0.0091124069743 0.0091124069743 0.000496825713779" />
+              <inertial pos="0.06103347 -0.075934355 -0.076419445" quat="0.899218772783 -0.341002141727 -0.274086004774 0" mass="1.045751633986928" diaginertia="0.007321713721701492 0.007321713721701492 0.0003991937208389749" />
               <geom name="lowerarm_l_joint_guard" type="mesh" mesh="lowerarm_l_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
             </body>
-            <inertial pos="0.07814098 -0.002585515 -0.106985865" quat="0.950627366153 -0.0102626828681 -0.310164936866 0" mass="2.36011309363" diaginertia="0.0199667490455 0.0199667490455 0.00140228203463" />
+            <inertial pos="0.07814098 -0.002585515 -0.106985865" quat="0.950627366153 -0.0102626828681 -0.310164936866 0" mass="1.830065359477124" diaginertia="0.01548250203270598 0.01548250203270598 0.001087349493005179" />
             <geom name="upperarm_l_joint_guard" type="mesh" mesh="upperarm_l_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
           </body>
           <body name="upperarm_r" pos="-0.13750440 0.06080503 0.26143265">
@@ -87,18 +91,18 @@ baseline mass properties; joint/actuator definitions unchanged. -->
                 <joint name="wrist_r_flex" type="hinge" axis="-0.57299960 0.77081847 -0.27840671" range="-1.2217304763960306 1.2217304763960306" limited="true" damping="0.08" armature="0.002" />
                 <joint name="wrist_r_dev" type="hinge" axis="0.38406542 0.55265504 0.73963916" range="-0.4363323129985824 0.6108652381980153" limited="true" damping="0.08" armature="0.002" />
                 <geom name="hand_r_geom" type="mesh" mesh="hand_r_surface" rgba="0.9 0.75 0.65 1" margin="0.006" />
-                <inertial pos="-0.01971707 -0.024530835 -0.02468755" quat="0.899218766715 -0.341002061083 0.274086125014 0" mass="0.701754361198" diaginertia="0.000878224890001 0.000878224890001 0.000206398341074" />
+                <inertial pos="-0.01971707 -0.024530835 -0.02468755" quat="0.899218766715 -0.341002061083 0.274086125014 0" mass="0.392156862745098" diaginertia="0.0004907727499683867 0.0004907727499683867 0.0001153402534943921" />
                 <geom name="hand_r_joint_guard" type="mesh" mesh="hand_r_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
               </body>
-              <inertial pos="-0.06103289 -0.075933595 -0.0764187" quat="0.8992187793 -0.341002063609 0.274086080581 0" mass="1.30151693392" diaginertia="0.00911227613887 0.00911227613887 0.000496826638189" />
+              <inertial pos="-0.06103289 -0.075933595 -0.0764187" quat="0.8992187793 -0.341002063609 0.274086080581 0" mass="1.045751633986928" diaginertia="0.007321593298723168 0.007321593298723168 0.0003991936294901212" />
               <geom name="lowerarm_r_joint_guard" type="mesh" mesh="lowerarm_r_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
             </body>
-            <inertial pos="-0.07814051 -0.002585505 -0.10698545" quat="0.950627523851 -0.0102626889039 0.310164453335 0" mass="2.3601158008" diaginertia="0.0199666216894 0.0199666216894 0.00140228347301" />
+            <inertial pos="-0.07814051 -0.002585505 -0.10698545" quat="0.950627523851 -0.0102626889039 0.310164453335 0" mass="1.830065359477124" diaginertia="0.01548238551988408 0.01548238551988408 0.001087349361100415" />
             <geom name="upperarm_r_joint_guard" type="mesh" mesh="upperarm_r_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
           </body>
-          <inertial pos="0 0.019577795 0.115241705" quat="0.0840397751215 0.996462400795 0 -0" mass="24.1211945061" diaginertia="0.339912895607 0.339912895607 0.111845437644" />
+          <inertial pos="0 0.019577795 0.115241705" quat="0.0840397751215 0.996462400795 0 -0" mass="10.98039215686275" diaginertia="0.1547343309219503 0.1547343309219503 0.05091401116045407" />
         </body>
-        <inertial pos="0 -0.01105596 0.0620704" quat="0.0880214584773 -0.996118578708 0 0" mass="14.0739264401" diaginertia="0.102877169352 0.102877169352 0.0514406248763" />
+        <inertial pos="0 -0.01105596 0.0620704" quat="0.0880214584773 -0.996118578708 0 0" mass="6.862745098039215" diaginertia="0.05016509022378916 0.05016509022378916 0.0250835399568419" />
       </body>
       <body name="thigh_l" pos="0.08068123 -0.00746380 -0.02524692">
         <joint name="hip_l" type="ball" limited="true" range="0 2.0943951023931953" damping="0.08" armature="0.002" />
@@ -110,13 +114,13 @@ baseline mass properties; joint/actuator definitions unchanged. -->
             <joint name="ankle_l_dp" type="hinge" axis="0.98897082 0.14811058 0.00002446" range="-0.3490658503988659 0.8726646259971648" limited="true" damping="0.08" armature="0.002" />
             <joint name="ankle_l_ie" type="hinge" axis="0.13235348 -0.88368259 -0.44898511" range="-0.3490658503988659 0.3490658503988659" limited="true" damping="0.08" armature="0.002" />
             <geom name="foot_l_geom" type="mesh" mesh="foot_l_surface" rgba="0.35 0.35 0.4 1" margin="0.006" />
-            <inertial pos="0.00764331 -0.06284077 -0.03179681" quat="1 0 0 0" mass="1.10784940735" diaginertia="0.00160599846295 0.00073856627157 0.00204913822589" />
+            <inertial pos="0.00764331 -0.06284077 -0.03179681" quat="1 0 0 0" mass="0.9477124183006537" diaginertia="0.001373855216251994 0.0006318082788699539 0.001752940183572255" />
             <geom name="foot_l_joint_guard" type="mesh" mesh="foot_l_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
           </body>
-          <inertial pos="0.009529715 0.010348265 -0.19600845" quat="0.999358382495 0.0263466749858 -0.0242626472952 0" mass="3.70287501462" diaginertia="0.0632511104881 0.0632511104881 0.00289150969426" />
+          <inertial pos="0.009529715 0.010348265 -0.19600845" quat="0.999358382495 0.0263466749858 -0.0242626472952 0" mass="3.03921568627451" diaginertia="0.05191473285237073 0.05191473285237073 0.002373269847108692" />
           <geom name="calf_l_joint_guard" type="mesh" mesh="calf_l_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
         </body>
-        <inertial pos="0.01178913 0.00311616 -0.21706693" quat="0.999606381676 0.0071694011243 -0.0271234474085 0" mass="8.34167722554" diaginertia="0.187012376581 0.187012376581 0.0122526313399" />
+        <inertial pos="0.01178913 0.00311616 -0.21706693" quat="0.999606381676 0.0071694011243 -0.0271234474085 0" mass="6.535947712418301" diaginertia="0.1465296584679792 0.1465296584679792 0.00960029447458512" />
         <geom name="thigh_l_joint_guard" type="mesh" mesh="thigh_l_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
       </body>
       <body name="thigh_r" pos="-0.08068430 -0.00743701 -0.02524543">
@@ -129,16 +133,16 @@ baseline mass properties; joint/actuator definitions unchanged. -->
             <joint name="ankle_r_dp" type="hinge" axis="0.98897076 -0.14811094 -0.00003114" range="-0.3490658503988659 0.8726646259971648" limited="true" damping="0.08" armature="0.002" />
             <joint name="ankle_r_ie" type="hinge" axis="-0.13235675 -0.88368199 -0.44898534" range="-0.3490658503988659 0.3490658503988659" limited="true" damping="0.08" armature="0.002" />
             <geom name="foot_r_geom" type="mesh" mesh="foot_r_surface" rgba="0.35 0.35 0.4 1" margin="0.006" />
-            <inertial pos="-0.0076435 -0.06284065 -0.0317968" quat="1 0 0 0" mass="1.10784895282" diaginertia="0.0016059922346 0.000738565968548 0.00204913181573" />
+            <inertial pos="-0.0076435 -0.06284065 -0.0317968" quat="1 0 0 0" mass="0.9477124183006537" diaginertia="0.001373850451860408 0.000631808278868243 0.00175293541918238" />
             <geom name="foot_r_joint_guard" type="mesh" mesh="foot_r_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
           </body>
-          <inertial pos="-0.009529725 0.01034827 -0.196008625" quat="0.999358382687 0.0263466642082 0.0242626511071 -0" mass="3.7028742682" diaginertia="0.0632511943466 0.0632511943466 0.002891509167" />
+          <inertial pos="-0.009529725 0.01034827 -0.196008625" quat="0.999358382687 0.0263466642082 0.0242626511071 -0" mass="3.03921568627451" diaginertia="0.0519148121459795 0.0519148121459795 0.002373269892748702" />
           <geom name="calf_r_joint_guard" type="mesh" mesh="calf_r_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
         </body>
-        <inertial pos="-0.01178912 0.003116155 -0.2170666" quat="0.999606381187 0.0071694005096 0.0271234655964 -0" mass="8.34168041665" diaginertia="0.187011981463 0.187011981463 0.0122526355541" />
+        <inertial pos="-0.01178912 0.003116155 -0.2170666" quat="0.999606381187 0.0071694005096 0.0271234655964 -0" mass="6.535947712418301" diaginertia="0.1465292928266823 0.1465292928266823 0.009600294103939795" />
         <geom name="thigh_r_joint_guard" type="mesh" mesh="thigh_r_distal" contype="0" conaffinity="0" group="3" rgba="0.9 0.5 0.1 0.3" />
       </body>
-      <inertial pos="0 -0.000859355 0.01294321" quat="0.0331424141652 -0.999450639293 0 0" mass="11.538268902" diaginertia="0.0362826142019 0.0362826142019 0.0309826468914" />
+      <inertial pos="0 -0.000859355 0.01294321" quat="0.0331424141652 -0.999450639293 0 0" mass="9.281045751633986" diaginertia="0.02918467278383065 0.02918467278383065 0.02492153422217096" />
     </body>
   </worldbody>
   <contact>

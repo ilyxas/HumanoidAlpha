@@ -1,0 +1,889 @@
+{
+  "branch": "exp/mass-60kg-per-body",
+  "head": "30fc2e69dfc527397764fb02b1ff061ca46604c4",
+  "method": "Every body already had an explicit inertial element whose compiled mass was finite and positive and whose diaginertia (principal moments about the existing COM) was finite, positive, and satisfied the triangle inequalities, so the tensor is positive definite and physically realizable. No body needed a fallback. For each body independently, s = m_intended / m_compiled_baseline, new mass = m_intended (from physics/assumptions.json masses_kg), new diaginertia = s * old diaginertia. inertial pos and quat were not edited. Scaling a valid principal inertia by a positive scalar preserves the COM, the principal-axis directions, the radii of gyration, positive-definiteness, and the triangle inequalities. inertiafromgeom remains auto; the explicit inertial overrides geom density (the head sphere still carries its old density attribute, which does not add mass while the inertial element is present \u2014 compiled head mass matches masses_kg). Collision geoms were not edited.",
+  "before_table": [
+    {
+      "body": "pelvis",
+      "current_mass": 11.538268902,
+      "intended_mass": 9.281045751633986,
+      "ratio": 1.2432078464830987,
+      "inertia_valid": true
+    },
+    {
+      "body": "torso_lower",
+      "current_mass": 14.0739264401,
+      "intended_mass": 6.862745098039215,
+      "ratio": 2.0507721384145716,
+      "inertia_valid": true
+    },
+    {
+      "body": "torso_upper",
+      "current_mass": 24.1211945061,
+      "intended_mass": 10.980392156862745,
+      "ratio": 2.1967516425198212,
+      "inertia_valid": true
+    },
+    {
+      "body": "head",
+      "current_mass": 4.27877380652,
+      "intended_mass": 5.294117647058824,
+      "ratio": 0.8082128301204444,
+      "inertia_valid": true
+    },
+    {
+      "body": "upperarm_l",
+      "current_mass": 2.36011309363,
+      "intended_mass": 1.8300653594771241,
+      "ratio": 1.289633226162107,
+      "inertia_valid": true
+    },
+    {
+      "body": "lowerarm_l",
+      "current_mass": 1.30151421445,
+      "intended_mass": 1.045751633986928,
+      "ratio": 1.2445729675678128,
+      "inertia_valid": true
+    },
+    {
+      "body": "hand_l",
+      "current_mass": 0.701754406623,
+      "intended_mass": 0.39215686274509803,
+      "ratio": 1.7894737368886502,
+      "inertia_valid": true
+    },
+    {
+      "body": "upperarm_r",
+      "current_mass": 2.3601158008,
+      "intended_mass": 1.8300653594771241,
+      "ratio": 1.2896347054371429,
+      "inertia_valid": true
+    },
+    {
+      "body": "lowerarm_r",
+      "current_mass": 1.30151693392,
+      "intended_mass": 1.045751633986928,
+      "ratio": 1.244575568061,
+      "inertia_valid": true
+    },
+    {
+      "body": "hand_r",
+      "current_mass": 0.701754361198,
+      "intended_mass": 0.39215686274509803,
+      "ratio": 1.7894736210549003,
+      "inertia_valid": true
+    },
+    {
+      "body": "thigh_l",
+      "current_mass": 8.34167722554,
+      "intended_mass": 6.535947712418301,
+      "ratio": 1.2762766155076197,
+      "inertia_valid": true
+    },
+    {
+      "body": "calf_l",
+      "current_mass": 3.70287501462,
+      "intended_mass": 3.0392156862745097,
+      "ratio": 1.2183653273910968,
+      "inertia_valid": true
+    },
+    {
+      "body": "foot_l",
+      "current_mass": 1.10784940735,
+      "intended_mass": 0.9477124183006537,
+      "ratio": 1.1689721332727585,
+      "inertia_valid": true
+    },
+    {
+      "body": "thigh_r",
+      "current_mass": 8.34168041665,
+      "intended_mass": 6.535947712418301,
+      "ratio": 1.2762771037474498,
+      "inertia_valid": true
+    },
+    {
+      "body": "calf_r",
+      "current_mass": 3.7028742682,
+      "intended_mass": 3.0392156862745097,
+      "ratio": 1.2183650817948388,
+      "inertia_valid": true
+    },
+    {
+      "body": "foot_r",
+      "current_mass": 1.10784895282,
+      "intended_mass": 0.9477124183006537,
+      "ratio": 1.1689716536652413,
+      "inertia_valid": true
+    }
+  ],
+  "before_total": {
+    "current": 89.043737750521,
+    "intended": 60.0,
+    "ratio": 1.4840622958420167
+  },
+  "after_table": [
+    {
+      "body": "pelvis",
+      "compiled_mass": 9.281045751633986,
+      "intended_mass": 9.281045751633986,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "torso_lower",
+      "compiled_mass": 6.862745098039215,
+      "intended_mass": 6.862745098039215,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "torso_upper",
+      "compiled_mass": 10.98039215686275,
+      "intended_mass": 10.980392156862745,
+      "abs_err": 5.329070518200751e-15,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "head",
+      "compiled_mass": 5.294117647058824,
+      "intended_mass": 5.294117647058824,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "upperarm_l",
+      "compiled_mass": 1.830065359477124,
+      "intended_mass": 1.8300653594771241,
+      "abs_err": 2.220446049250313e-16,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "lowerarm_l",
+      "compiled_mass": 1.045751633986928,
+      "intended_mass": 1.045751633986928,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "hand_l",
+      "compiled_mass": 0.392156862745098,
+      "intended_mass": 0.39215686274509803,
+      "abs_err": 5.551115123125783e-17,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "upperarm_r",
+      "compiled_mass": 1.830065359477124,
+      "intended_mass": 1.8300653594771241,
+      "abs_err": 2.220446049250313e-16,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "lowerarm_r",
+      "compiled_mass": 1.045751633986928,
+      "intended_mass": 1.045751633986928,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "hand_r",
+      "compiled_mass": 0.392156862745098,
+      "intended_mass": 0.39215686274509803,
+      "abs_err": 5.551115123125783e-17,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "thigh_l",
+      "compiled_mass": 6.535947712418301,
+      "intended_mass": 6.535947712418301,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "calf_l",
+      "compiled_mass": 3.03921568627451,
+      "intended_mass": 3.0392156862745097,
+      "abs_err": 4.440892098500626e-16,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "foot_l",
+      "compiled_mass": 0.9477124183006537,
+      "intended_mass": 0.9477124183006537,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "thigh_r",
+      "compiled_mass": 6.535947712418301,
+      "intended_mass": 6.535947712418301,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "calf_r",
+      "compiled_mass": 3.03921568627451,
+      "intended_mass": 3.0392156862745097,
+      "abs_err": 4.440892098500626e-16,
+      "inertia_valid": true,
+      "finite": true
+    },
+    {
+      "body": "foot_r",
+      "compiled_mass": 0.9477124183006537,
+      "intended_mass": 0.9477124183006537,
+      "abs_err": 0.0,
+      "inertia_valid": true,
+      "finite": true
+    }
+  ],
+  "after_total": {
+    "compiled": 60.00000000000001,
+    "intended": 60.0,
+    "abs_err": 7.105427357601002e-15
+  },
+  "invariants": [
+    {
+      "name": "nq",
+      "pass_": true,
+      "detail": "47 -> 47"
+    },
+    {
+      "name": "nv",
+      "pass_": true,
+      "detail": "39 -> 39"
+    },
+    {
+      "name": "nu",
+      "pass_": true,
+      "detail": "33 -> 33"
+    },
+    {
+      "name": "actuator_names_order",
+      "pass_": true,
+      "detail": "n=33 first=lumbar_x_motor last=wrist_r_dev_motor"
+    },
+    {
+      "name": "ctrlrange",
+      "pass_": true,
+      "detail": "max abs diff 0.0"
+    },
+    {
+      "name": "jnt_range",
+      "pass_": true,
+      "detail": "max abs diff 0.0"
+    },
+    {
+      "name": "jnt_axis",
+      "pass_": true,
+      "detail": "max abs diff 0.0"
+    },
+    {
+      "name": "qpos0",
+      "pass_": true,
+      "detail": "max abs diff 0.0"
+    },
+    {
+      "name": "gravity",
+      "pass_": true,
+      "detail": "[0.0, 0.0, -9.81]"
+    },
+    {
+      "name": "timestep",
+      "pass_": true,
+      "detail": "0.002"
+    },
+    {
+      "name": "body_ipos",
+      "pass_": true,
+      "detail": "max abs diff 0.0"
+    },
+    {
+      "name": "body_iquat",
+      "pass_": true,
+      "detail": "max abs diff 0.0"
+    },
+    {
+      "name": "radii_of_gyration_I_over_m",
+      "pass_": true,
+      "detail": "max abs diff 1.0408340855860843e-17"
+    },
+    {
+      "name": "collision_geom_fingerprint",
+      "pass_": true,
+      "detail": "ngeom 29"
+    },
+    {
+      "name": "dof_damping",
+      "pass_": true,
+      "detail": "max abs diff 0.0"
+    },
+    {
+      "name": "dof_armature",
+      "pass_": true,
+      "detail": "max abs diff 0.0"
+    },
+    {
+      "name": "per_body_mass_matches_masses_kg",
+      "pass_": true,
+      "detail": "atol=1e-08 max abs err=5.329e-15"
+    },
+    {
+      "name": "total_mass_60",
+      "pass_": true,
+      "detail": "compiled total 60.000000000000"
+    }
+  ],
+  "fall": {
+    "A": {
+      "samples": [
+        {
+          "t": 0.0,
+          "pelvis_z": 0.92590946,
+          "tilt": 0.0
+        },
+        {
+          "t": 0.5000000000000003,
+          "pelvis_z": 0.5368104707634443,
+          "tilt": 0.34256521163169595
+        },
+        {
+          "t": 1.0000000000000007,
+          "pelvis_z": 0.1293548783556473,
+          "tilt": 1.1959204526556622
+        },
+        {
+          "t": 1.500000000000001,
+          "pelvis_z": 0.12653374155444067,
+          "tilt": 1.8303288014819186
+        },
+        {
+          "t": 2.0000000000000013,
+          "pelvis_z": 0.11195764030599913,
+          "tilt": 1.8562478299389669
+        }
+      ],
+      "fall_t": 0.4820000000000004,
+      "min_z": 0.11168777617151159,
+      "max_tilt": 1.8845118719012728,
+      "end_t": 2.0000000000000013
+    },
+    "B": {
+      "samples": [
+        {
+          "t": 0.0,
+          "pelvis_z": 0.92590946,
+          "tilt": 0.0
+        },
+        {
+          "t": 0.5000000000000003,
+          "pelvis_z": 0.5503015448316706,
+          "tilt": 0.29142686315283955
+        },
+        {
+          "t": 1.0000000000000007,
+          "pelvis_z": 0.13393184073651238,
+          "tilt": 0.9025409300362399
+        },
+        {
+          "t": 1.500000000000001,
+          "pelvis_z": 0.12727186519500458,
+          "tilt": 1.5319353711398054
+        },
+        {
+          "t": 2.0000000000000013,
+          "pelvis_z": 0.1295973955686113,
+          "tilt": 1.3948989274865637
+        }
+      ],
+      "fall_t": 0.5020000000000003,
+      "min_z": 0.12067330446185712,
+      "max_tilt": 1.544921995017794,
+      "end_t": 2.0000000000000013
+    }
+  },
+  "harness": {
+    "A": {
+      "samples": [
+        {
+          "t": 0.0,
+          "pelvis_z": 0.92590946,
+          "tilt": 0.0,
+          "wrench_norm": 0.0,
+          "force_norm": 0.0,
+          "torque_norm": 0.0,
+          "fz": 0.0
+        },
+        {
+          "t": 1.0000000000000007,
+          "pelvis_z": 0.9014540608138797,
+          "tilt": 0.05073359633985347,
+          "wrench_norm": 741.8342145232272,
+          "force_norm": 736.411824825162,
+          "torque_norm": 89.53002901244052,
+          "fz": 736.3877362257825
+        },
+        {
+          "t": 2.0000000000000013,
+          "pelvis_z": 0.9025701325133265,
+          "tilt": 0.05517510761843945,
+          "wrench_norm": 717.8165783622155,
+          "force_norm": 710.9280969335914,
+          "torque_norm": 99.2062556597151,
+          "fz": 710.9166966904718
+        },
+        {
+          "t": 2.999999999999891,
+          "pelvis_z": 0.899520632143974,
+          "tilt": 0.054637449083170496,
+          "wrench_norm": 789.4047642792223,
+          "force_norm": 783.2346310768231,
+          "torque_norm": 98.50580972047953,
+          "fz": 783.2334537549891
+        },
+        {
+          "t": 3.999999999999781,
+          "pelvis_z": 0.9052774741045165,
+          "tilt": 0.0524278417157046,
+          "wrench_norm": 623.4898775000421,
+          "force_norm": 616.2848338997863,
+          "torque_norm": 94.51259625113592,
+          "fz": 616.2839014730257
+        },
+        {
+          "t": 4.999999999999671,
+          "pelvis_z": 0.9021242448574186,
+          "tilt": 0.05345685801136264,
+          "wrench_norm": 730.9271753843495,
+          "force_norm": 724.5585049279454,
+          "torque_norm": 96.27828754150285,
+          "fz": 724.557405926281
+        }
+      ],
+      "fall_t": null,
+      "min_z": 0.8941690912936269,
+      "max_tilt": 0.11677542020314689,
+      "end_t": 4.999999999999671,
+      "z_des": 0.92590946,
+      "pelvis_id_name": "pelvis",
+      "weight_N": 873.5190673326111,
+      "predicted_static_sag_m": 0.02911730224442037,
+      "end_sag_m": 0.023785215142581362,
+      "holds_validator_criterion": true
+    },
+    "B": {
+      "samples": [
+        {
+          "t": 0.0,
+          "pelvis_z": 0.92590946,
+          "tilt": 0.0,
+          "wrench_norm": 0.0,
+          "force_norm": 0.0,
+          "torque_norm": 0.0,
+          "fz": 0.0
+        },
+        {
+          "t": 1.0000000000000007,
+          "pelvis_z": 0.9074456379171315,
+          "tilt": 0.054074986353234836,
+          "wrench_norm": 654.2839687909097,
+          "force_norm": 648.1759439935098,
+          "torque_norm": 89.19337108163757,
+          "fz": 648.1550818472981
+        },
+        {
+          "t": 2.0000000000000013,
+          "pelvis_z": 0.9067637511178278,
+          "tilt": 0.03687331745113663,
+          "wrench_norm": 577.0678359779637,
+          "force_norm": 573.328893541999,
+          "torque_norm": 65.58404646098846,
+          "fz": 573.327773302328
+        },
+        {
+          "t": 2.999999999999891,
+          "pelvis_z": 0.9081144563138351,
+          "tilt": 0.03557332159789975,
+          "wrench_norm": 536.8185575787581,
+          "force_norm": 532.9978490040307,
+          "torque_norm": 63.93322076991675,
+          "fz": 532.9960562449579
+        },
+        {
+          "t": 3.999999999999781,
+          "pelvis_z": 0.9082564376452558,
+          "tilt": 0.03546070221350654,
+          "wrench_norm": 533.8266814407036,
+          "force_norm": 529.993333386868,
+          "torque_norm": 63.859160529015526,
+          "fz": 529.9930893375457
+        },
+        {
+          "t": 4.999999999999671,
+          "pelvis_z": 0.9078859310095138,
+          "tilt": 0.03587187345905562,
+          "wrench_norm": 544.72426940151,
+          "force_norm": 540.87969718276,
+          "torque_norm": 64.60404670370684,
+          "fz": 540.879625875742
+        }
+      ],
+      "fall_t": null,
+      "min_z": 0.9056542327499685,
+      "max_tilt": 0.13245661658197155,
+      "end_t": 4.999999999999671,
+      "z_des": 0.92590946,
+      "pelvis_id_name": "pelvis",
+      "weight_N": 588.6,
+      "predicted_static_sag_m": 0.019620000000000002,
+      "end_sag_m": 0.018023528990486204,
+      "holds_validator_criterion": true
+    }
+  },
+  "lumbar": {
+    "A": {
+      "samples": [
+        {
+          "t": 0.0,
+          "pelvis_z": 0.92590946,
+          "tilt": 0.0,
+          "lumbar_angle_rad": 0.0,
+          "thoracic_angle_rad": 0.0
+        },
+        {
+          "t": 0.20000000000000015,
+          "pelvis_z": 0.8720106446024506,
+          "tilt": 0.8271939102540669,
+          "lumbar_angle_rad": 0.6787908555908192,
+          "thoracic_angle_rad": 0.4166341377992827
+        },
+        {
+          "t": 0.4000000000000003,
+          "pelvis_z": 0.5692722703344226,
+          "tilt": 0.683197691596221,
+          "lumbar_angle_rad": 0.6794512347284103,
+          "thoracic_angle_rad": 0.41769342522317393
+        },
+        {
+          "t": 0.6000000000000004,
+          "pelvis_z": 0.45174197756618456,
+          "tilt": 0.44402054735413493,
+          "lumbar_angle_rad": 0.6791404840210986,
+          "thoracic_angle_rad": 0.419212428792175
+        },
+        {
+          "t": 0.8000000000000006,
+          "pelvis_z": 0.23277221428878836,
+          "tilt": 0.7369886598812502,
+          "lumbar_angle_rad": 0.6785007843836289,
+          "thoracic_angle_rad": 0.4166626334033984
+        }
+      ],
+      "fall_t": 0.4960000000000004,
+      "min_z": 0.23277221428878836,
+      "max_tilt": 0.8644979232919325,
+      "end_t": 0.8000000000000006
+    },
+    "B": {
+      "samples": [
+        {
+          "t": 0.0,
+          "pelvis_z": 0.92590946,
+          "tilt": 0.0,
+          "lumbar_angle_rad": 0.0,
+          "thoracic_angle_rad": 0.0
+        },
+        {
+          "t": 0.20000000000000015,
+          "pelvis_z": 0.8694824559559736,
+          "tilt": 0.7753006924185831,
+          "lumbar_angle_rad": 0.679025509861401,
+          "thoracic_angle_rad": 0.4170558177543931
+        },
+        {
+          "t": 0.4000000000000003,
+          "pelvis_z": 0.5776123511614283,
+          "tilt": 0.7268786781689354,
+          "lumbar_angle_rad": 0.6793966570945971,
+          "thoracic_angle_rad": 0.4170405716215947
+        },
+        {
+          "t": 0.6000000000000004,
+          "pelvis_z": 0.48774658831192336,
+          "tilt": 0.39138292945817804,
+          "lumbar_angle_rad": 0.6787102593045531,
+          "thoracic_angle_rad": 0.4169201458810069
+        },
+        {
+          "t": 0.8000000000000006,
+          "pelvis_z": 0.27244730390134964,
+          "tilt": 0.6657359376104643,
+          "lumbar_angle_rad": 0.67902715908767,
+          "thoracic_angle_rad": 0.41840865018833195
+        }
+      ],
+      "fall_t": 0.4980000000000004,
+      "min_z": 0.27244730390134964,
+      "max_tilt": 0.8310387891560762,
+      "end_t": 0.8000000000000006
+    }
+  },
+  "knee": {
+    "A": {
+      "samples": [
+        {
+          "t": 0.0,
+          "pelvis_z": 0.92590946,
+          "tilt": 0.0,
+          "knee_l_rad": 0.0,
+          "sole_l_z": -0.0015890007288406754,
+          "sole_r_z": -0.0016050005971739306,
+          "foot_l_floor_contacts": 4,
+          "foot_r_floor_contacts": 3
+        },
+        {
+          "t": 0.20000000000000015,
+          "pelvis_z": 0.9012348419260197,
+          "tilt": 0.01300244854945228,
+          "knee_l_rad": 2.082967196625749,
+          "sole_l_z": 0.3180090288637255,
+          "sole_r_z": 0.007188458347860319,
+          "foot_l_floor_contacts": 0,
+          "foot_r_floor_contacts": 0
+        },
+        {
+          "t": 0.4000000000000003,
+          "pelvis_z": 0.8984497154651888,
+          "tilt": 0.016575202913458546,
+          "knee_l_rad": 2.0828621156772598,
+          "sole_l_z": 0.3255740385824185,
+          "sole_r_z": 0.005507641280697292,
+          "foot_l_floor_contacts": 0,
+          "foot_r_floor_contacts": 2
+        },
+        {
+          "t": 0.6000000000000004,
+          "pelvis_z": 0.8950820072112622,
+          "tilt": 0.07172452628830846,
+          "knee_l_rad": 2.0828533094680197,
+          "sole_l_z": 0.42116672858868603,
+          "sole_r_z": 0.0059888429893626555,
+          "foot_l_floor_contacts": 0,
+          "foot_r_floor_contacts": 2
+        },
+        {
+          "t": 0.8000000000000006,
+          "pelvis_z": 0.8982472216263797,
+          "tilt": 0.05636184409267691,
+          "knee_l_rad": 2.0829043350511545,
+          "sole_l_z": 0.5084253282514664,
+          "sole_r_z": 0.005987491317891162,
+          "foot_l_floor_contacts": 0,
+          "foot_r_floor_contacts": 1
+        }
+      ],
+      "fall_t": null,
+      "min_z": 0.8947564398875988,
+      "max_tilt": 0.09578792316792782,
+      "end_t": 0.8000000000000006,
+      "lifted": true
+    },
+    "B": {
+      "samples": [
+        {
+          "t": 0.0,
+          "pelvis_z": 0.92590946,
+          "tilt": 0.0,
+          "knee_l_rad": 0.0,
+          "sole_l_z": -0.0015890007288406754,
+          "sole_r_z": -0.0016050005971739306,
+          "foot_l_floor_contacts": 4,
+          "foot_r_floor_contacts": 3
+        },
+        {
+          "t": 0.20000000000000015,
+          "pelvis_z": 0.9100320807425339,
+          "tilt": 0.12920739492581007,
+          "knee_l_rad": 2.082982889582356,
+          "sole_l_z": 0.33222317719481276,
+          "sole_r_z": 0.007779065153095004,
+          "foot_l_floor_contacts": 0,
+          "foot_r_floor_contacts": 0
+        },
+        {
+          "t": 0.4000000000000003,
+          "pelvis_z": 0.9068850432933887,
+          "tilt": 0.030262706261492828,
+          "knee_l_rad": 2.082987344935425,
+          "sole_l_z": 0.3324151000018212,
+          "sole_r_z": 0.0054290520069895445,
+          "foot_l_floor_contacts": 0,
+          "foot_r_floor_contacts": 2
+        },
+        {
+          "t": 0.6000000000000004,
+          "pelvis_z": 0.906314121157753,
+          "tilt": 0.03834219702914216,
+          "knee_l_rad": 2.0829925766913457,
+          "sole_l_z": 0.42172020124843357,
+          "sole_r_z": 0.005227389666885976,
+          "foot_l_floor_contacts": 0,
+          "foot_r_floor_contacts": 1
+        },
+        {
+          "t": 0.8000000000000006,
+          "pelvis_z": 0.9066626523781197,
+          "tilt": 0.04199176131723443,
+          "knee_l_rad": 2.083033398857162,
+          "sole_l_z": 0.49573528519350246,
+          "sole_r_z": 0.0052108632411844436,
+          "foot_l_floor_contacts": 0,
+          "foot_r_floor_contacts": 3
+        }
+      ],
+      "fall_t": null,
+      "min_z": 0.9057639379536608,
+      "max_tilt": 0.1408366302426206,
+      "end_t": 0.8000000000000006,
+      "lifted": true
+    }
+  },
+  "sublimit": {
+    "A": {
+      "spine": {
+        "samples": [
+          {
+            "t": 0.0,
+            "pelvis_z": 0.92590946,
+            "tilt": 0.0,
+            "lumbar_angle_rad": 0.0,
+            "thoracic_angle_rad": 0.0
+          },
+          {
+            "t": 0.20000000000000015,
+            "pelvis_z": 0.881088223227026,
+            "tilt": 0.36688276695195216,
+            "lumbar_angle_rad": 0.6777383268332826,
+            "thoracic_angle_rad": 0.4178460272023396
+          },
+          {
+            "t": 0.4000000000000003,
+            "pelvis_z": 0.5810027827153426,
+            "tilt": 0.5571004253279389,
+            "lumbar_angle_rad": 0.6799312671233361,
+            "thoracic_angle_rad": 0.05989222427191654
+          }
+        ],
+        "fall_t": null,
+        "min_z": 0.5781242794548002,
+        "max_tilt": 0.5865838371713186,
+        "end_t": 0.4000000000000003
+      },
+      "knee": {
+        "samples": [
+          {
+            "t": 0.0,
+            "pelvis_z": 0.92590946,
+            "tilt": 0.0,
+            "knee_l_rad": 0.0,
+            "sole_l_z": -0.0015890007288406754
+          },
+          {
+            "t": 0.20000000000000015,
+            "pelvis_z": 0.8939572059433362,
+            "tilt": 0.08820300957341755,
+            "knee_l_rad": 1.0911638057979305,
+            "sole_l_z": 0.02478478824517713
+          },
+          {
+            "t": 0.3000000000000002,
+            "pelvis_z": 0.8967599747790618,
+            "tilt": 0.05722701923980102,
+            "knee_l_rad": 1.3953233351569525,
+            "sole_l_z": 0.061379389043836136
+          }
+        ],
+        "fall_t": null,
+        "min_z": 0.8917860578440722,
+        "max_tilt": 0.09480598868873205,
+        "end_t": 0.3000000000000002
+      }
+    },
+    "B": {
+      "spine": {
+        "samples": [
+          {
+            "t": 0.0,
+            "pelvis_z": 0.92590946,
+            "tilt": 0.0,
+            "lumbar_angle_rad": 0.0,
+            "thoracic_angle_rad": 0.0
+          },
+          {
+            "t": 0.20000000000000015,
+            "pelvis_z": 0.8891170868457987,
+            "tilt": 0.39757836996383816,
+            "lumbar_angle_rad": 0.6784886667176775,
+            "thoracic_angle_rad": 0.396878516513415
+          },
+          {
+            "t": 0.4000000000000003,
+            "pelvis_z": 0.5866190920378345,
+            "tilt": 0.611749428115768,
+            "lumbar_angle_rad": 0.6871404662470916,
+            "thoracic_angle_rad": 0.10169485751587112
+          }
+        ],
+        "fall_t": null,
+        "min_z": 0.5866190920378345,
+        "max_tilt": 0.6155361231667302,
+        "end_t": 0.4000000000000003
+      },
+      "knee": {
+        "samples": [
+          {
+            "t": 0.0,
+            "pelvis_z": 0.92590946,
+            "tilt": 0.0,
+            "knee_l_rad": 0.0,
+            "sole_l_z": -0.0015890007288406754
+          },
+          {
+            "t": 0.20000000000000015,
+            "pelvis_z": 0.9044277294864225,
+            "tilt": 0.10262718968159833,
+            "knee_l_rad": 1.1995048165498423,
+            "sole_l_z": 0.043840314372110736
+          },
+          {
+            "t": 0.3000000000000002,
+            "pelvis_z": 0.9075743491869452,
+            "tilt": 0.011644740885595438,
+            "knee_l_rad": 1.6103228471902515,
+            "sole_l_z": 0.1387391551310107
+          }
+        ],
+        "fall_t": null,
+        "min_z": 0.9040388237076981,
+        "max_tilt": 0.10732172116777068,
+        "end_t": 0.3000000000000002
+      }
+    }
+  },
+  "provenance_md": "PROVEN, in this repo: compiled `main` total mass is 89.043737750521 kg. `reports/collision/model_before.xml` compiled total is 89.043737750485 kg. Max per-body absolute mass difference is 3.743e-11 kg. So the current explicit inertials are the pre-collision compiled masses, not a new mesh-density integration.\n\nPROVEN, in this repo: `scripts/build_collision_surfaces.py` loads `reports/collision/model_before.xml`, writes an `<inertial>` per body from `model.body_mass`, `body_inertia`, `body_ipos`, `body_iquat`, and asserts the rebuilt model matches those arrays (`rtol=1e-10`). `docs/COLLISIONS.md` states that explicit inertias preserve the original mass, COM and inertia. The pre-change model has `inertiafromgeom=\"true\"` and capsule/sphere/box geoms whose densities are the values in `physics/assumptions.json`.\n\nPROVEN, compiled `model_before.xml` mass equals `density * MuJoCo geom volume` (not the intended mass):\n\n| body | intended | density * geom volume | compiled | volume kind |\n|---|---:|---:|---:|---|\n| pelvis | 9.281046 | 11.538269 | 11.538269 | capsule (cylinder length = fromto, caps extra) |\n| torso_lower | 6.862745 | 14.073926 | 14.073926 | capsule (cylinder length = fromto, caps extra) |\n| torso_upper | 10.980392 | 24.121195 | 24.121195 | capsule (cylinder length = fromto, caps extra) |\n| head | 5.294118 | 4.278774 | 4.278774 | sphere |\n| upperarm_l | 1.830065 | 2.360113 | 2.360113 | capsule (cylinder length = fromto, caps extra) |\n| lowerarm_l | 1.045752 | 1.301514 | 1.301514 | capsule (cylinder length = fromto, caps extra) |\n| hand_l | 0.392157 | 0.701754 | 0.701754 | capsule (cylinder length = fromto, caps extra) |\n| upperarm_r | 1.830065 | 2.360116 | 2.360116 | capsule (cylinder length = fromto, caps extra) |\n| lowerarm_r | 1.045752 | 1.301517 | 1.301517 | capsule (cylinder length = fromto, caps extra) |\n| hand_r | 0.392157 | 0.701754 | 0.701754 | capsule (cylinder length = fromto, caps extra) |\n| thigh_l | 6.535948 | 8.341677 | 8.341677 | capsule (cylinder length = fromto, caps extra) |\n| calf_l | 3.039216 | 3.702875 | 3.702875 | capsule (cylinder length = fromto, caps extra) |\n| foot_l | 0.947712 | 1.107849 | 1.107849 | box |\n| thigh_r | 6.535948 | 8.341680 | 8.341680 | capsule (cylinder length = fromto, caps extra) |\n| calf_r | 3.039216 | 3.702874 | 3.702874 | capsule (cylinder length = fromto, caps extra) |\n| foot_r | 0.947712 | 1.107849 | 1.107849 | box |\n\nPROVEN by executing the original generator, which is **not** in this git history (the repo imported the already-built MJCF in commit `75ef16b`): `/workspace/blender/body_lab/humanoid_alpha/scripts/02_build_mjcf.py` sets `density = intended_mass / capsule_volume(length, r)` with `h = max(length - 2r, 1e-6)` and `V = pi r^2 h + 4/3 pi r^3`. That treats `length` as the outer capsule length **including** both hemispherical caps. MuJoCo `fromto` capsules use `length` as the cylinder axis and add the caps outside it, so the geom is heavier whenever `length > 2r`. Pelvis uses a hard-coded length 0.12 m (shorter than the diameter, so the density volume collapses to a sphere) while the geom is a short capsule. `torso_lower` length 0.126 m is shorter than diameter 0.18 m, same sphere-vs-capsule gap (the largest torso error). Head density uses that capsule formula on `neck_head` length 0.2085 m, but the geom is a sphere, so the head is the only body **lighter** than intended. Feet use the capsule formula for density and a box geom. Recomputing every `assumptions.json` density from that function and `measurements.json` segment lengths matched bit-exactly (max relative error 0) on this machine.\n\nHYPOTHESIS: none required for the 60\u219289 kg gap. The collision-surface rebuild did not create the extra mass; it preserved it. A non-uniform global scale of the 89 kg model would not recover `masses_kg`, because head must go up (ratio 0.808) while `torso_upper` must go down (ratio 2.197).",
+  "failures_md": "- HARNESS still meets the existing 5 s hold criterion on the 60 kg model (min z=0.9057, max tilt=0.1325) with unchanged gains. End sag 0.0180 m vs baseline 0.0238 m. This is not a retune; the spring was already strong relative to either weight.\n- tests/test_collisions.py::test_original_dynamics_properties_and_actuators_preserved asserts compiled body_mass/body_inertia still match reports/collision/model_before.xml. That assertion is expected to FAIL after this mass correction. It was not edited. Measured failure: body_mass, 16/17 bodies differ, max abs diff 13.14080235 kg (torso_upper 24.121195 -> 10.980392).\n- Existing tests were run and not retuned. `python -m unittest discover -s tests`: 26 tests, 25 passed, 1 failed (the collision mass-preservation test above). Human-control test passed. `scripts/validate_harness.py` all_pass true on the 60 kg model with unchanged gains: harness min pelvis z 0.905654, end z 0.907886, end tilt 0.035872 rad, max tilt 0.132457 rad, raw fall to z<0.55 at 0.502 s, knee 70 N\u00b7m lift still clears the left foot (sole_l 0.4957 m at 0.8 s) with right foot on the floor. Those validators rewrite reports/harness, reports/human_control/validation.json (xfrc_peak_abs 1097.646 -> 884.542 N) and reports/collision/controlled_motor_contact.json (contact_off_peak_m 0.094349 -> 0.102681). Those rewrites were restored and are not part of this branch; the numbers are recorded here."
+}
