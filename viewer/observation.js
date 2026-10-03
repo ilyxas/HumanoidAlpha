@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createProfiler } from './observation-perf.js';
+import { createHumanControls } from './human/attach.js';
 
 const params = new URLSearchParams(location.search);
 //const perf = createProfiler(params.get('profile') === '1');
@@ -43,7 +44,7 @@ for (const button of document.querySelectorAll('[data-view]')) button.onclick = 
 const lockButton = document.querySelector('#lock');
 lockButton.onclick = () => { locked = !locked; controls.enabled = !locked; lockButton.textContent = locked ? 'UNLOCK' : 'LOCK'; lockButton.setAttribute('aria-label', locked ? 'Unlock camera' : 'Lock camera'); lockButton.setAttribute('aria-pressed', String(locked)); drawOverlay(); };
 canvas.addEventListener('contextmenu', e => e.preventDefault());
-// No picking, selection, control messages, lab markup or simulator-state storage.
+// No joint picking or lab markup. Human stick commands live in viewer/human/.
 let root = null;
 const bonesByName = new Map();
 const getBone = name => bonesByName.get(name) || null;
@@ -100,16 +101,19 @@ function applyPhysicsPose(pose) {
 }
 
 let socket, reconnect;
+const human = createHumanControls(document);
 function connect() {
-  // Optional local test port; no alternate protocol or command capability.
+  // Optional local test port. Pose stream is unchanged. human_cmd is a separate op.
   const port = params.get('wsPort') || '8766';
   if (!/^\d{1,5}$/.test(port) || Number(port) > 65535) return;
   socket = new WebSocket(`ws://${location.hostname || '127.0.0.1'}:${port}`);
+  human.bindSocket(socket);
   socket.onopen = () => perf.event('connected');
   socket.onmessage = event => {
     const t = performance.now();
     try {
       const message = JSON.parse(event.data);
+      if (message.type === 'inventory') { human.onInventory(message.inventory); return; }
       if (message.type !== 'pose') return;
       perf.pose();
       const begin = performance.now(); applyPhysicsPose(message.pose); perf.sample('poseApplyCpuMs', performance.now() - begin);
@@ -119,7 +123,7 @@ function connect() {
   socket.onclose = () => { perf.event('disconnected'); reconnect = setTimeout(connect, 1500); };
   socket.onerror = () => perf.event('connection-error');
 }
-window.addEventListener('pagehide', () => { clearTimeout(reconnect); if (socket) { socket.onclose = null; socket.close(); } });
+window.addEventListener('pagehide', () => { clearTimeout(reconnect); human.stop(); if (socket) { socket.onclose = null; socket.close(); } });
 const loadStart = performance.now(); perf.event('model-load-start');
 new GLTFLoader().load('../assets/Xandra.glb', gltf => {
   root = gltf.scene;

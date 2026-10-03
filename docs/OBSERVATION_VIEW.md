@@ -11,7 +11,7 @@ The actuator runtime, CLI and ownership rules are unchanged. In actuator mode th
 
 Drag to orbit, right-drag to pan, scroll/pinch to zoom. LOCK disables OrbitControls pointer input; UNLOCK restores it. Presets remain available while locked. The clock uses browser-local wall time, HH:MM:SS. Screenshot generates a PNG containing the same scene and camera/clock overlay shown on screen, with local date and time in its filename.
 
-No inventory, physical state, skeleton, selection, diagnostics or lab controls are placed in this page's DOM. Clicking the character only participates in camera interaction. The viewer never sends WebSocket commands. It consumes pose messages from the existing stream and discards the other message types and state fields. The wire protocol still contains developer data: this UI separation is not a security boundary against DevTools/network inspection or access to the separate lab URL.
+No inventory table, physical-state HUD, skeleton, or lab controls are placed in this page. Clicking the character only participates in camera interaction. The pose stream still drives the skin. Human stick and gamepad commands are a separate module (see docs/HUMAN_CONTROL.md) and send `human_cmd` on the same socket; the runtime applies that vector only in HARNESS mode. The wire protocol still contains developer data: this UI separation is not a security boundary against DevTools/network inspection or access to the separate lab URL.
 
 ## Fixed perspective camera
 

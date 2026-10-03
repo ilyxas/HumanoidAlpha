@@ -1,4 +1,8 @@
-"""Developer console. Only Controller.handle/tick mutate MuJoCo, in one loop."""
+"""Developer console. MuJoCo writes happen on the physics loop only.
+
+Controller.handle, Controller.tick, and harness ingest_human_cmd are the writers.
+The WebSocket handler only stages human_cmd and does not touch MuJoCo state.
+"""
 from __future__ import annotations
 import argparse
 from contextlib import AsyncExitStack
@@ -17,6 +21,10 @@ from bridge_full.mapping_full import BODY_TO_BONE, DERIVED_BONE_SOURCES, extract
 from collision_guard import PositionCollisionGuard
 from assisted_stand import AssistedStandController
 from harness import HarnessSupport
+
+# Zero the human actuator vector if the browser stops streaming. Harness wrench
+# is independent and is not cleared by this timeout. 200 ms is inside 150–250 ms.
+HUMAN_CMD_STALE_S = 0.200
 
 SIZES = {0: (7, 6), 1: (4, 3), 2: (1, 1), 3: (1, 1)}
 TYPES = {0: 'free', 1: 'ball', 2: 'slide', 3: 'hinge'}
@@ -60,6 +68,12 @@ class Controller:
         # calls it, so RAW/experiment leaves xfrc_applied alone.
         self.harness = HarnessSupport(self.m)
         self.u_cmd = np.zeros(self.m.nu, dtype=float)
+        # Latest human vector. Applied to ctrl only while the harness is enabled.
+        # The WS handler only stages the dict; ingest/poll run on this loop.
+        self.human_u = np.zeros(self.m.nu, dtype=float)
+        self._human_stream = False
+        self._human_mono = None
+        self._staged_human = None
         self._assisted_capability = True
         self._auto_assist = bool(assisted_stand)
         self._auto_harness = bool(harness)
@@ -257,6 +271,66 @@ class Controller:
         self.harness.enable()
         self.revision += 1
 
+    def stage_human_cmd(self, cmd):
+        """Remember the latest human_cmd. Does not touch MuJoCo state."""
+        self._staged_human = cmd
+
+    def take_staged_human(self):
+        cmd = self._staged_human
+        self._staged_human = None
+        return cmd
+
+    def ingest_human_cmd(self, cmd, now=None):
+        """Copy a complete actuator vector into ctrl when the harness is on.
+
+        Ignored in RAW, debug, and assisted (harness disabled), so those paths
+        do not require human_cmd and do not change ctrl. Does not assign
+        generalized position or velocity. Out-of-range values are clipped
+        to the model ctrlrange.
+        A bad message leaves the previous human vector unchanged.
+        """
+        if not self.harness.enabled:
+            return False
+        if not isinstance(cmd, dict):
+            return False
+        u = cmd.get('u')
+        if not isinstance(u, list) or len(u) != int(self.m.nu):
+            return False
+        out = np.empty(self.m.nu, dtype=float)
+        for i, v in enumerate(u):
+            if isinstance(v, bool) or not isinstance(v, (int, float)):
+                return False
+            fv = float(v)
+            if not math.isfinite(fv):
+                return False
+            if bool(self.m.actuator_ctrllimited[i]):
+                lo = float(self.m.actuator_ctrlrange[i, 0])
+                hi = float(self.m.actuator_ctrlrange[i, 1])
+                fv = min(max(fv, lo), hi)
+            out[i] = fv
+        self.human_u[:] = out
+        self.u_cmd[:] = out
+        self.d.ctrl[:] = out
+        self._human_stream = True
+        self._human_mono = time.perf_counter() if now is None else float(now)
+        return True
+
+    def poll_human_stale(self, now=None):
+        """If the human stream is older than HUMAN_CMD_STALE_S, zero it.
+
+        The harness stays enabled. Returns True when the vector was zeroed.
+        """
+        if not self._human_stream or not self.harness.enabled:
+            return False
+        now = time.perf_counter() if now is None else float(now)
+        last = self._human_mono
+        if last is None or (now - last) > HUMAN_CMD_STALE_S:
+            self.human_u[:] = 0
+            self.u_cmd[:] = 0
+            self.d.ctrl[:] = 0
+            return True
+        return False
+
     def assist_status(self):
         base = dict(
             capability=bool(self._assisted_capability),
@@ -273,6 +347,11 @@ class Controller:
         if self.mode == 'dynamic' and not self.paused:
             if self.assisted and self.assist is not None:
                 self.d.ctrl[:] = self.assist.compute(self.m, self.d, self.u_cmd)
+            elif self.harness.enabled and self._human_stream:
+                # Latest human vector, not a latched torque. Harness wrench below
+                # does not read or write ctrl. No qpos/qvel write on this path.
+                self.d.ctrl[:] = self.human_u
+                self.u_cmd[:] = self.human_u
             # RAW/experiment: harness.enabled is false, so this block does not run
             # and xfrc_applied is left at zero. HARNESS mode sets the wrench here,
             # before mj_step, without writing qpos/qvel.
@@ -320,6 +399,11 @@ async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_sta
                 try:
                     cmd = json.loads(raw)
                     if not isinstance(cmd, dict): raise ValueError('Expected command object')
+                    # human_cmd is staged, not queued, so a 50 Hz stream cannot
+                    # crowd out actuator-API or console commands. No MuJoCo write here.
+                    if cmd.get('op') == 'human_cmd':
+                        c.stage_human_cmd(cmd)
+                        continue
                     if ws is not owner: raise ValueError('Read-only client; reconnect after controller closes')
                     # Epoch barriers reject stale pre-reset commands. No state writes here.
                     if cmd.get('op') in ('reset', 'zero'):
@@ -360,6 +444,11 @@ async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_sta
             if stop_requested:
                 c.stop()
                 stop_requested = False
+            staged = c.take_staged_human()
+            if staged is not None:
+                c.ingest_human_cmd(staged)
+            if c.harness.enabled:
+                c.poll_human_stale()
             for _ in range(128):
                 if queue.empty(): break
                 ws, cmd, command_epoch = queue.get_nowait()

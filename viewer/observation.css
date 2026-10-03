@@ -385,3 +385,124 @@ main>aside:first-child>section {
 a {
    color: #93dfcd
 }
+/* Human sticks. Pointer events stay on the widgets; the scene keeps the camera. */
+#human {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  font-family: system-ui, sans-serif;
+}
+#human .human-stick {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-54%);
+  width: 168px;
+  pointer-events: none;
+  color: #1c2430;
+  text-align: center;
+}
+#human .human-stick[data-side="left"] { left: 18px; }
+#human .human-stick[data-side="right"] { right: 18px; }
+#human .human-joint {
+  font: 600 13px/1.2 system-ui, sans-serif;
+  letter-spacing: .02em;
+  margin-bottom: 4px;
+  color: #f4f7fb;
+  text-shadow: 0 1px 2px rgba(0,0,0,.45);
+}
+#human .human-legend {
+  white-space: pre;
+  font: 10px/1.35 ui-monospace, monospace;
+  color: #e7eef6;
+  text-shadow: 0 1px 2px rgba(0,0,0,.45);
+  margin-bottom: 6px;
+}
+#human .human-pad { pointer-events: auto; display: flex; justify-content: center; }
+#human .human-ring {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  border: 2px solid rgba(28, 36, 48, .72);
+  background: rgba(255, 255, 255, .28);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
+  touch-action: none;
+  cursor: grab;
+}
+#human .human-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: #1c2430;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.85);
+  pointer-events: none;
+}
+#human .human-lab {
+  position: absolute;
+  font: 600 10px/1 ui-monospace, monospace;
+  color: #1c2430;
+  pointer-events: none;
+}
+#human .human-lab.up { top: 8px; left: 0; right: 0; text-align: center; }
+#human .human-lab.down { bottom: 8px; left: 0; right: 0; text-align: center; }
+#human .human-lab.left { left: 8px; top: 50%; transform: translateY(-50%); }
+#human .human-lab.right { right: 8px; top: 50%; transform: translateY(-50%); }
+#human .human-z {
+  margin-top: 6px;
+  font: 11px/1.3 system-ui, sans-serif;
+  color: #f4f7fb;
+  text-shadow: 0 1px 2px rgba(0,0,0,.45);
+  min-height: 1.3em;
+}
+#human .human-z[data-on="1"] { color: #ffe08a; }
+#human .human-row { pointer-events: auto; display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
+#human .human-btn {
+  pointer-events: auto;
+  background: rgba(24, 32, 43, .72);
+  color: #f5f7fa;
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: 600 11px system-ui, sans-serif;
+  cursor: pointer;
+}
+#human .human-btn:disabled { opacity: .35; cursor: default; }
+#human .human-status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 18px;
+  pointer-events: none;
+}
+#human .human-pad-status {
+  font: 11px/1.2 ui-monospace, monospace;
+  color: #f4f7fb;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  letter-spacing: .04em;
+}
+#human .human-authority {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#human .human-authority-label {
+  font: 11px/1 ui-monospace, monospace;
+  color: #f4f7fb;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  letter-spacing: .06em;
+}
+@media (max-width: 720px) {
+  #human .human-stick { width: 132px; }
+  #human .human-ring { width: 104px; height: 104px; }
+  #human .human-legend { font-size: 9px; }
+}
