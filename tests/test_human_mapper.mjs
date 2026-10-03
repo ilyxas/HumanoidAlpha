@@ -229,31 +229,99 @@ check('13_mapping_table_is_one_config', () => {
   assert.equal(HUMAN_STALE_MS, 200);
 });
 
-check('y_axis_sign_and_center_ownership', () => {
+check('y_axis_sign_and_slot_conflict', () => {
   const up = stickFromGamepadAxes([0, -1, 0, 0], 'left');
   assert.equal(up.vertical, 1);
   const down = stickFromGamepadAxes([0, 1, 0, 0], 'left');
   assert.equal(down.vertical, -1);
   assert.equal(stickFromGamepadAxes([1, 0, -0.5, 0], 'right').horizontal, -0.5);
+
   const s = createSession(actuators);
-  s.select('left', 'lumbar');
-  s.select('right', 'lumbar');
+  let sample = s.sample();
+  assert.equal(sample.view.left.slot, 'A');
+  assert.equal(sample.view.right.slot, 'B');
+  assert.equal(sample.view.left.joint, 'shoulder_l');
+  assert.equal(sample.view.right.joint, 'shoulder_r');
+  assert.notEqual(sample.view.left.joint, sample.view.right.joint);
+
+  const cycle = s.mapper.catalog.cycle;
+  const covered = new Set();
+  for (const joint of cycle) {
+    const ids = joint.kind === 'hinge' ? [joint.actuator.id] : Object.values(joint.axes).map((a) => a.id);
+    for (const id of ids) {
+      assert.equal(covered.has(id), false, `ctrl ${id} grouped twice`);
+      covered.add(id);
+    }
+  }
+  assert.equal(covered.size, 33);
+
+  // Both cyclers can reach every joint, including the opposite limb and the spine.
+  assert.equal(s.select('right', 'ankle_r_ie'), 'ankle_r_ie');
+  for (const joint of cycle) {
+    if (joint.name === 'ankle_r_ie') continue;
+    assert.equal(s.select('left', joint.name), joint.name, `slot A ${joint.name}`);
+  }
+  assert.equal(s.select('left', 'ankle_l_ie'), 'ankle_l_ie');
+  for (const joint of cycle) {
+    if (joint.name === 'ankle_l_ie') continue;
+    assert.equal(s.select('right', joint.name), joint.name, `slot B ${joint.name}`);
+  }
+
+  // Selecting the joint (and therefore the ctrl indices) the other slot holds is refused.
+  assert.equal(s.select('right', 'ankle_r_ie'), 'ankle_r_ie');
+  assert.equal(s.select('left', 'neck'), 'neck');
+  const parked = s.sample().view.right.joint;
+  assert.notEqual(parked, 'neck');
+  assert.equal(s.select('right', 'neck'), parked);
+  assert.equal(s.sample().view.right.joint, parked);
+  assert.equal(s.sample().view.left.joint, 'neck');
+
+  // Cycling skips the held joint. shoulder_l -> elbow_l is held by B, so A lands on wrist_l_flex.
+  assert.equal(s.select('left', 'shoulder_l'), 'shoulder_l');
+  assert.equal(s.select('right', 'elbow_l'), 'elbow_l');
+  assert.equal(s.cycle('left'), 'wrist_l_flex');
+  // Wrap: B holds the first entry, A sits on the last, the next free is the second entry.
+  assert.equal(s.select('right', 'shoulder_l'), 'shoulder_l');
+  const last = cycle[cycle.length - 1].name;
+  assert.equal(s.select('left', last), last);
+  assert.equal(s.cycle('left'), cycle[1].name);
+  assert.notEqual(cycle[1].name, 'shoulder_l');
+
+  // Both sticks deflected at lumbar: B's selection is refused, so only A writes those ctrl indices.
+  assert.equal(s.select('left', 'lumbar'), 'lumbar');
+  assert.notEqual(s.select('right', 'lumbar'), 'lumbar');
   s.mouseDown('left', 0, 1);
   s.mouseDown('right', 0, -1);
-  const sample = s.sample();
-  assert.equal(sample.view.left.joint, 'shoulder_l');
-  assert.equal(sample.view.right.joint, 'lumbar');
-  assert.equal(sample.view.right.owns, true);
+  sample = s.sample();
+  assert.equal(sample.view.left.joint, 'lumbar');
   assert.equal(sample.view.left.owns, true);
-  const lumbarX = byName.lumbar_x_motor.id;
-  assert.ok(sample.u[lumbarX] < 0);
+  assert.equal(sample.view.right.owns, true);
+  assert.notEqual(sample.view.right.joint, 'lumbar');
+  const lumbarIds = actuators.filter((a) => a.joint === 'lumbar').map((a) => a.id);
+  const rightJoint = cycle.find((j) => j.name === sample.view.right.joint);
+  const rightIds = rightJoint.kind === 'hinge'
+    ? [rightJoint.actuator.id]
+    : Object.values(rightJoint.axes).map((a) => a.id);
+  for (const id of lumbarIds) assert.equal(rightIds.includes(id), false);
+  for (const a of actuators) {
+    if (sample.u[a.id] !== 0) assert.ok(lumbarIds.includes(a.id) || rightIds.includes(a.id), a.name);
+  }
+  const lumbarX = byName.lumbar_x_motor;
+  assert.ok(Math.abs(sample.u[lumbarX.id] - lumbarX.ctrlrange[1] * DEFAULT_AUTHORITY) < 1e-9);
   assert.equal(sample.u[byName.lumbar_y_motor.id], 0);
-  // Left was bumped off lumbar, so it must not also write lumbar.
-  const writers = actuators.filter((a) => a.joint === 'lumbar' && sample.u[a.id] !== 0);
-  assert.equal(writers.length, 1);
-  // Mouse drag beats a deflected gamepad stick on that side.
+  // Joint change clears the previous actuator. The refused slot never wrote it.
+  assert.notEqual(s.cycle('left'), 'lumbar');
+  const cleared = s.sample().u;
+  assert.equal(cleared[lumbarX.id], 0);
+  assert.equal(cleared[byName.lumbar_y_motor.id], 0);
+  assert.equal(cleared[byName.lumbar_z_motor.id], 0);
+
+  // Mouse drag beats a deflected gamepad stick on that stick.
   s.mouseUp('left');
   s.mouseUp('right');
+  // B may still be holding shoulder_l from the wrap check, so free it before parking A there.
+  assert.equal(s.select('right', 'shoulder_r'), 'shoulder_r');
+  assert.equal(s.select('left', 'shoulder_l'), 'shoulder_l');
   s.mouseDown('left', 0, 0);
   const buttons = Array.from({ length: 16 }, () => ({ pressed: false, value: 0 }));
   s.setGamepad({ connected: true, id: 'virtual-ds', mapping: 'standard', axes: [0, -1, 0, 0], buttons });
@@ -264,12 +332,13 @@ check('y_axis_sign_and_center_ownership', () => {
   owned = s.sample();
   assert.equal(owned.sticks.left.owner, 'gamepad');
   assert.ok(owned.u[byName.shoulder_l_x_motor.id] > 0);
-  // L1 rising cycles once.
+  // L1 rising cycles slot A once. B is on shoulder_r, so the next free joint is elbow_l.
   buttons[GAMEPAD_MAP.buttons.L1] = { pressed: true, value: 1 };
   s.setGamepad({ connected: true, id: 'virtual-ds', mapping: 'standard', axes: [0, 0, 0, 0], buttons });
   const cycled = s.sample();
   assert.equal(cycled.view.left.joint, 'elbow_l');
   assert.equal(s.sample().view.left.joint, 'elbow_l');
+  assert.equal(cycled.view.right.joint, 'shoulder_r');
 });
 
 check('transport_contract', () => {

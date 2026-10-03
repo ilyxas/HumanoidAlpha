@@ -30,7 +30,7 @@ The gamepad module does not know MuJoCo or the socket. The mapper does not know 
 | Button / axis table, deadzone, authority, rate | `viewer/human/gamepad-map.js` |
 | Deadzone, ctrlrange map, gamepad read | `viewer/human/normalize.js` |
 | Joint cycles and `u[33]` | `viewer/human/joint-mapper.js` |
-| Per-side owner, edges, authority steps | `viewer/human/session.js` |
+| Slot A/B edges, per-stick device owner, authority steps | `viewer/human/session.js` |
 | JSON frame at 50 Hz | `viewer/human/transport.js` |
 | Stick widgets | `viewer/human/sticks-ui.js` |
 | Wires the observation page | `viewer/human/attach.js` |
@@ -46,8 +46,8 @@ Path: `viewer/human/gamepad-map.js`. Button indices exist only in `GAMEPAD_MAP`.
 
 | Name | Index | Role |
 | --- | --- | --- |
-| L1 | 4 | cycle left joint |
-| R1 | 5 | cycle right joint |
+| L1 | 4 | cycle slot A (any actuator) |
+| R1 | 5 | cycle slot B (any actuator) |
 | L2 | 6 | left Z modifier (hold) |
 | R2 | 7 | right Z modifier (hold) |
 | DpadUp | 12 | authority up one level |
@@ -65,7 +65,7 @@ Default authority: **10% (0.10)**. Levels, clamped (no wrap): 5, 10, 20, 40, 60,
 
 ## Sticks
 
-Left stick owns the left body. Right stick owns the right body. Each widget is the mouse/touch control and the picture of the normalized stick, whichever device currently owns that side.
+Slot A is the left stick. Slot B is the right stick. There is no left-body vs right-body joint list and no center-joint owner. Each widget is the mouse/touch control and the picture of the normalized stick, whichever device currently owns that stick. The label is the slot and the selected joint (`A · shoulder_l`, `B · shoulder_r`). If a selection is blocked, the label names the slot that already holds it.
 
 Labels, matching the input diagram:
 
@@ -77,14 +77,11 @@ On a 3-axis joint (names ending `_x_motor`, `_y_motor`, `_z_motor` on the same j
 
 1-DOF joints expose the one real actuator on the vertical stick. Horizontal and Z do nothing. This model has no XYZ triple for knee, elbow, or each ankle/wrist hinge, so none is invented. Ankle `dp`/`ie` and wrist `flex`/`dev` are separate cycle entries because they are separate joints in the actuator inventory.
 
-Cycle order is built from the live inventory (`joint`, `name`, `id`, `ctrlrange`), with this preferred order when those joints exist:
+Both slots walk one cycle built from the live inventory (`joint`, `name`, `id`, `ctrlrange`). Preferred order, when those joints exist: shoulder_l, elbow_l, wrist_l_flex, wrist_l_dev, hip_l, knee_l, ankle_l_dp, ankle_l_ie, shoulder_r, elbow_r, wrist_r_flex, wrist_r_dev, hip_r, knee_r, ankle_r_dp, ankle_r_ie, lumbar, thoracic, neck. That order is not a side filter. L1 and the left on-screen cycle button advance slot A. R1 and the right on-screen cycle button advance slot B. Either slot may land on any joint in that list, so every actuator in the 33-motor list is reachable from both cyclers, including the opposite limb and the spine.
 
-- left: shoulder_l, elbow_l, wrist_l_flex, wrist_l_dev, hip_l, knee_l, ankle_l_dp, ankle_l_ie, then lumbar, thoracic, neck
-- right: the `_r` twins, then the same three center joints
+Conflict ban: the same ctrl index is never selected by both slots. Cycling skips a joint that uses any ctrl index the other slot holds and wraps to the next free one. A direct selection of that joint is refused and the slot stays put. Defaults are already distinct: slot A starts on `shoulder_l`, slot B on `shoulder_r`. Same-frame edges run A then B, so B skips whatever A just took.
 
-Center joints (lumbar, thoracic, neck) can be selected from either side. Only the side that claimed the joint writes it. Cycling onto a center joint takes ownership. If the other side was sitting on that same joint, it is moved back to its first limb joint (shoulder). Calls in one sample run left, then right, so a same-frame double claim resolves to the right stick. The command vector is built from ownership, not from which stick happened to run last inside the mapper, so the two sides cannot add contradictory values into the same actuator.
-
-A centered stick writes 0 for the axes it owns. Mouse/touch release springs the dot to center and those commands become 0. Changing the selected joint builds a new full vector, so the previous joint's actuators are 0. Unselected actuators are 0. The runtime replaces `ctrl` with that whole vector in harness mode.
+A centered stick writes 0 for the axes of the joint that slot is writing. Mouse/touch release springs the dot to center and those commands become 0. Changing the selected joint builds a new full vector, so the previous joint's actuators are 0. A refused change does not clear the joint the slot already holds, and it does not let the other slot's stick write that channel. Unselected actuators are 0. The runtime replaces `ctrl` with that whole vector in harness mode.
 
 ## ctrlrange
 
@@ -144,7 +141,7 @@ Mouse/logic results (all pass):
 
 | Check | Result |
 | --- | --- |
-| 1 left and right sticks independent | pass. shoulder_l X at 10% = 6, hip_r Y at 10% = 12, other side stays 0 |
+| 1 slots A and B independent | pass. shoulder_l X at 10% = 6, hip_r Y at 10% = 12, the other slot's actuators stay 0 |
 | 2 release springs to 0 | pass. full `u` is 33 zeros |
 | 3 joint switch clears previous | pass. shoulder_l X returns to 0, elbow_l = 4 |
 | 4 Z release clears Z | pass. shoulder_l Z = 6 while held, 0 after release; Y comes back. Elbow stays the single real actuator |
@@ -158,6 +155,7 @@ Mouse/logic results (all pass):
 | 12 no gamepad | pass. missing API, throw, and empty list do not throw |
 | 13 one config object | pass. indices only in `viewer/human/gamepad-map.js` |
 | 14 no qpos/qvel on the human path | pass. `viewer/human/*.js` and `ingest` / `poll` / `stage` do not assign generalized coordinates. Ingest leaves `qpos` and `qvel` unchanged |
+| slots A/B, any actuator, no shared ctrl index | pass. both cyclers reach every joint; selecting the other slot's joint is skipped or refused; lumbar is not double-written; leaving it zeros that ctrl |
 
 `gamepad_hardware_validated` is false.
 

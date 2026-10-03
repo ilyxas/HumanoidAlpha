@@ -1,7 +1,8 @@
 /**
  * On-screen sticks. They are both the mouse/touch input and the visualizer
- * of whichever device currently owns the side. No actuator table, no torque
- * readout, no axis dump.
+ * of whichever device currently owns that stick. The left stick is slot A and
+ * the right stick is slot B; the label is the slot plus the selected joint.
+ * No actuator table, no torque readout, no axis dump.
  */
 import { clampStick } from './normalize.js';
 
@@ -12,14 +13,18 @@ function el(tag, className, text) {
   return node;
 }
 
+const SLOT = { left: 'A', right: 'B' };
+
 function stickWidget(side, session) {
+  const slot = SLOT[side];
   const root = el('section', 'human-stick');
   root.dataset.side = side;
+  root.dataset.slot = slot;
   const name = el('div', 'human-joint', '…');
   const legend = el('div', 'human-legend', 'vertical +X up / -X down\nhorizontal -Y left / +Y right');
   const pad = el('div', 'human-pad');
   pad.setAttribute('role', 'slider');
-  pad.setAttribute('aria-label', `${side} stick`);
+  pad.setAttribute('aria-label', `slot ${slot} stick`);
   pad.tabIndex = 0;
   const ring = el('div', 'human-ring');
   const dot = el('div', 'human-dot');
@@ -33,10 +38,10 @@ function stickWidget(side, session) {
   const row = el('div', 'human-row');
   const cycle = el('button', 'human-btn', 'cycle');
   cycle.type = 'button';
-  cycle.setAttribute('aria-label', `Cycle ${side} joint`);
+  cycle.setAttribute('aria-label', `Cycle slot ${slot}`);
   const zBtn = el('button', 'human-btn', 'Z');
   zBtn.type = 'button';
-  zBtn.setAttribute('aria-label', `Hold Z modifier ${side}`);
+  zBtn.setAttribute('aria-label', `Hold Z modifier slot ${slot}`);
   row.append(cycle, zBtn);
   root.append(name, legend, pad, zFlag, row);
 
@@ -92,7 +97,8 @@ function stickWidget(side, session) {
   function paint(sample) {
     const view = sample.view[side];
     const stick = sample.sticks[side];
-    name.textContent = view.joint;
+    const label = `${view.slot || slot} · ${view.joint}`;
+    name.textContent = view.owns ? label : `${label} · held by slot ${view.heldBy}`;
     const h = stick.horizontal;
     const v = stick.vertical;
     const travel = ring.clientWidth > 0 ? ring.clientWidth / 2 - 10 : 46;
@@ -112,7 +118,6 @@ function stickWidget(side, session) {
     }
     root.dataset.owner = stick.owner;
     root.dataset.owns = view.owns ? '1' : '0';
-    if (!view.owns) name.textContent = `${view.joint} · other side`;
   }
 
   return { root, paint };

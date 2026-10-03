@@ -1,9 +1,12 @@
 /**
  * Arbitration and UI-independent session state.
- * One owner per side:
- *   1. While the mouse/touch stick is dragging, mouse owns that side.
- *   2. Else if that side's gamepad stick is outside the deadzone OR L1/R1/L2/R2
- *      for that side is active, gamepad owns that side.
+ * The left stick drives slot A (L1 cycles it). The right stick drives slot B
+ * (R1 cycles it). Either cycler may select any actuator; the mapper skips or
+ * refuses a ctrl index the other slot already holds.
+ * One device owner per stick:
+ *   1. While the mouse/touch stick is dragging, mouse owns that stick.
+ *   2. Else if that stick is outside the deadzone OR L1/L2 (left) or R1/R2
+ *      (right) is active, gamepad owns that stick.
  *   3. Else keep the last owner. A centered stick still means zero command
  *      (the mapper deadzones it). Torque is not latched.
  * Gamepad button indices are read from GAMEPAD_MAP only.

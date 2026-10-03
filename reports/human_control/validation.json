@@ -10,7 +10,7 @@
     "7_full_deflection_authority_times_ctrlrange": true,
     "12_no_gamepad_does_not_throw": true,
     "13_mapping_table_is_one_config": true,
-    "y_axis_sign_and_center_ownership": true,
+    "y_axis_sign_and_slot_conflict": true,
     "transport_contract": true,
     "14_human_js_does_not_mention_qpos_qvel": true,
     "8_vector_reaches_ctrl": true,
@@ -30,7 +30,7 @@
     "7_full_deflection_authority_times_ctrlrange": true,
     "12_no_gamepad_does_not_throw": true,
     "13_mapping_table_is_one_config": true,
-    "y_axis_sign_and_center_ownership": true,
+    "y_axis_sign_and_slot_conflict": true,
     "transport_contract": true,
     "14_human_js_does_not_mention_qpos_qvel": true
   },

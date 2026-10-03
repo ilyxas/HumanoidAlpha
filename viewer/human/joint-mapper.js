@@ -3,39 +3,44 @@
  * inventory into a complete 33-element u_cmd. It does not know whether the
  * stick came from a gamepad or a mouse, and it does not know about WebSockets.
  *
- * Cycle lists are built from the actuator inventory (joint name, ctrlrange, id).
- * 3-axis ball motors (name ending _x_/_y_/_z_motor) keep those real axes.
- * A joint with a single non-XYZ actuator (knee, elbow, and each ankle/wrist
- * hinge in this model) exposes only that actuator on the vertical stick.
- * No synthetic X/Y/Z is invented for a 1-DOF hinge.
+ * Two slots share one cycle of every joint in the inventory. There is no
+ * left-body list, no right-body list, and no center-joint owner.
+ *   Slot A is the left stick (L1 / the left cycle button).
+ *   Slot B is the right stick (R1 / the right cycle button).
+ * Either slot may land on any joint, so every actuator in the 33-motor list
+ * is reachable from both cyclers. No anatomical side filter.
  *
- * Center joints (no _l/_r in the joint name: lumbar, thoracic, neck) appear on
- * both cycle lists. Only the side that currently owns the joint writes it.
- * Cycling onto a center joint claims it and, if the other side was parked on
- * it, moves that side back to its first limb joint. Same-frame calls are
- * deterministic: the caller invokes left then right, so a simultaneous claim
- * resolves to whichever side cycles last (right, when both are cycled together
- * by sample()).
+ * Conflict ban: the same ctrl index is never selected by both slots. Cycling
+ * skips a joint that uses any ctrl index the other slot holds and wraps to the
+ * next free joint. select() refuses that joint and leaves the slot where it
+ * was. command() rebuilds u from zeros and, if a selection ever overlapped,
+ * the later slot does not write those channels.
+ *
+ * 3-axis ball motors (name ending _x_/_y_/_z_motor) keep those real axes.
+ * A joint with a single non-XYZ actuator exposes only that actuator on the
+ * vertical stick. No synthetic X/Y/Z is invented for a 1-DOF hinge.
  */
 import { applyAuthority, applyDeadzone, mapNormalizedToCtrl, rangeContainsZero } from './normalize.js';
 
 export const NU = 33;
 
-const PREFERRED = {
-  left: ['shoulder_l', 'elbow_l', 'wrist_l_flex', 'wrist_l_dev', 'hip_l', 'knee_l', 'ankle_l_dp', 'ankle_l_ie'],
-  right: ['shoulder_r', 'elbow_r', 'wrist_r_flex', 'wrist_r_dev', 'hip_r', 'knee_r', 'ankle_r_dp', 'ankle_r_ie'],
-  center: ['lumbar', 'thoracic', 'neck'],
-};
+/** Stable cycle order. Not a side filter: both slots walk this whole list. */
+const PREFERRED_ORDER = [
+  'shoulder_l', 'elbow_l', 'wrist_l_flex', 'wrist_l_dev', 'hip_l', 'knee_l', 'ankle_l_dp', 'ankle_l_ie',
+  'shoulder_r', 'elbow_r', 'wrist_r_flex', 'wrist_r_dev', 'hip_r', 'knee_r', 'ankle_r_dp', 'ankle_r_ie',
+  'lumbar', 'thoracic', 'neck',
+];
 
-export function jointSide(name) {
-  if (/_l(?:_|$)/.test(name)) return 'left';
-  if (/_r(?:_|$)/.test(name)) return 'right';
-  return 'center';
-}
+export const SLOT_BY_STICK = { left: 'A', right: 'B' };
 
 function sortNamed(list, preferred) {
   const rank = new Map(preferred.map((n, i) => [n, i]));
   return [...list].sort((a, b) => (rank.get(a.name) ?? 1000) - (rank.get(b.name) ?? 1000) || a.name.localeCompare(b.name));
+}
+
+export function jointCtrlIds(joint) {
+  if (joint.kind === 'hinge') return [joint.actuator.id];
+  return Object.values(joint.axes).map((a) => a.id);
 }
 
 export function buildJointCatalog(actuators) {
@@ -60,27 +65,21 @@ export function buildJointCatalog(actuators) {
       if (m) axes[m[1]] = entry;
       else hinges.push(entry);
     }
-    const side = jointSide(name);
     if (hinges.length === 0) {
-      joints.push({ name, side, kind: 'xyz', axes });
+      joints.push({ name, kind: 'xyz', axes });
     } else if (hinges.length === 1 && !axes.x && !axes.y && !axes.z) {
-      joints.push({ name, side, kind: 'hinge', actuator: hinges[0] });
+      joints.push({ name, kind: 'hinge', actuator: hinges[0] });
     } else {
-      if (axes.x || axes.y || axes.z) joints.push({ name, side, kind: 'xyz', axes });
+      if (axes.x || axes.y || axes.z) joints.push({ name, kind: 'xyz', axes });
       for (const h of hinges) {
-        joints.push({ name: h.name.replace(/_motor$/, ''), side: jointSide(h.name), kind: 'hinge', actuator: h });
+        joints.push({ name: h.name.replace(/_motor$/, ''), kind: 'hinge', actuator: h });
       }
     }
   }
-  const leftLimbs = sortNamed(joints.filter((j) => j.side === 'left'), PREFERRED.left);
-  const rightLimbs = sortNamed(joints.filter((j) => j.side === 'right'), PREFERRED.right);
-  const center = sortNamed(joints.filter((j) => j.side === 'center'), PREFERRED.center);
+  const cycle = sortNamed(joints, PREFERRED_ORDER);
   return {
     joints,
-    cycles: {
-      left: [...leftLimbs, ...center],
-      right: [...rightLimbs, ...center],
-    },
+    cycle,
     zeroOutsideRange: joints.filter((j) => {
       const axes = j.kind === 'hinge' ? [j.actuator] : Object.values(j.axes);
       return axes.some((a) => !rangeContainsZero(a.lo, a.hi));
@@ -111,71 +110,89 @@ function writeJoint(u, joint, stick, authority) {
 
 export function createMapper(actuators) {
   const catalog = buildJointCatalog(actuators);
-  const index = { left: 0, right: 0 };
-  const centerOwner = {};
+  const list = catalog.cycle;
+  if (list.length < 2) throw new Error('need two joints for slots A and B');
 
-  function selected(side) {
-    const list = catalog.cycles[side];
-    if (!list.length) throw new Error(`no joints for ${side}`);
-    return list[index[side]];
+  function overlaps(i, j) {
+    if (i === j) return true;
+    const ids = new Set(jointCtrlIds(list[i]));
+    return jointCtrlIds(list[j]).some((id) => ids.has(id));
   }
+
+  let indexA = list.findIndex((j) => j.name === 'shoulder_l');
+  let indexB = list.findIndex((j) => j.name === 'shoulder_r');
+  if (indexA < 0) indexA = 0;
+  if (indexB < 0) indexB = (indexA + 1) % list.length;
+  if (overlaps(indexA, indexB)) {
+    const free = list.findIndex((_, i) => !overlaps(indexA, i));
+    if (free < 0) throw new Error('no two non-overlapping actuators for slots A and B');
+    indexB = free;
+  }
+  const index = { left: indexA, right: indexB };
 
   function other(side) {
     return side === 'left' ? 'right' : 'left';
   }
 
-  function claim(side) {
-    const joint = selected(side);
-    if (joint.side !== 'center') return;
-    centerOwner[joint.name] = side;
-    const o = other(side);
-    if (selected(o).name === joint.name) {
-      // First entry of the other cycle is its first limb, never a center joint.
-      index[o] = 0;
-    }
+  function selected(side) {
+    return list[index[side]];
   }
 
-  function owns(side, joint) {
-    if (joint.side !== 'center') return joint.side === side;
-    return centerOwner[joint.name] === side;
-  }
-
+  /** Advance to the next joint whose ctrl indices are not held by the other slot. Wraps. Stays put only if nothing is free. */
   function cycle(side) {
-    const list = catalog.cycles[side];
-    index[side] = (index[side] + 1) % list.length;
-    claim(side);
-    return selected(side).name;
+    const n = list.length;
+    const cur = index[side];
+    const held = index[other(side)];
+    for (let step = 1; step <= n; step++) {
+      const i = (cur + step) % n;
+      if (!overlaps(i, held)) {
+        index[side] = i;
+        return list[i].name;
+      }
+    }
+    return list[cur].name;
   }
 
+  /**
+   * Move this slot to `name`. Unknown names throw. A joint that shares any
+   * ctrl index with the other slot is refused: the index does not change.
+   */
   function select(side, name) {
-    const i = catalog.cycles[side].findIndex((j) => j.name === name);
-    if (i < 0) throw new Error(`unknown joint ${name} on ${side}`);
+    const i = list.findIndex((j) => j.name === name);
+    if (i < 0) throw new Error(`unknown joint ${name}`);
+    if (overlaps(i, index[other(side)])) return list[index[side]].name;
     index[side] = i;
-    claim(side);
-    return selected(side).name;
+    return list[i].name;
   }
 
   /**
    * input: { left:{horizontal,vertical,zModifier}, right:{...}, authority }
-   * Returns a fresh 33-vector. Unowned and unselected actuators are 0.
-   * Switching joints therefore clears the previous selection. A centered
-   * stick deadzones to 0 for the axes that stick owns.
+   * Returns a fresh 33-vector. Actuators the slot is not writing are 0, so a
+   * joint change clears the previous joint and a centered stick is zero.
+   * Each ctrl index is written by at most one slot.
    */
   function command(input) {
     const u = new Array(NU).fill(0);
     const view = {};
+    const taken = new Set();
     for (const side of ['left', 'right']) {
       const joint = selected(side);
       const stick = input[side] || { horizontal: 0, vertical: 0, zModifier: false };
-      const can = owns(side, joint);
-      if (can) writeJoint(u, joint, stick, input.authority);
+      const ids = jointCtrlIds(joint);
+      const blocked = ids.some((id) => taken.has(id));
+      if (!blocked) {
+        writeJoint(u, joint, stick, input.authority);
+        for (const id of ids) taken.add(id);
+      }
+      const slot = SLOT_BY_STICK[side];
       view[side] = {
+        slot,
         joint: joint.name,
         kind: joint.kind,
         zAvailable: joint.kind === 'xyz' && !!joint.axes.z,
         zActive: !!(stick.zModifier && joint.kind === 'xyz' && joint.axes.z),
-        owns: can,
-        heldBy: joint.side === 'center' ? (centerOwner[joint.name] || null) : joint.side,
+        owns: !blocked,
+        heldBy: blocked ? SLOT_BY_STICK[other(side)] : slot,
       };
     }
     return { u, view, zeroOutsideRange: catalog.zeroOutsideRange };
@@ -186,8 +203,6 @@ export function createMapper(actuators) {
     cycle,
     select,
     selected,
-    owns,
     command,
-    centerOwner,
   };
 }
