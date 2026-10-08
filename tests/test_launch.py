@@ -115,6 +115,12 @@ class LaunchTests(unittest.TestCase):
                     self.fail('HTTP did not start')
                 with urlopen(f'http://127.0.0.1:{http_port}/assets/Xandra_Animated.glb', timeout=2) as response:
                     self.assertEqual(response.read(4), b'glTF')
+                # The viewer reads loop flags / ground speeds from the manifest next to the GLB.
+                with urlopen(f'http://127.0.0.1:{http_port}/assets/Xandra_Animated.manifest.json', timeout=2) as response:
+                    self.assertEqual(json.loads(response.read())['global_info']['clip_count'], 8)
+                for name in ('animation.css', 'animation/anim-controller.js', 'animation/debugger.js', 'human/locomotion.js'):
+                    with urlopen(f'http://127.0.0.1:{http_port}/viewer/{name}', timeout=2) as response:
+                        self.assertEqual(response.status, 200)
                 # No physics: nothing listens on the WebSocket port, no reports written.
                 with socket.socket() as probe:
                     self.assertNotEqual(probe.connect_ex(('127.0.0.1', ws_port)), 0)

@@ -1,0 +1,109 @@
+/* Animation mode only (loaded after observation.css; Observation is unchanged).
+   EXP002.1-B: sticks sit near the bottom edge, inside the mobile safe area,
+   above the GAMEPAD / EXPO / AUTHORITY bar; the Animation Debugger is a
+   collapsible panel under the clock. */
+.animation-mode {
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+}
+.animation-mode #human .human-stick {
+  top: auto;
+  bottom: calc(40px + var(--safe-b));
+  transform: none;
+}
+.animation-mode #human .human-stick[data-side="left"] { left: calc(18px + var(--safe-l)); }
+.animation-mode #human .human-stick[data-side="right"] { right: calc(18px + var(--safe-r)); }
+.animation-mode #human .human-status {
+  bottom: calc(10px + var(--safe-b));
+  padding: 0 calc(18px + var(--safe-r)) 0 calc(18px + var(--safe-l));
+}
+@media (max-height: 520px) {
+  /* Landscape phones: drop the axis legend so the pads stay low and clear of the top bar. */
+  .animation-mode #human .human-legend,
+  .animation-mode #human .human-z { display: none; }
+  .animation-mode #human .human-stick { bottom: calc(34px + var(--safe-b)); }
+  .animation-mode #human .human-ring { width: 112px; height: 112px; }
+}
+.animation-mode #err:empty { display: none; }
+
+/* ---- Animation Debugger ---- */
+.anim-debug {
+  position: absolute;
+  z-index: 7;
+  top: calc(60px + var(--safe-t));
+  left: calc(16px + var(--safe-l));
+  width: min(330px, calc(100vw - 32px));
+  max-height: calc(100vh - 60px - 330px - var(--safe-b) - var(--safe-t));
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  color: #f5f7fa;
+  font: 11px/1.45 ui-monospace, monospace;
+  pointer-events: auto;
+  touch-action: pan-y;
+}
+.anim-debug .ad-toggle {
+  align-self: flex-start;
+  background: rgba(24, 32, 43, .90);
+  color: #f5f7fa;
+  border: 0;
+  border-radius: 7px;
+  padding: 0 12px;
+  height: 30px;
+  font: 600 12px system-ui, sans-serif;
+  letter-spacing: .04em;
+  cursor: pointer;
+}
+.anim-debug .ad-toggle:hover { background: rgba(53, 77, 96, .95); }
+.anim-debug .ad-body {
+  margin-top: 6px;
+  background: rgba(24, 32, 43, .88);
+  border-radius: 8px;
+  padding: 8px 10px;
+  overflow-y: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+.anim-debug[data-open="0"] { width: auto; }
+.anim-debug[data-open="0"] .ad-body { display: none; }
+@media (max-width: 640px) {
+  /* Phones: the camera buttons take the top-right block; start the panel below them. */
+  .anim-debug { top: calc(152px + var(--safe-t)); max-height: calc(100vh - 152px - 300px - var(--safe-b) - var(--safe-t)); }
+}
+@media (max-height: 640px) and (min-width: 641px) {
+  /* Short landscape screens: sit between the two sticks, never over them. */
+  .anim-debug { left: calc(50% - min(165px, 25vw)); width: min(330px, 50vw); max-height: calc(100vh - 60px - 48px - var(--safe-b) - var(--safe-t)); }
+}
+.anim-debug .ad-live { display: grid; grid-template-columns: 84px 1fr; gap: 1px 8px; margin: 0 0 6px; }
+.anim-debug .ad-live dt { color: #93a7bb; }
+.anim-debug .ad-live dd { margin: 0; color: #f5f7fa; overflow-wrap: anywhere; }
+.anim-debug .ad-live dd[data-field="state"] { color: #93dfcd; font-weight: 600; }
+.anim-debug .ad-weights { margin: 0 0 6px; }
+.anim-debug .ad-wrow { position: relative; display: flex; justify-content: space-between; padding: 1px 4px; margin-bottom: 2px; border-radius: 3px; background: rgba(255,255,255,.06); overflow: hidden; }
+.anim-debug .ad-wrow span, .anim-debug .ad-wrow b { position: relative; z-index: 1; font-weight: 500; }
+.anim-debug .ad-wrow i { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(123, 215, 186, .35); }
+.anim-debug .ad-row { display: flex; gap: 6px; align-items: center; margin: 5px 0; }
+.anim-debug .ad-btn {
+  background: #253443; color: #e7edf4; border: 1px solid #41556a; border-radius: 5px;
+  padding: 3px 9px; font: 600 11px system-ui, sans-serif; cursor: pointer;
+}
+.anim-debug .ad-btn:hover { background: #354d60; }
+.anim-debug .ad-select, .anim-debug .ad-filter {
+  flex: 1; min-width: 0; background: #101820; color: #eee; border: 1px solid #41556a; border-radius: 4px; padding: 3px 4px; font: 11px system-ui, sans-serif;
+}
+.anim-debug .ad-slider { display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 6px; }
+.anim-debug input[type=range] { width: 100%; accent-color: #84d9c0; margin: 0; }
+.anim-debug .ad-checks label { display: flex; align-items: center; gap: 3px; font: 11px system-ui, sans-serif; color: #c9d6e2; }
+.anim-debug .ad-status { color: #ffbe55; font-size: 10px; }
+.anim-debug .ad-section { border-top: 1px solid #34404c; padding: 4px 0 0; margin-top: 4px; }
+.anim-debug .ad-section summary { cursor: pointer; color: #b5c9dc; padding: 3px 0; font: 600 11px system-ui, sans-serif; }
+.anim-debug .ad-clips { list-style: none; margin: 2px 0; padding: 0; }
+.anim-debug .ad-clips li { padding: 1px 0; color: #c9d6e2; }
+.anim-debug .ad-clips li[data-active="1"] { color: #93dfcd; }
+.anim-debug .ad-morphs { max-height: 260px; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
+.anim-debug .ad-morph { display: grid; grid-template-columns: 1fr 90px 30px; gap: 6px; align-items: center; padding: 1px 0; }
+.anim-debug .ad-morph[hidden] { display: none; }
+.anim-debug .ad-morph-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #c9d6e2; }
+.anim-debug .ad-morph-val { text-align: right; color: #93dfcd; }

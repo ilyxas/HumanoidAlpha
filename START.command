@@ -4,7 +4,7 @@ cd "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)"
 export PYTHONDONTWRITEBYTECODE=1
 case "${1:-}" in
   -h|--help)
-    printf '%s\n' './START.command              — choose a mode' './START.command debug        — developer console' './START.command experiment   — observation + actuator CLI (RAW)' './START.command harness      — observation + actuator CLI + physical harness' './START.command animation    — Xandra GLB animations, no physics (right stick up = walk)' './START.command stop         — stop this project'
+    printf '%s\n' './START.command              — choose a mode' './START.command debug        — developer console' './START.command experiment   — observation + actuator CLI (RAW)' './START.command harness      — observation + actuator CLI + physical harness' './START.command animation    — Xandra GLB animations, no physics (WASD / left stick = move)' './START.command stop         — stop this project'
     exit 0 ;;
 esac
 if [ "$#" -eq 0 ]; then
