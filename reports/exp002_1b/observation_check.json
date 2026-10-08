@@ -1,0 +1,36 @@
+{
+ "url": "http://127.0.0.1:8788/viewer/observation.html?wsPort=8766",
+ "info": {
+  "title": "Observation",
+  "sticks": 2,
+  "leftRingTop": 325,
+  "leftRingBottom": 457,
+  "vh": 800,
+  "hasDebugger": false,
+  "stats": "performance=0 "
+ },
+ "imageChanged": {
+  "mouseOrbit": true,
+  "touchOrbit": true,
+  "frontPreset": true
+ },
+ "leftStickDot": {
+  "during": "translate(0px, -43.2432px)",
+  "after": "translate(0px, 0px)"
+ },
+ "errors": [],
+ "logs": [
+  "info: [observation-event] {\"wallTime\":\"2026-10-08T07:49:27.851Z\",\"name\":\"model-load-start\"}",
+  "warn: [.WebGL-0x22cc0013d600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+  "warn: [.WebGL-0x22cc0013d600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+  "warn: [.WebGL-0x22cc0013d600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+  "warn: [.WebGL-0x22cc0013d600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+  "error: Failed to load resource: the server responded with a status of 404 (File not found)",
+  "info: [observation-event] {\"wallTime\":\"2026-10-08T07:49:29.745Z\",\"name\":\"model-load-complete\",\"elapsedMs\":1893.7000000178814}",
+  "info: [observation-perf] {\"wallTime\":\"2026-10-08T07:49:33.630Z\",\"windowSeconds\":5.852200000011921,\"framesPerSecond\":4.61364956767455,\"poseMessagesPerSecond\":0,\"longFramesOver50ms\":14,\"estimatedMissed60Hz\":324,\"timing\":{\"rendererCpuMs\":{\"count\":27,\"mean\":82.73333333708622,\"p95\":0.800000011920929,\"max\":2169.9000000059605},\"frameWorkCpuMs\":{\"count\":26,\"mean\":84.1115384640602,\"p95\":1,\"max\":2170},\"frameIntervalMs\":{\"count\":26,\"mean\":224.35384615384615,\"p95\":216.5999999999999,\"max\":3949.8999999999996},\"modelWorldMatricesCpuMs\":{\"count\":1,\"mean\":0.29999998211860657,\"p95\":0.29999998211860657,\"max\":0.29999998211860657},\"skinPaletteCpuMs\":{\"count\":2,\"mean\":0.20000000298023224,\"p95\":0.19999998807907104,\"max\":0.20000001788139343}}}",
+  "info: [observation-event] {\"wallTime\":\"2026-10-08T07:49:33.834Z\",\"name\":\"connected\"}",
+  "info: [observation-perf] {\"wallTime\":\"2026-10-08T07:49:38.764Z\",\"windowSeconds\":5.133,\"framesPerSecond\":5.649717514124294,\"poseMessagesPerSecond\":49.678550555230856,\"longFramesOver50ms\":29,\"estimatedMissed60Hz\":279,\"timing\":{\"modelWorldMatricesCpuMs\":{\"count\":6914,\"mean\":0.006682094334176692,\"p95\":0.09999999403953552,\"max\":0.800000011920929},\"skinPaletteCpuMs\":{\"count\":29,\"mean\":0.04827586124683249,\"p95\":0.10000002384185791,\"max\":0.19999998807907104},\"rendererCpuMs\":{\"count\":29,\"mean\":1.3862069002513229,\"p95\":1.9000000059604645,\"max\":2.5999999940395355},\"frameWorkCpuMs\":{\"count\":29,\"mean\":1.4517241428638328,\"p95\":2,\"max\":2.5999999940395355},\"frameIntervalMs\":{\"count\":29,\"mean\":177,\"p95\":199.90000000000055,\"max\":266.6999999999998},\"poseApplyCpuMs\":{\"count\":255,\"mean\":0.2184313729697583,\"p95\":0.4000000059604645,\"max\":1.5},\"poseHandlerCpuMs\":{\"count\":255,\"mean\":0.2945098037813224,\"p95\":0.5999999940395355,\"max\":3.5999999940395355}}}",
+  "info: [observation-perf] {\"wallTime\":\"2026-10-08T07:49:43.877Z\",\"windowSeconds\":5.099800000000001,\"framesPerSecond\":5.882583630730616,\"poseMessagesPerSecond\":29.020745911604372,\"longFramesOver50ms\":30,\"estimatedMissed60Hz\":276,\"timing\":{\"modelWorldMatricesCpuMs\":{\"count\":4026,\"mean\":0.0067064083235452146,\"p95\":0.09999999403953552,\"max\":0.30000001192092896},\"skinPaletteCpuMs\":{\"count\":30,\"mean\":0.05999999940395355,\"p95\":0.10000002384185791,\"max\":0.19999998807907104},\"rendererCpuMs\":{\"count\":30,\"mean\":1.1366666694482168,\"p95\":1.4000000059604645,\"max\":1.5999999940395355},\"frameWorkCpuMs\":{\"count\":30,\"mean\":1.1833333363135656,\"p95\":1.5,\"max\":1.699999988079071},\"poseApplyCpuMs\":{\"count\":148,\"mean\":0.20810810818865494,\"p95\":0.4000000059604645,\"max\":0.5999999940395355},\"poseHandlerCpuMs\":{\"count\":148,\"mean\":0.28310810653744517,\"p95\":0.5,\"max\":0.699999988079071},\"frameIntervalMs\":{\"count\":30,\"mean\":169.99333333333337,\"p95\":183.3000000000011,\"max\":183.40000000000146}}}",
+  "info: [observation-perf] {\"wallTime\":\"2026-10-08T07:49:49.043Z\",\"windowSeconds\":5.1665,\"framesPerSecond\":5.613084293041711,\"poseMessagesPerSecond\":28.839639988386722,\"longFramesOver50ms\":29,\"estimatedMissed60Hz\":281,\"timing\":{\"modelWorldMatricesCpuMs\":{\"count\":4052,\"mean\":0.008958539010741751,\"p95\":0.09999999403953552,\"max\":1.699999988079071},\"skinPaletteCpuMs\":{\"count\":29,\"mean\":0.031034482964153946,\"p95\":0.10000002384185791,\"max\":0.19999998807907104},\"rendererCpuMs\":{\"count\":29,\"mean\":1.2275862077186848,\"p95\":1.5,\"max\":1.699999988079071},\"frameWorkCpuMs\":{\"count\":29,\"mean\":1.28965517159166,\"p95\":1.5999999940395355,\"max\":1.699999988079071},\"poseApplyCpuMs\":{\"count\":149,\"mean\":0.2590604044447009,\"p95\":0.4000000059604645,\"max\":1.899999976158142},\"poseHandlerCpuMs\":{\"count\":149,\"mean\":0.33959731579626967,\"p95\":0.5999999940395355,\"max\":2.100000023841858},\"frameIntervalMs\":{\"count\":29,\"mean\":178.1551724137931,\"p95\":200,\"max\":200}}}"
+ ]
+}
