@@ -300,7 +300,7 @@
       "lead": "foot_r"
     }
   },
-  "total_mass_kg": 89.04373775048496,
+  "total_mass_kg": 60.0,
   "notes": "world body included in nbody; physical links = nbody-1 (excl world)",
   "model_path_note": "Portable: relative to physics/. Runtime uses Path(__file__) in agent_api/env.py (DEFAULT_MODEL). Original absolute path was: /workspace/blender/body_lab/humanoid_alpha/model/humanoid_alpha.xml"
 }

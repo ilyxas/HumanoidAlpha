@@ -20,7 +20,7 @@
  * A joint with a single non-XYZ actuator exposes only that actuator on the
  * vertical stick. No synthetic X/Y/Z is invented for a 1-DOF hinge.
  */
-import { applyAuthority, applyDeadzone, mapNormalizedToCtrl, rangeContainsZero } from './normalize.js';
+import { applyAuthority, applyDeadzone, applyExpo, mapNormalizedToCtrl, rangeContainsZero } from './normalize.js';
 
 export const NU = 33;
 
@@ -92,9 +92,14 @@ function writeActuator(u, act, norm, authority) {
   u[act.id] = applyAuthority(mapped, authority, act.lo, act.hi);
 }
 
-function writeJoint(u, joint, stick, authority) {
-  const vertical = applyDeadzone(stick.vertical);
-  const horizontal = applyDeadzone(stick.horizontal);
+/** Deadzone, then expo. One curve for every axis. Authority is applied later. */
+function shapeAxis(raw, gamma) {
+  return applyExpo(applyDeadzone(raw), gamma);
+}
+
+function writeJoint(u, joint, stick, authority, gamma) {
+  const vertical = shapeAxis(stick.vertical, gamma);
+  const horizontal = shapeAxis(stick.horizontal, gamma);
   if (joint.kind === 'hinge') {
     writeActuator(u, joint.actuator, vertical, authority);
     return;
@@ -166,7 +171,8 @@ export function createMapper(actuators) {
   }
 
   /**
-   * input: { left:{horizontal,vertical,zModifier}, right:{...}, authority }
+   * input: { left:{horizontal,vertical,zModifier}, right:{...}, authority, expo }
+   * expo is gamma (>= 1) applied after the deadzone. Missing expo is linear.
    * Returns a fresh 33-vector. Actuators the slot is not writing are 0, so a
    * joint change clears the previous joint and a centered stick is zero.
    * Each ctrl index is written by at most one slot.
@@ -181,7 +187,7 @@ export function createMapper(actuators) {
       const ids = jointCtrlIds(joint);
       const blocked = ids.some((id) => taken.has(id));
       if (!blocked) {
-        writeJoint(u, joint, stick, input.authority);
+        writeJoint(u, joint, stick, input.authority, input.expo);
         for (const id of ids) taken.add(id);
       }
       const slot = SLOT_BY_STICK[side];

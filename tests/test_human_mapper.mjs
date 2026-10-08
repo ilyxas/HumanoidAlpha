@@ -3,8 +3,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { AUTHORITY_LEVELS, DEADZONE, DEFAULT_AUTHORITY, GAMEPAD_MAP, HUMAN_CMD_HZ, HUMAN_STALE_MS } from '../viewer/human/gamepad-map.js';
-import { applyAuthority, applyDeadzone, mapNormalizedToCtrl, readGamepad, stickFromGamepadAxes } from '../viewer/human/normalize.js';
+import { AUTHORITY_LEVELS, DEADZONE, DEFAULT_AUTHORITY, DEFAULT_EXPO_GAMMA, EXPO_GAMMAS, GAMEPAD_MAP, HUMAN_CMD_HZ, HUMAN_STALE_MS, expoLabel } from '../viewer/human/gamepad-map.js';
+import { applyAuthority, applyDeadzone, applyExpo, mapNormalizedToCtrl, readGamepad, stickFromGamepadAxes } from '../viewer/human/normalize.js';
 import { createMapper } from '../viewer/human/joint-mapper.js';
 import { createSession } from '../viewer/human/session.js';
 import { encodeHumanCmd, humanCmdMessage, startCommandPump } from '../viewer/human/transport.js';
@@ -374,6 +374,153 @@ check('14_human_js_does_not_mention_qpos_qvel', () => {
     const src = readFileSync(join(dir, f), 'utf8');
     assert.equal(/\bqpos\b|\bqvel\b/.test(src), false, f);
   }
+});
+
+check('15_expo', () => {
+  assert.equal(DEADZONE, 0.08);
+  assert.equal(DEFAULT_EXPO_GAMMA, 2);
+  assert.deepEqual(EXPO_GAMMAS, [1, 1.5, 2, 3, 4]);
+  assert.equal(expoLabel(1), 'EXPO LINEAR');
+  assert.equal(expoLabel(2), 'EXPO 2');
+  assert.equal(expoLabel(4), 'EXPO 4');
+  assert.equal(EXPO_GAMMAS[0], 1);
+  assert.equal(EXPO_GAMMAS[EXPO_GAMMAS.length - 1], 4);
+
+  const fractions = [0, 0.1, 0.25, 0.5, 0.75, 1];
+  const gamma2 = [0, 0.01, 0.0625, 0.25, 0.5625, 1];
+  for (const sign of [1, -1]) {
+    for (let i = 0; i < fractions.length; i++) {
+      const x = sign * fractions[i];
+      const got = applyExpo(x, 2);
+      assert.ok(Math.abs(got - sign * gamma2[i]) < 1e-12, `expo ${x} -> ${got}`);
+      assert.ok(Math.abs(applyExpo(x, 1) - x) < 1e-12);
+    }
+  }
+  assert.equal(applyExpo(0, 2), 0);
+  assert.equal(applyExpo(Number.NaN, 2), 0);
+  // gamma below 1 is refused so the curve cannot boost the center.
+  assert.ok(Math.abs(applyExpo(0.25, 0.5) - 0.25) < 1e-12);
+
+  function rawFor(x) {
+    if (x === 0) return 0;
+    return Math.sign(x) * (Math.abs(x) * (1 - DEADZONE) + DEADZONE);
+  }
+  for (const x of fractions) {
+    assert.ok(Math.abs(applyDeadzone(rawFor(x)) - x) < 1e-12, `deadzone ${x}`);
+    assert.ok(Math.abs(applyDeadzone(rawFor(-x)) - (-x)) < 1e-12, `deadzone ${-x}`);
+  }
+
+  const cases = [
+    ['shoulder_l', 'shoulder_l_x_motor', 60],
+    ['hip_l', 'hip_l_x_motor', 120],
+    ['knee_l', 'knee_l_motor', 100],
+    ['neck', 'neck_x_motor', 20],
+    ['wrist_l_flex', 'wrist_l_flex_motor', 10],
+  ];
+  for (const [, motor, limit] of cases) {
+    assert.equal(byName[motor].ctrlrange[1], limit);
+    assert.equal(byName[motor].ctrlrange[0], -limit);
+  }
+
+  function drive(session, joint, x) {
+    assert.equal(session.select('right', 'shoulder_r'), 'shoulder_r');
+    assert.equal(session.select('left', joint), joint);
+    session.mouseDown('left', 0, rawFor(x));
+    const a = byName[cases.find((c) => c[0] === joint)[1]];
+    return session.sample().u[a.id];
+  }
+
+  const linear = createSession(actuators);
+  assert.equal(linear.expo, 2);
+  while (linear.expo > 1) linear.stepExpo(-1);
+  assert.equal(linear.expo, 1);
+  assert.equal(linear.stepExpo(-1), 1);
+  while (linear.authority < 1) linear.stepAuthority(1);
+  for (const sign of [1, -1]) {
+    for (const x of fractions) {
+      for (const [joint, motor, limit] of cases) {
+        const got = drive(linear, joint, sign * x);
+        const lo = byName[motor].ctrlrange[0];
+        const hi = byName[motor].ctrlrange[1];
+        const expected = applyAuthority(mapNormalizedToCtrl(sign * x, lo, hi), 1, lo, hi);
+        assert.ok(Math.abs(got - expected) < 1e-9, `linear ${joint} ${sign * x} ${got} != ${expected}`);
+        assert.ok(Math.abs(expected - sign * x * limit) < 1e-9);
+      }
+    }
+  }
+
+  const curved = createSession(actuators);
+  assert.equal(curved.expo, DEFAULT_EXPO_GAMMA);
+  while (curved.authority < 1) curved.stepAuthority(1);
+  const example = { 0: 0, 0.1: 0.6, 0.25: 3.75, 0.5: 15, 0.75: 33.75, 1: 60 };
+  for (const sign of [1, -1]) {
+    for (const x of fractions) {
+      for (const [joint, motor, limit] of cases) {
+        const got = drive(curved, joint, sign * x);
+        const expected = sign * limit * (x ** 2);
+        assert.ok(Math.abs(got - expected) < 1e-8, `g2 ${joint} ${sign * x} ${got} != ${expected}`);
+        numbers[`expo2_${joint}_${sign < 0 ? 'n' : 'p'}${x}`] = got;
+      }
+      const shoulder = drive(curved, 'shoulder_l', sign * x);
+      assert.ok(Math.abs(shoulder - sign * example[x]) < 1e-8, `example ${sign * x} ${shoulder}`);
+    }
+  }
+
+  // Same normalized stick, different joint: only that actuator ctrlrange changes the scale.
+  curved.mouseUp('left');
+  const ratioStick = 0.5;
+  const shoulder = Math.abs(drive(curved, 'shoulder_l', ratioStick));
+  const hip = Math.abs(drive(curved, 'hip_l', ratioStick));
+  const knee = Math.abs(drive(curved, 'knee_l', ratioStick));
+  const neck = Math.abs(drive(curved, 'neck', ratioStick));
+  const wrist = Math.abs(drive(curved, 'wrist_l_flex', ratioStick));
+  assert.ok(Math.abs(hip / shoulder - 120 / 60) < 1e-9);
+  assert.ok(Math.abs(knee / shoulder - 100 / 60) < 1e-9);
+  assert.ok(Math.abs(neck / shoulder - 20 / 60) < 1e-9);
+  assert.ok(Math.abs(wrist / shoulder - 10 / 60) < 1e-9);
+
+  // Authority still scales the shaped command. 40% of full stick is 40% of ctrlrange.
+  const auth = createSession(actuators);
+  while (auth.authority < 0.40) auth.stepAuthority(1);
+  assert.equal(auth.authority, 0.40);
+  assert.equal(auth.expo, 2);
+  for (const [joint, , limit] of cases) {
+    const full = drive(auth, joint, 1);
+    assert.ok(Math.abs(full - limit * 0.40) < 1e-8, `auth40 full ${joint} ${full}`);
+    const mid = drive(auth, joint, 0.5);
+    assert.ok(Math.abs(mid - limit * 0.40 * 0.25) < 1e-8, `auth40 mid ${joint} ${mid}`);
+    const neg = drive(auth, joint, -1);
+    assert.ok(Math.abs(neg - (-limit * 0.40)) < 1e-8);
+  }
+
+  // Both sticks share one gamma. Right hip and left shoulder at x=0.5.
+  const both = createSession(actuators);
+  while (both.authority < 1) both.stepAuthority(1);
+  assert.equal(both.select('left', 'shoulder_l'), 'shoulder_l');
+  assert.equal(both.select('right', 'hip_r'), 'hip_r');
+  both.mouseDown('left', 0, rawFor(0.5));
+  both.mouseDown('right', 0, rawFor(-0.25));
+  const bothU = both.sample().u;
+  assert.ok(Math.abs(bothU[byName.shoulder_l_x_motor.id] - 60 * 0.25) < 1e-8);
+  assert.ok(Math.abs(bothU[byName.hip_r_x_motor.id] - (-120 * 0.0625)) < 1e-8);
+  assert.equal(bothU[byName.shoulder_l_y_motor.id], 0);
+  assert.equal(bothU[byName.hip_r_y_motor.id], 0);
+
+  // Default 10% authority, gamma 2, is not the old linear partial-stick command.
+  const def = createSession(actuators);
+  assert.equal(def.authority, 0.10);
+  assert.equal(def.expo, 2);
+  def.mouseDown('left', 0, rawFor(0.5));
+  const partial = def.sample().u[byName.shoulder_l_x_motor.id];
+  assert.ok(Math.abs(partial - 60 * 0.10 * 0.25) < 1e-8);
+  assert.ok(Math.abs(partial - 60 * 0.10 * 0.5) > 1);
+
+  while (def.expo < 4) def.stepExpo(1);
+  assert.equal(def.stepExpo(1), 4);
+  assert.equal(def.expo, 4);
+  numbers.expo_default = DEFAULT_EXPO_GAMMA;
+  numbers.expo_linear_label = expoLabel(1);
+  numbers.expo_max = 4;
 });
 
 const summary = { passes, numbers, all_pass: Object.values(passes).every(Boolean) };

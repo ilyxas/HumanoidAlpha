@@ -489,6 +489,13 @@ a {
   text-shadow: 0 1px 2px rgba(0,0,0,.5);
   letter-spacing: .04em;
 }
+#human .human-controls {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+#human .human-expo,
 #human .human-authority {
   pointer-events: auto;
   display: flex;
