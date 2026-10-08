@@ -14,6 +14,12 @@
  *   be added without touching the blending code.
  * - Modes: 'auto' (locomotion drives the state) or 'manual' (debugger preview
  *   of any clip, including one-shots).
+ * - One-shot actions (EXP002.1-C: Space/1/2/3 -> Jump/ToPlank/ToBridge/Squat)
+ *   run in auto mode as the 'Action' state: fade in, play once, hold the final
+ *   pose for holdS (0 for clips that end standing), then fade back to whatever
+ *   locomotion state the controller selects. Arbitration is first-come: while
+ *   one plays, other triggers (and key auto-repeat) are rejected and reported;
+ *   during the hold, a new one-shot or movement input ends the hold.
  */
 import * as THREE from 'three';
 
@@ -26,6 +32,7 @@ export const STATES = {
   Walk: { fade: 0.25 },
   Run: { fade: 0.25 },
   Preview: { fade: 0.30 },
+  Action: { fade: 0.25 },
 };
 
 const FWD_GROUP = new Set(['Walk_Fwd', 'Run_Fwd']);
@@ -56,6 +63,10 @@ export function createAnimationController({ root, clips, manifest }) {
   let paused = false;
   let speed = 1; // playback multiplier (debugger slider)
   const listeners = new Set();
+  let oneShot = null;        // { name, phase: 'play' | 'hold', holdS, holdLeft, fadeOut, startedAt }
+  let returnFade = null;     // fade used by the first locomotion selection after a one-shot
+  let lastOneShot = null;    // last trigger result, for the debugger
+  let clock = 0;             // controller time (s), advances with playback speed
 
   mixer.addEventListener('finished', (event) => {
     for (const e of entries.values()) if (e.action === event.action) { e.finished = true; listeners.forEach((fn) => fn(e.name)); }
@@ -89,14 +100,15 @@ export function createAnimationController({ root, clips, manifest }) {
     a.play();
   }
 
-  /** Auto mode: called every frame with the locomotion selection. */
+  /** Auto mode: called every frame with the locomotion selection (ignored while a one-shot owns the body). */
   function setLocomotion(next) {
-    if (mode !== 'auto') return;
+    if (mode !== 'auto' || oneShot) return false;
     const changed = next.state !== state;
     state = next.state;
     const targets = {};
     if (next.clip) targets[next.clip] = 1;
-    const fade = (STATES[state] || STATES.Walk).fade;
+    const fade = returnFade ?? (STATES[state] || STATES.Walk).fade;
+    returnFade = null;
     setTargets(targets, fade);
     if (next.clip) {
       const e = entries.get(next.clip);
@@ -111,9 +123,43 @@ export function createAnimationController({ root, clips, manifest }) {
     return changed;
   }
 
+  /**
+   * Trigger a one-shot clip in auto mode. Returns { ok, name, reason }.
+   * Rejected (never restarted) while another one-shot plays, while the same
+   * clip is still visible (fading out), in manual mode, or for looping clips.
+   */
+  function triggerOneShot(name, { fadeIn = STATES.Action.fade, holdS = 0, fadeOut = 0.35 } = {}) {
+    const e = entries.get(name);
+    const result = (ok, reason) => (lastOneShot = { ok, name, reason, t: clock });
+    if (mode !== 'auto') return result(false, 'manual mode');
+    if (!e) return result(false, 'clip missing');
+    if (e.loop) return result(false, 'not a one-shot clip');
+    if (oneShot && oneShot.phase === 'play') return result(false, `busy: ${oneShot.name} playing`);
+    if (oneShot && oneShot.name === name) return result(false, `${name} already holding`);
+    if (e.weight > 0) return result(false, `${name} still fading out`);
+    if (e.active) { e.action.stop(); e.active = false; }
+    activate(e);
+    e.action.setEffectiveTimeScale(1);
+    setTargets({ [name]: 1 }, fadeIn);
+    oneShot = { name, phase: 'play', holdS, holdLeft: holdS, fadeOut, startedAt: clock };
+    state = 'Action';
+    return result(true, 'started');
+  }
+
+  function endOneShot() {
+    if (!oneShot) return;
+    returnFade = oneShot.fadeOut;
+    oneShot = null;
+    state = 'Idle'; // the next setLocomotion() picks the real locomotion state
+  }
+
+  /** Movement input (or the debugger) ends a one-shot's final-pose hold. */
+  function releaseOneShot() { if (oneShot && oneShot.phase === 'hold') { endOneShot(); return true; } return false; }
+
   function preview(name, { restart = true } = {}) {
     const e = entries.get(name);
     if (!e) return false;
+    oneShot = null; returnFade = null;
     mode = 'manual'; state = 'Preview'; previewClip = name;
     if (restart || !e.active) { e.weight = 0; e.action.stop(); e.active = false; }
     activate(e);
@@ -126,6 +172,7 @@ export function createAnimationController({ root, clips, manifest }) {
 
   function setMode(next) {
     mode = next === 'manual' ? 'manual' : 'auto';
+    oneShot = null; returnFade = null;
     if (mode === 'auto') { previewClip = null; state = 'Idle'; }
     else if (!previewClip) {
       // Entering manual without a selection: hold whatever is visible, frozen at speed 0 for locomotion.
@@ -136,6 +183,12 @@ export function createAnimationController({ root, clips, manifest }) {
   function update(dt) {
     if (paused) return;
     const d = dt * speed;
+    clock += d;
+    if (oneShot) {
+      const e = entries.get(oneShot.name);
+      if (oneShot.phase === 'play' && e.finished) oneShot.phase = 'hold';
+      else if (oneShot.phase === 'hold') { oneShot.holdLeft -= d; if (oneShot.holdLeft <= 0) endOneShot(); }
+    }
     // Crossfade: the target clip gains weight at 1/fade per second and every
     // other visible clip is scaled down proportionally, so the weights always
     // sum to 1 (no bind-pose leak) and no clip jumps by more than d / fade.
@@ -208,7 +261,12 @@ export function createAnimationController({ root, clips, manifest }) {
         running: e.action.isRunning(), active: e.active, finished: e.finished, natural: e.natural,
       });
     }
-    return { mode, state, previewClip, paused, speed, clips: clipsOut, warnings: [...warnings] };
+    const os = oneShot && entries.get(oneShot.name);
+    return {
+      mode, state, previewClip, paused, speed, clips: clipsOut, warnings: [...warnings],
+      oneShot: oneShot ? { name: oneShot.name, phase: oneShot.phase, time: os.action.time, duration: os.duration, holdLeft: Math.max(0, oneShot.holdLeft) } : null,
+      lastOneShot: lastOneShot ? { ...lastOneShot } : null,
+    };
   }
 
   return {
@@ -217,11 +275,17 @@ export function createAnimationController({ root, clips, manifest }) {
     setLocomotion,
     preview,
     setMode,
+    triggerOneShot,
+    releaseOneShot,
     update,
     analyzeFootPhases,
     snapshot,
     onFinished(fn) { listeners.add(fn); return () => listeners.delete(fn); },
     get mode() { return mode; },
+    /** 'play' | 'hold' | null */
+    get oneShotPhase() { return oneShot ? oneShot.phase : null; },
+    /** Largest weight of any one-shot (non-loop) clip in auto mode: > 0 while one is visible or fading out. */
+    get actionWeight() { if (mode !== 'auto') return 0; let w = 0; for (const e of entries.values()) if (!e.loop) w = Math.max(w, e.weight); return w; },
     get state() { return state; },
     get paused() { return paused; },
     set paused(v) { paused = !!v; },

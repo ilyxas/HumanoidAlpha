@@ -13,7 +13,14 @@
  *
  * Conventions (from the GLB): +Y up, the character faces +Z at yaw 0,
  * facing = (sin yaw, 0, cos yaw). Input is relative to a ground-plane
- * reference "forward" (the camera's view direction projected on the floor).
+ * reference "forward" (the camera's view direction projected on the floor,
+ * latched per input stroke by createReferenceLatch so that camera
+ * auto-alignment can never steer the character by itself).
+ *
+ * EXP002.1-C: third-person action movement. Every direction, including S,
+ * turns Xandra toward the movement direction and plays the forward gaits;
+ * Walk_Back is not used for locomotion (config.backwardWalk re-enables the
+ * old "keep facing, walk back" behaviour).
  */
 import { DEADZONE } from './gamepad-map.js';
 import { applyDeadzone, applyExpo } from './normalize.js';
@@ -26,8 +33,9 @@ export const LOCOMOTION_DEFAULTS = Object.freeze({
   decel: 3.5,             // m/s^2 when slowing down / on release
   turnRate: 9,            // 1/s, exponential approach to the target yaw
   maxTurnSpeed: 7,        // rad/s cap
-  backRunFactor: 1.5,     // Shift/Caps while walking backwards: up to 1.5 x Walk_Back speed
-  backEnterDeg: 120,      // input this far from "forward" -> backward walk (facing kept)
+  backwardWalk: false,    // EXP002.1-C: S turns around and walks forward (true = old Walk_Back mode)
+  backRunFactor: 1.5,     // (backwardWalk) Shift/Caps while walking backwards: up to 1.5 x Walk_Back speed
+  backEnterDeg: 120,      // (backwardWalk) input this far from "forward" -> backward walk (facing kept)
   backExitDeg: 100,       // hysteresis
   idleEnter: 0.05,        // m/s: below this the controller is Idle
   idleExit: 0.08,
@@ -35,6 +43,7 @@ export const LOCOMOTION_DEFAULTS = Object.freeze({
   runExit: 1.9,           // m/s: Run -> Walk
   stickRunZone: 0.8,      // stick drive above this blends walk -> run (outer 20 % of travel)
   bounds: 95,             // |x|, |z| clamp in metres (floor is 200 x 200 m)
+  oneShotBrake: 8,        // m/s^2 while a one-shot clip (Jump, Squat, ...) owns the body: stop without gliding
 });
 
 const TAU = Math.PI * 2;
@@ -124,7 +133,7 @@ export function createMovementController(options = {}) {
     backward: false, input: { x: 0, y: 0, gait: 0, source: 'none' }, moveDir: { x: 0, z: 0 },
   };
 
-  function update(dt, input, forward = { x: 0, z: 1 }) {
+  function update(dt, input, forward = { x: 0, z: 1 }, { brake = false } = {}) {
     const step = Math.max(0, finite(dt));
     const inp = input && (input.x || input.y) ? input : null;
     s.input = inp ? { x: inp.x, y: inp.y, gait: inp.gait || 0, source: inp.source || 'unknown' } : { x: 0, y: 0, gait: 0, source: 'none' };
@@ -139,8 +148,8 @@ export function createMovementController(options = {}) {
       const ux = dx / dl, uz = dz / dl;
       s.moveDir = { x: ux, z: uz };
       const angle = Math.acos(clamp(ux * fx + uz * fz, -1, 1)) * 180 / Math.PI;
-      s.backward = s.backward ? angle > cfg.backExitDeg : angle > cfg.backEnterDeg;
-      // Backward: face away from the movement direction and use Walk_Back.
+      s.backward = cfg.backwardWalk && (s.backward ? angle > cfg.backExitDeg : angle > cfg.backEnterDeg);
+      // Default: face the movement direction. (backwardWalk: face away and use Walk_Back.)
       const targetYaw = s.backward ? Math.atan2(-ux, -uz) : Math.atan2(ux, uz);
       const err = wrapAngle(targetYaw - s.yaw);
       const turn = clamp(err * (1 - Math.exp(-cfg.turnRate * step)), -cfg.maxTurnSpeed * step, cfg.maxTurnSpeed * step);
@@ -154,7 +163,7 @@ export function createMovementController(options = {}) {
     // Accelerate / decelerate toward the signed target (through zero on reversal).
     const v = s.speed;
     const speedingUp = Math.sign(target) === Math.sign(v) || v === 0 ? Math.abs(target) > Math.abs(v) : false;
-    const rate = speedingUp ? cfg.accel : cfg.decel;
+    const rate = brake ? cfg.oneShotBrake : speedingUp ? cfg.accel : cfg.decel;
     const dv = clamp(target - v, -rate * step, rate * step);
     s.speed = v + dv;
     if (Math.abs(s.speed) < 1e-4 && target === 0) s.speed = 0;
@@ -178,4 +187,45 @@ export function createMovementController(options = {}) {
     get speeds() { return { ...speeds }; },
     get config() { return { ...cfg }; },
   };
+}
+
+/** Ground-plane yaw of a direction (same convention as the character: yaw 0 = +Z). */
+export function yawOf(x, z) { return Math.atan2(x, z); }
+export function forwardOfYaw(yaw) { return { x: Math.sin(yaw), z: Math.cos(yaw) }; }
+
+/**
+ * Stable movement reference (EXP002.1-C, no camera feedback loop).
+ *
+ * The input frame is the camera yaw, but it is LATCHED:
+ * - when movement input starts (new stroke) or the input source changes;
+ * - keyboard: when a direction key is newly pressed (a new command is read
+ *   relative to what the user sees at that moment); releasing one key of a
+ *   combination keeps the latch, and keys pressed within `chordS` of the
+ *   stroke start count as one chord (no re-latch);
+ * - stick: once per stroke (from leaving the deadzone to release), so steering
+ *   the stick continuously never jumps the heading;
+ * - while the user is actively orbiting the camera, the reference follows the
+ *   camera live (manual look has priority), and stays latched when they let go.
+ * Camera auto-alignment rotates the camera but never touches the reference,
+ * so it cannot steer the character.
+ */
+export function createReferenceLatch({ chordS = 0.25 } = {}) {
+  let latched = null, signature = null, reason = 'none', count = 0, startedAt = 0;
+  // Releasing one key of a held combination (W+D -> D) is not a new command: keep the latch.
+  const releasedOnly = (sig) => sig.startsWith('keyboard:') && signature?.startsWith('keyboard:')
+    && [...sig.slice(9)].every((k) => signature.slice(9).includes(k));
+  function update({ active, source = 'none', keySignature = '', manualOrbit = false, cameraYaw = 0, time = null }) {
+    if (!active) { latched = null; signature = null; reason = 'idle'; return cameraYaw; }
+    const sig = source === 'keyboard' ? `keyboard:${keySignature}` : `${source}:stroke`;
+    if (latched === null) { latched = cameraYaw; reason = 'input start'; count++; startedAt = time; }
+    else if (manualOrbit) { latched = cameraYaw; reason = 'manual orbit'; }
+    else if (sig !== signature && source === 'keyboard' && signature?.startsWith('keyboard:') && time != null && time - startedAt < chordS) {
+      reason = 'chord'; // keys pressed within chordS of the first one form one command (W, then D 50 ms later = W+D)
+    } else if (sig !== signature && !releasedOnly(sig)) {
+      latched = cameraYaw; reason = source === 'keyboard' ? 'key pressed' : 'source changed'; count++;
+    }
+    signature = sig;
+    return latched;
+  }
+  return { update, get yaw() { return latched; }, get reason() { return reason; }, get latches() { return count; } };
 }

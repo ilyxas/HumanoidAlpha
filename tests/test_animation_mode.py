@@ -24,6 +24,11 @@ class AnimationModeTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
         self.assertIn('test_locomotion OK', result.stdout)
 
+    def test_anim_controller_one_shots(self):
+        result = run_node('test_anim_controller.mjs')
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        self.assertIn('test_anim_controller OK', result.stdout)
+
     def test_walk_control(self):
         result = run_node('test_walk_control.mjs')
         self.assertEqual(result.returncode, 0, result.stderr or result.stdout)

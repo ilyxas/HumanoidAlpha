@@ -1,5 +1,6 @@
 /**
- * Animation Debugger + Facial Morph Target Inspector (EXP002.1-B).
+ * Animation Debugger + Facial Morph Target Inspector (EXP002.1-B; one-shot,
+ * movement-reference and camera auto-align readouts added in EXP002.1-C).
  * A collapsible in-place panel; plain DOM, no framework. It only reads
  * snapshots and calls the handlers it is given, so it never owns state.
  * Pointer/keyboard events inside the panel stay inside it (camera and the
@@ -40,7 +41,7 @@ export function mountDebugger(parent, handlers, { open = true } = {}) {
   for (const [key, label] of [
     ['state', 'State'], ['mode', 'Mode'], ['active', 'Active clips'], ['timeScale', 'timeScale'],
     ['source', 'Input'], ['vector', 'Input vector'], ['speed', 'Speed'], ['position', 'Position'],
-    ['yaw', 'Facing'], ['run', 'Run'],
+    ['yaw', 'Facing'], ['run', 'Run'], ['oneShot', 'One-shot'], ['ref', 'Move ref'], ['cam', 'Camera'],
   ]) {
     const dt = el('dt', null, label); const dd = el('dd'); dd.dataset.field = key;
     live.append(dt, dd); fields[key] = dd;
@@ -66,7 +67,9 @@ export function mountDebugger(parent, handlers, { open = true } = {}) {
   follow.append(followBox, ' camera follow');
   const runLock = el('label', null); const runBox = el('input'); runBox.type = 'checkbox'; runBox.dataset.action = 'runlock';
   runLock.append(runBox, ' run lock (Caps)');
-  row3.append(follow, runLock);
+  const autoAlign = el('label', null); const alignBox = el('input'); alignBox.type = 'checkbox'; alignBox.checked = true; alignBox.dataset.action = 'autoalign';
+  autoAlign.append(alignBox, ' camera auto-align');
+  row3.append(follow, runLock, autoAlign);
   const status = el('div', 'ad-status');
   controls.append(row1, speedLabel, row2, row3, status);
 
@@ -96,6 +99,9 @@ export function mountDebugger(parent, handlers, { open = true } = {}) {
   select.addEventListener('change', () => handlers.onSelect?.(select.value));
   followBox.addEventListener('change', () => handlers.onFollow?.(followBox.checked));
   runBox.addEventListener('change', () => handlers.onRunLock?.(runBox.checked));
+  alignBox.addEventListener('change', () => handlers.onAutoAlign?.(alignBox.checked));
+  // Do not leave focus on a panel button: Space is the Jump key.
+  for (const b of [pause, modeBtn, play, toggle, reset]) b.addEventListener('click', () => b.blur());
   reset.addEventListener('click', () => { handlers.onResetFace?.(); for (const s of faceList.querySelectorAll('input')) { s.value = '0'; s.nextSibling.textContent = '0.00'; } });
   filter.addEventListener('input', () => {
     const q = filter.value.trim().toLowerCase();
@@ -142,6 +148,12 @@ export function mountDebugger(parent, handlers, { open = true } = {}) {
     fields.position.textContent = `x ${f2(d.move.position.x)}  z ${f2(d.move.position.z)} m`;
     fields.yaw.textContent = `${(d.move.yaw * 180 / Math.PI).toFixed(0)}°`;
     fields.run.textContent = `${d.run.shift ? 'Shift ' : ''}${d.run.capsLock ? 'CapsLock ' : ''}${!d.run.shift && !d.run.capsLock ? 'off' : 'on'}`;
+    const os = a.oneShot, last = a.lastOneShot;
+    fields.oneShot.textContent = os ? `${os.name} · ${os.phase}${os.phase === 'hold' ? ` ${f2(os.holdLeft)} s` : ` ${f2(os.time)}/${f2(os.duration)} s`}`
+      : last ? `ready · last ${last.name}: ${last.ok ? 'started' : `rejected (${last.reason})`}` : 'ready';
+    const deg = (r) => `${(r * 180 / Math.PI).toFixed(0)}°`;
+    if (d.ref) fields.ref.textContent = `${deg(d.ref.yaw)} · ${d.ref.reason} (camera ${deg(d.ref.cameraYaw)})`;
+    if (d.cam) fields.cam.textContent = `${d.cam.status} · az ${deg(d.cam.azimuth)} · err ${deg(d.cam.error)} · ω ${f2(d.cam.omega)}`;
     weights.replaceChildren(...a.clips.filter((c) => c.weight > 0.001 || c.target > 0).map((c) => {
       const r = el('div', 'ad-wrow'); r.dataset.clip = c.name;
       const bar = el('i'); bar.style.width = `${(c.weight * 100).toFixed(1)}%`;

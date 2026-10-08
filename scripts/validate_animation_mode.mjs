@@ -258,7 +258,8 @@ await page.touchscreen.touchStart(800, 250); await page.touchscreen.touchMove(86
 const cam2 = (await st()).camera;
 await pickCam('FRONT'); const cam3 = (await st()).camera;
 // touch drag INSIDE the debugger panel must not orbit the camera nor move Xandra
-const panel = await page.$eval('#anim-debug .ad-live', el => { const r = el.getBoundingClientRect(); return { x: r.left + 40, y: r.top + 30 }; });
+// A point inside the VISIBLE part of the panel (the body may be scrolled after the Face section).
+const panel = await page.$eval('#anim-debug .ad-body', el => { const r = el.getBoundingClientRect(); return { x: r.left + 40, y: r.top + 30 }; });
 await page.touchscreen.touchStart(panel.x, panel.y); await page.touchscreen.touchMove(panel.x + 60, panel.y + 5); await page.touchscreen.touchEnd(); await sleep(400);
 const cam4 = (await st()).camera; const s4 = await st();
 const dist = (a, b) => Math.hypot(...a.map((v, i) => v - b[i]));

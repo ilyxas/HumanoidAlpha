@@ -1,0 +1,36 @@
+{
+ "url": "http://127.0.0.1:8788/viewer/animation.html",
+ "loadMs": 9229,
+ "checks": {
+  "walkThenJump": {
+   "speedAtTrigger": 1.442,
+   "brakeDistM": 0.064,
+   "theoreticalBrakeDistM": 0.13,
+   "stoppedAfterSimS": 0.1,
+   "movedDuringJumpAfterStopM": 0,
+   "resumedWalkingAfterJump": true,
+   "resumeAtSimS": 3.2,
+   "smooth": {
+    "frames": 90,
+    "maxWeightStep": 0.4,
+    "maxWeightStepAllowed": 0.401,
+    "maxYawRate": 0,
+    "walkBackFrames": 0,
+    "rootYMax": 0,
+    "states": [
+     "Idle",
+     "Walk",
+     "Action",
+     "Idle",
+     "Walk",
+     "Idle"
+    ]
+   }
+  }
+ },
+ "fps": 5.9,
+ "errors": [],
+ "oneShotLog": [
+  "info: [animation] one-shot Space {\"ok\":true,\"name\":\"Jump\",\"reason\":\"started\",\"t\":6.499999999999993}"
+ ]
+}
