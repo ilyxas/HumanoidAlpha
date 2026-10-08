@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Animation</title>
+    <link rel="stylesheet" href="observation.css">
+    <link rel="stylesheet" href="animation.css">
+    <script
+        type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
+</head>
+
+<body class="animation-mode">
+    <canvas id="scene" aria-label="Animation"></canvas>
+    <canvas id="overlay" aria-hidden="true"></canvas>
+    <time id="clock" aria-label="Local time"></time>
+    <nav id="camera" aria-label="Camera">
+        <button data-view="FRONT" aria-label="Front camera">FRONT</button>
+        <button data-view="LEFT" aria-label="Left camera">LEFT</button>
+        <button data-view="BACK" aria-label="Back camera">BACK</button>
+        <button data-view="RIGHT" aria-label="Right camera">RIGHT</button>
+        <button data-view="TOP" aria-label="Top camera">TOP</button>
+        <button data-view="RESET" aria-label="Reset camera only">RESET</button>
+        <button id="lock" aria-label="Lock camera" aria-pressed="false">LOCK</button>
+        <button id="shot" aria-label="Screenshot">Screenshot</button>
+    </nav>
+    <div id="err" role="alert"></div>
+    <div id="human" aria-label="Human control"></div>
+    <script type="module" src="animation.js"></script>
+</body>
+
+</html>

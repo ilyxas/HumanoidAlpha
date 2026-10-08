@@ -1,0 +1,92 @@
+{
+ "results": [
+  {
+   "label": "walk_fwd",
+   "frames": 159,
+   "meanDt": 0.025,
+   "bodySpeed": 1.442,
+   "clip": "Walk_Fwd",
+   "bones": {
+    "ball_l": {
+     "plantedSamples": 75,
+     "median": 0.03,
+     "p90": 0.116
+    },
+    "ball_r": {
+     "plantedSamples": 67,
+     "median": 0.025,
+     "p90": 0.082
+    },
+    "foot_l": {
+     "plantedSamples": 56,
+     "median": 0.008,
+     "p90": 0.143
+    },
+    "foot_r": {
+     "plantedSamples": 55,
+     "median": 0.025,
+     "p90": 0.428
+    }
+   }
+  },
+  {
+   "label": "run_fwd",
+   "frames": 169,
+   "meanDt": 0.025,
+   "bodySpeed": 3.016,
+   "clip": "Run_Fwd",
+   "bones": {
+    "ball_l": {
+     "plantedSamples": 24,
+     "median": 0.111,
+     "p90": 0.355
+    },
+    "ball_r": {
+     "plantedSamples": 22,
+     "median": 0.024,
+     "p90": 0.066
+    },
+    "foot_l": {
+     "plantedSamples": 28,
+     "median": 0.373,
+     "p90": 0.604
+    },
+    "foot_r": {
+     "plantedSamples": 18,
+     "median": 0.106,
+     "p90": 0.324
+    }
+   }
+  },
+  {
+   "label": "walk_back",
+   "frames": 222,
+   "meanDt": 0.025,
+   "bodySpeed": 0.647,
+   "clip": "Walk_Back",
+   "bones": {
+    "ball_l": {
+     "plantedSamples": 114,
+     "median": 0.002,
+     "p90": 0.046
+    },
+    "ball_r": {
+     "plantedSamples": 113,
+     "median": 0.002,
+     "p90": 0.036
+    },
+    "foot_l": {
+     "plantedSamples": 106,
+     "median": 0.002,
+     "p90": 0.038
+    },
+    "foot_r": {
+     "plantedSamples": 114,
+     "median": 0.002,
+     "p90": 0.032
+    }
+   }
+  }
+ ],
+ "errors": []
+}

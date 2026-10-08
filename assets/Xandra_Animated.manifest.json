@@ -1,0 +1,555 @@
+{
+ "asset": "Xandra_Animated.glb",
+ "spec": "EXP002.1-A merge: cumulative 8-clip animation set",
+ "glb": {
+  "path": "assets/Xandra_Animated.glb",
+  "size_bytes": 74357796,
+  "sha256": "f2e77335c00e6e445843bf20814c8450760d33a6ab636a202c9d3df435d4f4ce"
+ },
+ "build": {
+  "source_blend": "/workspace/XandraAnimation/Xandra_Animations.blend (box; v5 clothes built in by clothes/c12_build_clothes.py; pre-clothes backup Xandra_Animations_v4_pre_clothes.blend; previous no-clothes GLB backed up as export/backup/Xandra_Animated_8clips_noclothes.glb, sha256 0cffd0422a5cf9c03820a9e8752e5b3065ad56aa631849aaa29202514d97230f)",
+  "export_script": "/workspace/XandraAnimation/scripts/30_export_glb.py (canonical; writes this file directly)",
+  "blender": "4.3.2",
+  "exporter_settings": "glTF binary, export_animation_mode=ACTIONS, morph targets on, skins on (4 influences), vertex colours NONE, slide-to-zero, sampled 30 fps"
+ },
+ "global_info": {
+  "skeleton_root_bone": "pelvis",
+  "armature_node": "root (scale 0.01: joint data in cm, scene in metres)",
+  "joint_count": 341,
+  "up_axis": "+Y",
+  "forward_axis": "+Z (glTF; character faces +Z, character left = +X) == Blender -Y",
+  "units": "meters",
+  "fps": 30,
+  "root_motion": "locomotion clips (Idle, Walk_Fwd, Run_Fwd, Walk_Back): none, in place - move the character root in the app; one-shot clips (Squat, Jump, ToPlank, ToBridge): small baked pelvis displacement, see per-clip root_motion",
+  "morph_targets": {
+   "mesh": "F4_Head",
+   "count": 52,
+   "note": "ARKit set as in Xandra_Animated.glb; slots 25/26 are named mouthSmileLeftold / mouthSmileRightold (no mouthSmileRight / tongueOut names)"
+  },
+  "skin_influences": "max 4 per vertex (exporter keeps the 4 strongest, renormalised)",
+  "loop_convention": "loop:true clips have last key == first key; loop with time modulo duration_s (three.js LoopRepeat). loop:false clips: play once (LoopOnce + clampWhenFinished)",
+  "same_skeleton_and_scale_for_all_clips": true,
+  "clip_count": 8,
+  "clip_names": [
+   "Idle",
+   "Walk_Fwd",
+   "Run_Fwd",
+   "Walk_Back",
+   "Squat",
+   "Jump",
+   "ToPlank",
+   "ToBridge"
+  ],
+  "note_glb_animation_order": "glTF animations[] are stored alphabetically by the exporter: Idle, Jump, Run_Fwd, Squat, ToBridge, ToPlank, Walk_Back, Walk_Fwd; look clips up by name, not index",
+  "replaced": "old clip 'Walk' (Xandra_Walk) is replaced by Walk_Fwd and is no longer in the file",
+  "materials": "Skin/eyes/teeth/hair materials JSON identical to the previous (no-clothes) Xandra_Animated.glb incl. the brown hair tint baseColorFactor [0.1697, 0.1006, 0.0921, 1]; no COLOR_0 vertex colours; MI_BlueUnderwear removed; two fabric materials added (see clothing)"
+ },
+ "clips": {
+  "Idle": {
+   "duration_s": 4.5,
+   "frame_count": 136,
+   "unique_frames": 135,
+   "fps": 30,
+   "loop": true,
+   "in_place": true,
+   "intended_usage": "idle standing state (no root motion; play while the character is not moving)",
+   "natural_ground_speed_mps": 0.0,
+   "travel_per_cycle_m": 0.0,
+   "movement_direction_local": null,
+   "steps_per_loop": 0,
+   "source": {
+    "type": "CMU motion capture, retargeted + refined",
+    "cmu_clip": "113_21",
+    "description": "Subject #113 (female), \"Standing Still\"",
+    "license": "CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu), BVH conversion by B. Hahne/cgspeed: free for research and commercial use in products; the raw mocap data itself may not be resold, even in converted form. Acknowledgment: 'The data used in this project was obtained from mocap.cs.cmu.edu. The database was created with funding from NSF EIA-0196217.'",
+    "blender_action": "Xandra_Idle",
+    "refinements": [
+     "one weight-shift cycle (source frames 512-1052 @120 fps), C1 cross-fade seam (1.0 s)",
+     "pelvis lateral sway scaled to 50% (source +-11 cm -> +-5.6 cm)",
+     "procedural calm head/neck (source subject looks down/around up to 41/94 deg): +-4 deg yaw, -3+-1.5 deg pitch, periodic",
+     "added subtle breathing (1 breath per loop, chest 1.2 deg, clavicles 0.8 deg)",
+     "both feet locked (heel+ball) for the whole loop, foot roll removed, mesh-level floor contact, relaxed fingers"
+    ]
+   },
+   "validation": {
+    "pelvis_horizontal_range_cm": {
+     "x": 11.28,
+     "z": 4.08
+    },
+    "pelvis_net_travel_per_loop_cm": 0.0,
+    "pelvis_height_range_cm": 2.29,
+    "loop_first_last_max_rotation_diff_deg": 0.0,
+    "loop_first_last_max_translation_diff": 0,
+    "pre_closure_source_mismatch_max_deg": 24.38,
+    "seam_angular_velocity_jump_max_deg_per_frame": 0.17,
+    "joints_with_seam_velocity_jump_above_their_interior_max": [],
+    "sole_contact_skate_world_cm": {
+     "heel_l": 0.15,
+     "ball_l": 0.15,
+     "heel_r": 0.09,
+     "ball_r": 0.09
+    },
+    "joint_skate_at_app_speed_cm": {
+     "ball_l": 0.15,
+     "ball_r": 0.09,
+     "foot_l": 0.13,
+     "foot_r": 0.08
+    },
+    "foot_mesh_min_height_cm": -0.05,
+    "unchanged_vs_Xandra_Locomotion_glb": true
+   }
+  },
+  "Walk_Fwd": {
+   "duration_s": 1.0667,
+   "frame_count": 33,
+   "unique_frames": 32,
+   "fps": 30,
+   "loop": true,
+   "in_place": true,
+   "intended_usage": "forward locomotion (walk), natural ground speed ~1.44 m/s along +Z (character-local); move the character root at this speed (or scale playback rate by desired_speed/1.44) to avoid foot skate",
+   "natural_ground_speed_mps": 1.442,
+   "travel_per_cycle_m": 1.5383,
+   "movement_direction_local": "+Z",
+   "steps_per_loop": 2,
+   "source": {
+    "type": "CMU motion capture, retargeted + refined",
+    "cmu_clip": "07_01",
+    "description": "Subject #7, \"walk\" (same source as Xandra_Walk)",
+    "license": "CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu), BVH conversion by B. Hahne/cgspeed: free for research and commercial use in products; the raw mocap data itself may not be resold, even in converted form. Acknowledgment: 'The data used in this project was obtained from mocap.cs.cmu.edu. The database was created with funding from NSF EIA-0196217.'",
+    "blender_action": "Xandra_Walk_Fwd",
+    "refinements": [
+     "one full stride cycle (2 steps, source frames 96-226 @120 fps), C1 cross-fade seam (0.27 s)",
+     "rebuilt with the Xandra_Walk pipeline (retarget, gaze -3 deg, foot pitch calibration, heel/ball planting, toe flattening, floor clamp, foot de-roll, mesh floor check)",
+     "horizontal root travel removed (linear), vertical bob / lateral sway / pelvis rotation kept"
+    ]
+   },
+   "validation": {
+    "pelvis_horizontal_range_cm": {
+     "x": 5.23,
+     "z": 3.96
+    },
+    "pelvis_net_travel_per_loop_cm": 0.0,
+    "pelvis_height_range_cm": 4.33,
+    "loop_first_last_max_rotation_diff_deg": 0.0,
+    "loop_first_last_max_translation_diff": 0,
+    "pre_closure_source_mismatch_max_deg": 10.43,
+    "seam_angular_velocity_jump_max_deg_per_frame": 3.68,
+    "joints_with_seam_velocity_jump_above_their_interior_max": [
+     [
+      "wrist_inner_r",
+      0.69,
+      0.52
+     ],
+     [
+      "wrist_outer_r",
+      0.69,
+      0.52
+     ]
+    ],
+    "sole_contact_skate_world_cm": {
+     "heel_l": 0.12,
+     "ball_l": 0.1,
+     "heel_r": 0.07,
+     "ball_r": 0.1
+    },
+    "joint_skate_at_app_speed_cm": {
+     "ball_l": 1.14,
+     "ball_r": 1.22,
+     "foot_l": 1.16,
+     "foot_r": 3.18
+    },
+    "foot_mesh_min_height_cm": -0.05,
+    "unchanged_vs_Xandra_Locomotion_glb": true
+   }
+  },
+  "Run_Fwd": {
+   "duration_s": 0.7667,
+   "frame_count": 24,
+   "unique_frames": 23,
+   "fps": 30,
+   "loop": true,
+   "in_place": true,
+   "intended_usage": "forward locomotion (run/jog), natural ground speed ~3.02 m/s along +Z (character-local); move the character root at this speed (or scale playback rate by desired_speed/3.02) to avoid foot skate",
+   "natural_ground_speed_mps": 3.016,
+   "travel_per_cycle_m": 2.312,
+   "movement_direction_local": "+Z",
+   "steps_per_loop": 2,
+   "source": {
+    "type": "CMU motion capture, retargeted + refined",
+    "cmu_clip": "35_17",
+    "description": "Subject #35, \"run/jog\"",
+    "license": "CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu), BVH conversion by B. Hahne/cgspeed: free for research and commercial use in products; the raw mocap data itself may not be resold, even in converted form. Acknowledgment: 'The data used in this project was obtained from mocap.cs.cmu.edu. The database was created with funding from NSF EIA-0196217.'",
+    "blender_action": "Xandra_Run_Fwd",
+    "refinements": [
+     "one full stride cycle (2 steps, source frames 66-157 @120 fps), C1 cross-fade seam (0.30 s)",
+     "same retarget/foot pipeline as the walk; flight phase preserved (pelvis bob 9 cm)",
+     "horizontal root travel removed (linear)"
+    ]
+   },
+   "validation": {
+    "pelvis_horizontal_range_cm": {
+     "x": 2.19,
+     "z": 3.88
+    },
+    "pelvis_net_travel_per_loop_cm": 0.0,
+    "pelvis_height_range_cm": 9.19,
+    "loop_first_last_max_rotation_diff_deg": 0.0,
+    "loop_first_last_max_translation_diff": 0,
+    "pre_closure_source_mismatch_max_deg": 9.9,
+    "seam_angular_velocity_jump_max_deg_per_frame": 12.061,
+    "joints_with_seam_velocity_jump_above_their_interior_max": [],
+    "sole_contact_skate_world_cm": {
+     "heel_l": 1.65,
+     "ball_l": 0.1,
+     "heel_r": 0.12,
+     "ball_r": 0.14
+    },
+    "joint_skate_at_app_speed_cm": {
+     "ball_l": 0.69,
+     "ball_r": 0.08,
+     "foot_l": 3.48,
+     "foot_r": 0.34
+    },
+    "foot_mesh_min_height_cm": -0.05,
+    "unchanged_vs_Xandra_Locomotion_glb": true
+   }
+  },
+  "Walk_Back": {
+   "duration_s": 1.6667,
+   "frame_count": 51,
+   "unique_frames": 50,
+   "fps": 30,
+   "loop": true,
+   "in_place": true,
+   "intended_usage": "backward locomotion (walk backwards while facing forward), natural ground speed ~0.65 m/s along -Z (character-local); move the character root at this speed (or scale playback rate by desired_speed/0.65) to avoid foot skate",
+   "natural_ground_speed_mps": 0.647,
+   "travel_per_cycle_m": 1.0791,
+   "movement_direction_local": "-Z",
+   "steps_per_loop": 2,
+   "source": {
+    "type": "CMU motion capture, retargeted + refined",
+    "cmu_clip": "132_13",
+    "description": "Subject #132, \"Walk Backwards\" (real backward-walking capture, NOT reversed playback)",
+    "license": "CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu), BVH conversion by B. Hahne/cgspeed: free for research and commercial use in products; the raw mocap data itself may not be resold, even in converted form. Acknowledgment: 'The data used in this project was obtained from mocap.cs.cmu.edu. The database was created with funding from NSF EIA-0196217.'",
+    "blender_action": "Xandra_Walk_Back",
+    "refinements": [
+     "one full stride cycle (2 steps, source frames 8860-9061 @120 fps), C1 cross-fade seam (0.40 s)",
+     "head pitch corrected from -16 deg (looking down) to -3 deg; same foot pipeline as the walk",
+     "horizontal root travel removed (linear)"
+    ]
+   },
+   "validation": {
+    "pelvis_horizontal_range_cm": {
+     "x": 9.01,
+     "z": 5.14
+    },
+    "pelvis_net_travel_per_loop_cm": 0.0,
+    "pelvis_height_range_cm": 4.51,
+    "loop_first_last_max_rotation_diff_deg": 0.0,
+    "loop_first_last_max_translation_diff": 0,
+    "pre_closure_source_mismatch_max_deg": 10.94,
+    "seam_angular_velocity_jump_max_deg_per_frame": 0.854,
+    "joints_with_seam_velocity_jump_above_their_interior_max": [],
+    "sole_contact_skate_world_cm": {
+     "heel_l": 0.16,
+     "ball_l": 0.72,
+     "heel_r": 0.23,
+     "ball_r": 0.68
+    },
+    "joint_skate_at_app_speed_cm": {
+     "ball_l": 1.25,
+     "ball_r": 0.78,
+     "foot_l": 0.6,
+     "foot_r": 0.5
+    },
+    "foot_mesh_min_height_cm": -0.05,
+    "unchanged_vs_Xandra_Locomotion_glb": true
+   }
+  },
+  "Squat": {
+   "duration_s": 2.9333,
+   "frame_count": 89,
+   "fps": 30,
+   "loop": false,
+   "in_place": false,
+   "intended_usage": "one-shot bodyweight squat from standing to standing (down, hold bottom, up); trigger from Idle, return to Idle",
+   "start_pose": "standing",
+   "end_pose": "standing",
+   "root_motion": {
+    "type": "baked into the pelvis bone (root node is not animated); small - app does not need to move the root",
+    "pelvis_start_m": [
+     0.0,
+     0.8897,
+     -0.0
+    ],
+    "pelvis_end_m": [
+     0.0155,
+     0.8915,
+     0.044
+    ],
+    "net_horizontal_displacement_m": {
+     "x_left": 0.0155,
+     "z_forward": 0.044,
+     "length": 0.0467
+    },
+    "pelvis_horizontal_range_cm": {
+     "x": 4.26,
+     "z": 18.29
+    },
+    "pelvis_height_range_cm": 48.53,
+    "pelvis_height_change_m": 0.0018,
+    "pelvis_max_height_m": 0.9055,
+    "pelvis_max_height_time_s": 2.6333
+   },
+   "natural_ground_speed_mps": 0.0,
+   "source": {
+    "type": "CMU motion capture, retargeted + refined",
+    "cmu_clip": "14_06",
+    "description": "Subject #14, squats (source frames 1040-1330, bottom held by time-warp)",
+    "blender_action": "Xandra_Squat",
+    "refinements": [
+     "retargeted with the Xandra mocap pipeline",
+     "arm-balance layer (arms forward at the bottom)",
+     "foot-roll/floor fix, mesh-level floor check"
+    ],
+    "license": "CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu), BVH conversion by B. Hahne/cgspeed: free for research and commercial use in products; the raw mocap data itself may not be resold, even in converted form. Acknowledgment: 'The data used in this project was obtained from mocap.cs.cmu.edu. The database was created with funding from NSF EIA-0196217.'"
+   },
+   "validation": {
+    "unchanged_vs_previous_Xandra_Animated_glb": true,
+    "channels": 1023,
+    "max_abs_sampler_diff_vs_previous": 0.0
+   }
+  },
+  "Jump": {
+   "duration_s": 2.8667,
+   "frame_count": 87,
+   "fps": 30,
+   "loop": false,
+   "in_place": false,
+   "intended_usage": "one-shot vertical jump in place from standing, lands back to standing; trigger from Idle, return to Idle",
+   "start_pose": "standing",
+   "end_pose": "standing",
+   "root_motion": {
+    "type": "baked into the pelvis bone (root node is not animated); small - app does not need to move the root",
+    "pelvis_start_m": [
+     0.0,
+     0.8848,
+     0.0
+    ],
+    "pelvis_end_m": [
+     -0.0584,
+     0.9061,
+     0.0379
+    ],
+    "net_horizontal_displacement_m": {
+     "x_left": -0.0584,
+     "z_forward": 0.0379,
+     "length": 0.0696
+    },
+    "pelvis_horizontal_range_cm": {
+     "x": 7.36,
+     "z": 9.75
+    },
+    "pelvis_height_range_cm": 66.84,
+    "pelvis_height_change_m": 0.0213,
+    "pelvis_max_height_m": 1.2885,
+    "pelvis_max_height_time_s": 1.5667
+   },
+   "natural_ground_speed_mps": 0.0,
+   "source": {
+    "type": "CMU motion capture, retargeted + refined",
+    "cmu_clip": "13_39",
+    "description": "Subject #13, jump in place (source frames 4-352)",
+    "blender_action": "Xandra_Jump",
+    "refinements": [
+     "retargeted with the Xandra mocap pipeline",
+     "foot-roll/floor fix, mesh-level floor check"
+    ],
+    "license": "CMU Graphics Lab Motion Capture Database (mocap.cs.cmu.edu), BVH conversion by B. Hahne/cgspeed: free for research and commercial use in products; the raw mocap data itself may not be resold, even in converted form. Acknowledgment: 'The data used in this project was obtained from mocap.cs.cmu.edu. The database was created with funding from NSF EIA-0196217.'"
+   },
+   "validation": {
+    "unchanged_vs_previous_Xandra_Animated_glb": true,
+    "channels": 1023,
+    "max_abs_sampler_diff_vs_previous": 0.0
+   }
+  },
+  "ToPlank": {
+   "duration_s": 3.9667,
+   "frame_count": 120,
+   "fps": 30,
+   "loop": false,
+   "in_place": false,
+   "intended_usage": "one-shot transition standing -> straight-arm plank hold (ends lying prone in plank); hold the last frame or follow with a plank-specific clip",
+   "start_pose": "standing",
+   "end_pose": "plank (prone, pelvis ~0.37 m)",
+   "root_motion": {
+    "type": "baked into the pelvis bone (root node is not animated); small - app does not need to move the root",
+    "pelvis_start_m": [
+     0.0,
+     0.918,
+     0.012
+    ],
+    "pelvis_end_m": [
+     0.0,
+     0.3705,
+     0.1676
+    ],
+    "net_horizontal_displacement_m": {
+     "x_left": 0.0,
+     "z_forward": 0.1556,
+     "length": 0.1556
+    },
+    "pelvis_horizontal_range_cm": {
+     "x": 0.0,
+     "z": 22.76
+    },
+    "pelvis_height_range_cm": 56.75,
+    "pelvis_height_change_m": -0.5475,
+    "pelvis_max_height_m": 0.922,
+    "pelvis_max_height_time_s": 0.1667
+   },
+   "natural_ground_speed_mps": 0.0,
+   "source": {
+    "type": "hand-keyed (Blender IK), no mocap",
+    "cmu_clip": null,
+    "description": "hand-keyed: bend down, plant hands, step back into a straight-arm plank",
+    "blender_action": "Xandra_ToPlank",
+    "refinements": [
+     "hands pinned once planted",
+     "real step-back (no foot sliding)",
+     "straight body line in the plank",
+     "mesh-level floor check"
+    ],
+    "license": "original hand-keyed animation made for this project (no third-party data)"
+   },
+   "validation": {
+    "unchanged_vs_previous_Xandra_Animated_glb": true,
+    "channels": 1023,
+    "max_abs_sampler_diff_vs_previous": 0.0
+   }
+  },
+  "ToBridge": {
+   "duration_s": 4.3,
+   "frame_count": 130,
+   "fps": 30,
+   "loop": false,
+   "in_place": false,
+   "intended_usage": "one-shot transition lying supine on the floor -> full bridge (wheel) hold; hold the last frame",
+   "start_pose": "lying supine (pelvis ~0.11 m)",
+   "end_pose": "bridge (pelvis ~0.64 m)",
+   "root_motion": {
+    "type": "baked into the pelvis bone (root node is not animated); small - app does not need to move the root",
+    "pelvis_start_m": [
+     -0.0,
+     0.1144,
+     0.0
+    ],
+    "pelvis_end_m": [
+     0.0,
+     0.6438,
+     -0.1361
+    ],
+    "net_horizontal_displacement_m": {
+     "x_left": 0.0,
+     "z_forward": -0.1361,
+     "length": 0.1361
+    },
+    "pelvis_horizontal_range_cm": {
+     "x": 0.0,
+     "z": 13.61
+    },
+    "pelvis_height_range_cm": 55.04,
+    "pelvis_height_change_m": 0.5294,
+    "pelvis_max_height_m": 0.6648,
+    "pelvis_max_height_time_s": 2.4333
+   },
+   "natural_ground_speed_mps": 0.0,
+   "source": {
+    "type": "hand-keyed (Blender IK), no mocap",
+    "cmu_clip": null,
+    "description": "hand-keyed: lying on back, hands placed by the ears (fingers toward feet), push up into bridge",
+    "blender_action": "Xandra_ToBridge",
+    "refinements": [
+     "elbow pole fix: elbows point up/toward feet, arms straighten without inverting",
+     "hands flat by the ears",
+     "mesh-level floor check"
+    ],
+    "license": "original hand-keyed animation made for this project (no third-party data)"
+   },
+   "validation": {
+    "unchanged_vs_previous_Xandra_Animated_glb": true,
+    "channels": 1023,
+    "max_abs_sampler_diff_vs_previous": 0.0
+   }
+  }
+ },
+ "validation": {
+  "animation_count": 8,
+  "skeleton": {
+   "joints": 341,
+   "first_joint": "pelvis",
+   "same_joint_order_as_old5": true,
+   "same_joint_order_as_loco": true,
+   "ibm_max_abs_diff_vs_old5": 0.0,
+   "ibm_max_abs_diff_vs_loco": 0.0
+  },
+  "node_rest_trs_identical_to_previous": true,
+  "morph_names_identical_to_previous": true,
+  "materials_identical_to_previous": true,
+  "COLOR_0": false,
+  "reference_files": {
+   "previous_5clip": "Xandra_Animated.glb sha256 f7b79f60... (box: /workspace/XandraAnimation/export/Xandra_Animated.glb)",
+   "locomotion": "Xandra_Locomotion.glb sha256 e004a9f7... (box: /workspace/XandraAnimation/export/Xandra_Locomotion.glb)"
+  }
+ },
+ "clothing": {
+  "version": "v5 (approved look: V-neck crop sports top with rounded, partially bridged bust - slight nipple relief accepted by Ilya; yoga shorts)",
+  "source": "built from Xandra's own body topology (top: F4_Torso + F4_Head shoulder strip; shorts: F4_Legs_Censored surface) by /workspace/XandraAnimation/clothes/c12_build_clothes.py (+ garmentlib.py, bustgrid.py); no third-party garment assets downloaded or used",
+  "license": "original work made for this project (see /workspace/XandraAnimation/mocap/LICENSES.txt, section Clothing)",
+  "meshes": {
+   "Xandra_Top": {
+    "material": "MI_Xandra_Top_Fabric",
+    "blend_verts": 8338,
+    "blend_faces": 16279,
+    "construction": "double shell (1.3 mm fabric) with rim; rolled 5-6 mm edges at neck/armholes; 2.4 cm hem band; 1.2 mm min offset over the skin"
+   },
+   "Xandra_Shorts": {
+    "material": "MI_Xandra_Shorts_Fabric",
+    "blend_verts": 4746,
+    "blend_faces": 9236,
+    "construction": "double shell (1.3 mm) with rim; 3.8 cm waistband + rolled waist edge; rolled leg hems (mid-thigh)"
+   }
+  },
+  "materials": {
+   "MI_Xandra_Top_Fabric": "Principled/glTF PBR, baseColorFactor linear (0.0168, 0.0513, 0.195) dark blue, metallic 0, roughness 0.72, KHR_materials_sheen (0.35 weight in Blender; sheenColor (0.75,0.8,1), sheenRoughness 0.5), no textures",
+   "MI_Xandra_Shorts_Fabric": "Principled/glTF PBR, baseColorFactor linear (0.0075, 0.011, 0.0242) near-black navy, metallic 0, roughness 0.70, KHR_materials_sheen, no textures"
+  },
+  "rigging": "skinned to the same `root` skin (341 joints); weights = nearest-face barycentric transfer from the body (same rule as Data Transfer POLYINTERP_NEAREST) using the body's top-4 weights, limited to 4 influences, normalised",
+  "removed": "Blue_Underwear mesh and MI_BlueUnderwear material are no longer exported (hidden in the blend)",
+  "body_faces_removed_in_export": {
+   "rule": "export session only (blend body intact): body vertices >= 5-6 mm inside every garment edge (2.2 cm at the V-neck, 1.2 cm for the neck edge on F4_Head) whose whole 1-ring is >= 2 mm inside the garment, so every removed face lies fully under the fabric",
+   "deleted_vertices": {
+    "F4_Torso": 724,
+    "F4_Legs_Nude.001": 5011,
+    "F4_Head": 41
+   },
+   "F4_Head_note": "only shoulder-skin vertices under the straps (z < 1.43 m); they carry no displacement (> 1 mm) in any of the 52 exported morphs; face/head untouched; all 52 morph targets kept with identical names"
+  },
+  "added_extension": "KHR_materials_sheen (extensionsUsed)",
+  "poke_through_check": {
+   "method": "body vertices >=4 mm inside a garment edge (rest-pose cut fields) of the exported body (F4_Torso, F4_Head<1.47 m, F4_Legs_Nude) still present in the GLB; every 2nd + last frame of each clip; a vertex is a poke-through if its signed distance to the nearest face of the skinned garment OUTER shell is >0 (within 3 cm) AND a ray along its deformed normal (3 cm) hits no garment face (exposed skin). Ray hits are counted separately: leaving through an outer face = inside the fabric thickness (not visible); hitting the inner shell = covered (crease/fold false positive of the nearest-face test)",
+   "max_depth_mm_per_clip": {
+    "Idle": 1.88,
+    "Walk_Fwd": 2.72,
+    "Run_Fwd": 3.81,
+    "Walk_Back": 2.23,
+    "Squat": 2.1,
+    "Jump": 0.84,
+    "ToPlank": 2.15,
+    "ToBridge": 1.4
+   },
+   "note": "residual: small skin push-through (<= 3.8 mm) at 2-3 spots: front armhole corners (Idle/Walk/Run, mostly hidden by the arm) and the shorts waist sides in deep hip flexion (Squat/ToPlank); see validation/clothes"
+  },
+  "validation": "/workspace/XandraAnimation/validation/clothes (stills, per-clip mp4s, reel, poke.json, verify.json)"
+ }
+}

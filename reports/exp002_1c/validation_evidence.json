@@ -1,0 +1,1375 @@
+{
+ "url": "http://127.0.0.1:8788/viewer/animation.html",
+ "loadMs": 5315,
+ "checks": {
+  "wasd": {
+   "camBack_W": {
+    "keys": "KeyW",
+    "startYawDeg": 0,
+    "cameraYawDeg": 360,
+    "expectedYawDeg": 0,
+    "finalYawDeg": 0,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0,
+    "pathYawErrDeg": 0,
+    "straightPathM": 4.099,
+    "maxLateralDevM": 0,
+    "headingDriftAfterTurnDeg": 0,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 0,
+    "camErrEndDeg": 0,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 35,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 0,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camBack_S": {
+    "keys": "KeyS",
+    "startYawDeg": 0,
+    "cameraYawDeg": 360,
+    "expectedYawDeg": 180,
+    "finalYawDeg": -180,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.7,
+    "pathYawErrDeg": 0.022,
+    "straightPathM": 3.028,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.663,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 0,
+    "camErrEndDeg": -6.2,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 32,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camBack_A": {
+    "keys": "KeyA",
+    "startYawDeg": 0,
+    "cameraYawDeg": 360,
+    "expectedYawDeg": 90,
+    "finalYawDeg": 90,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.5,
+    "pathYawErrDeg": 0.014,
+    "straightPathM": 3.893,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.554,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 0,
+    "camErrEndDeg": 1.3,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 37,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camBack_D": {
+    "keys": "KeyD",
+    "startYawDeg": 0,
+    "cameraYawDeg": 360,
+    "expectedYawDeg": -90,
+    "finalYawDeg": -90,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.5,
+    "pathYawErrDeg": 0.016,
+    "straightPathM": 3.461,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.554,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 0,
+    "camErrEndDeg": -1.9,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 34,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camRight_W": {
+    "keys": "KeyW",
+    "startYawDeg": 57.3,
+    "cameraYawDeg": 147.3,
+    "expectedYawDeg": 147.3,
+    "finalYawDeg": 147.3,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.5,
+    "pathYawErrDeg": 0.015,
+    "straightPathM": 3.605,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.554,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": -90,
+    "camErrEndDeg": 0.2,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 35,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camRight_WA": {
+    "keys": "KeyW+KeyA",
+    "startYawDeg": 57.3,
+    "cameraYawDeg": 147.3,
+    "expectedYawDeg": -167.7,
+    "finalYawDeg": -167.7,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.6,
+    "pathYawErrDeg": 0.016,
+    "straightPathM": 3.749,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.609,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start",
+     "chord"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": -90,
+    "camErrEndDeg": 0.9,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 37,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camRight_WD": {
+    "keys": "KeyW+KeyD",
+    "startYawDeg": 57.3,
+    "cameraYawDeg": 147.3,
+    "expectedYawDeg": 102.3,
+    "finalYawDeg": 102.3,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.2,
+    "pathYawErrDeg": 0.015,
+    "straightPathM": 4.263,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.809,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start",
+     "chord"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": -90,
+    "camErrEndDeg": -0.5,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 37,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camOrbit_SA": {
+    "keys": "KeyS+KeyA",
+    "startYawDeg": -126.1,
+    "cameraYawDeg": 17.9,
+    "expectedYawDeg": 152.9,
+    "finalYawDeg": 152.9,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.5,
+    "pathYawErrDeg": 0.017,
+    "straightPathM": 3.749,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.663,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start",
+     "chord"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": -144,
+    "camErrEndDeg": 2.4,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 36,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 6.177,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camOrbit_SD": {
+    "keys": "KeyS+KeyD",
+    "startYawDeg": -126.1,
+    "cameraYawDeg": 17.9,
+    "expectedYawDeg": -117.1,
+    "finalYawDeg": -117.1,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.4,
+    "pathYawErrDeg": 0.019,
+    "straightPathM": 4.326,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.83,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start",
+     "chord"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": -144,
+    "camErrEndDeg": -1.2,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 39,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 3.729,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camOrbit_D": {
+    "keys": "KeyD",
+    "startYawDeg": -126.1,
+    "cameraYawDeg": 17.9,
+    "expectedYawDeg": -72.1,
+    "finalYawDeg": -72.1,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.4,
+    "pathYawErrDeg": 0.015,
+    "straightPathM": 3.893,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.6,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": -144,
+    "camErrEndDeg": -1.3,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 35,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 5.593,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "camReset_WD": {
+    "keys": "KeyW+KeyD",
+    "startYawDeg": 34.4,
+    "cameraYawDeg": 252.4,
+    "expectedYawDeg": -152.6,
+    "finalYawDeg": -152.6,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.7,
+    "pathYawErrDeg": 0.02,
+    "straightPathM": 3.749,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.74,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start",
+     "chord"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 142,
+    "camErrEndDeg": -0.9,
+    "peakSpeed": 1.442,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 38,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   }
+  },
+  "feedback": {
+   "expectedYawDeg": -90,
+   "finalYawDeg": -90,
+   "finalYawErrDeg": 0,
+   "yawChangeAfterReleaseDeg": 0,
+   "turnSimS": 0.5,
+   "pathYawErrDeg": 0.005,
+   "straightPathM": 10.959,
+   "maxLateralDevM": 0.001,
+   "headingDriftAfterTurnDeg": 0.554,
+   "refYawChanges": 1,
+   "refReasons": [
+    "input start"
+   ],
+   "camDistRangeM": 0,
+   "camHeightRangeM": 0,
+   "camErrStartDeg": 0,
+   "camErrEndDeg": 0,
+   "peakSpeed": 1.442,
+   "clipsSeen": [
+    "Idle",
+    "Walk_Fwd"
+   ],
+   "align": {
+    "peakErrDeg": 76.5,
+    "errEndDeg": 0,
+    "overshootDeg": 0,
+    "errSignChanges": 0,
+    "settleBelow5degSimS": 2.5,
+    "maxCamYawRateDegS": 66,
+    "statuses": [
+     "idle",
+     "aligning"
+    ]
+   },
+   "smooth": {
+    "frames": 85,
+    "maxWeightStep": 0.4,
+    "maxWeightStepAllowed": 0.401,
+    "maxYawRate": 7,
+    "walkBackFrames": 0,
+    "rootYMax": 0,
+    "states": [
+     "Idle",
+     "Walk"
+    ]
+   },
+   "screenshot": "/workspace/development/HumanoidAlpha/reports/exp002_1c/c01_hold_D_camera_behind.png"
+  },
+  "turnaround": {
+   "expectedYawDeg": 180,
+   "finalYawDeg": -180,
+   "finalYawErrDeg": 0,
+   "yawChangeAfterReleaseDeg": 0,
+   "turnSimS": 0.7,
+   "pathYawErrDeg": 0.008,
+   "straightPathM": 8.219,
+   "maxLateralDevM": 0.001,
+   "headingDriftAfterTurnDeg": 0.663,
+   "refYawChanges": 1,
+   "refReasons": [
+    "input start"
+   ],
+   "camDistRangeM": 0,
+   "camHeightRangeM": 0,
+   "camErrStartDeg": 0,
+   "camErrEndDeg": 0,
+   "peakSpeed": 1.442,
+   "clipsSeen": [
+    "Idle",
+    "Walk_Fwd"
+   ],
+   "align": {
+    "peakErrDeg": 156.4,
+    "errEndDeg": 0,
+    "overshootDeg": 0,
+    "errSignChanges": 0,
+    "settleBelow5degSimS": 3.2,
+    "maxCamYawRateDegS": 134,
+    "statuses": [
+     "idle",
+     "aligning"
+    ]
+   },
+   "smooth": {
+    "frames": 81,
+    "maxWeightStep": 0.4,
+    "maxWeightStepAllowed": 0.401,
+    "maxYawRate": 7,
+    "walkBackFrames": 0,
+    "rootYMax": 0,
+    "states": [
+     "Idle",
+     "Walk",
+     "Idle"
+    ]
+   },
+   "camYawAfterStopDriftDeg": 0.017,
+   "screenshots": [
+    "/workspace/development/HumanoidAlpha/reports/exp002_1c/c02_S_turning_around.png",
+    "/workspace/development/HumanoidAlpha/reports/exp002_1c/c03_S_walking_camera_behind.png"
+   ]
+  },
+  "camera": {
+   "stationaryOrbit": {
+    "camAzChangeDeg": -63,
+    "characterYawChangeDeg": 0,
+    "speedAfter": 0,
+    "targetOffsetFromHerM": 0,
+    "distBefore": 5.573,
+    "distAfter": 5.573,
+    "status": "idle"
+   },
+   "duringDrag": {
+    "status": "manual orbit",
+    "azDeg": 121.4,
+    "errDeg": -91.2,
+    "yawDeg": -149.8,
+    "dist": 5.573,
+    "refReason": "manual orbit",
+    "speed": 1.442
+   },
+   "dragHeld": {
+    "status": "manual orbit",
+    "azDeg": 121.4,
+    "errDeg": -90,
+    "yawDeg": -148.6,
+    "dist": 5.573,
+    "refReason": "manual orbit",
+    "speed": 1.442
+   },
+   "afterRelease": {
+    "status": "resuming",
+    "azDeg": 121.4,
+    "errDeg": -90,
+    "yawDeg": -148.6,
+    "dist": 5.573,
+    "refReason": "manual orbit",
+    "speed": 1.442
+   },
+   "resumed": {
+    "status": "aligning",
+    "azDeg": 32.4,
+    "errDeg": -1,
+    "yawDeg": -148.6,
+    "dist": 5.573,
+    "refReason": "manual orbit",
+    "speed": 1.442
+   },
+   "stopped": {
+    "status": "idle",
+    "azDeg": 32,
+    "errDeg": -0.6,
+    "yawDeg": -148.6,
+    "dist": 5.573,
+    "refReason": "idle",
+    "speed": 0
+   },
+   "stopped2": {
+    "status": "idle",
+    "azDeg": 32,
+    "errDeg": -0.6,
+    "yawDeg": -148.6,
+    "dist": 5.573,
+    "refReason": "idle",
+    "speed": 0
+   },
+   "override": {
+    "manualFrames": 30,
+    "maxAutoOmegaDuringManual": 0,
+    "resumingFrames": 7,
+    "statuses": [
+     "idle",
+     "aligning",
+     "manual orbit",
+     "resuming"
+    ],
+    "refReasonsSeen": [
+     "idle",
+     "input start",
+     "key pressed",
+     "manual orbit"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0
+   },
+   "stoppedAzRaw": 0.5661360705810138,
+   "camYawDriftAfterStopDeg": 0.439,
+   "touchOrbitAzChangeDeg": -54,
+   "locked": {
+    "statuses": [
+     "off"
+    ],
+    "camAzRangeDeg": 0
+   }
+  },
+  "joystick": {
+   "low_right": {
+    "source": "touch",
+    "vec": [
+     0.365,
+     0.006
+    ],
+    "mag": 0.365,
+    "gait": 0,
+    "speed": 0.526,
+    "targetSpeed": 0.526,
+    "loco": "Walk",
+    "expectedYawDeg": -89,
+    "finalYawDeg": -89,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.5,
+    "pathYawErrDeg": 0.013,
+    "straightPathM": 1.684,
+    "maxLateralDevM": 0,
+    "headingDriftAfterTurnDeg": 0.595,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 0,
+    "camErrEndDeg": -0.8,
+    "peakSpeed": 0.526,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 45,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "mid_up": {
+    "source": "touch",
+    "vec": [
+     0,
+     0.703
+    ],
+    "mag": 0.703,
+    "gait": 0,
+    "speed": 1.013,
+    "targetSpeed": 1.013,
+    "loco": "Walk",
+    "expectedYawDeg": 0,
+    "finalYawDeg": 0,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0,
+    "pathYawErrDeg": 0,
+    "straightPathM": 3.485,
+    "maxLateralDevM": 0,
+    "headingDriftAfterTurnDeg": 0,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 0,
+    "camErrEndDeg": 0,
+    "peakSpeed": 1.013,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd"
+    ],
+    "smooth": {
+     "frames": 43,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 0,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk"
+     ]
+    }
+   },
+   "high_rim_left": {
+    "source": "touch",
+    "vec": [
+     -1,
+     0.005
+    ],
+    "mag": 1,
+    "gait": 1,
+    "speed": 3.016,
+    "targetSpeed": 3.016,
+    "loco": "Run",
+    "expectedYawDeg": 89.7,
+    "finalYawDeg": 89.7,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.5,
+    "pathYawErrDeg": 0.008,
+    "straightPathM": 9.568,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.566,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 0,
+    "camErrEndDeg": 0.7,
+    "peakSpeed": 3.016,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd",
+     "Run_Fwd"
+    ],
+    "smooth": {
+     "frames": 46,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk",
+      "Run"
+     ]
+    }
+   },
+   "diag_up_left": {
+    "source": "touch",
+    "vec": [
+     -0.704,
+     0.71
+    ],
+    "mag": 1,
+    "gait": 0.946,
+    "speed": 2.931,
+    "targetSpeed": 2.931,
+    "loco": "Run",
+    "expectedYawDeg": 44.7,
+    "finalYawDeg": 44.7,
+    "finalYawErrDeg": 0,
+    "yawChangeAfterReleaseDeg": 0,
+    "turnSimS": 0.4,
+    "pathYawErrDeg": 0.007,
+    "straightPathM": 8.895,
+    "maxLateralDevM": 0.001,
+    "headingDriftAfterTurnDeg": 0.536,
+    "refYawChanges": 1,
+    "refReasons": [
+     "input start"
+    ],
+    "camDistRangeM": 0,
+    "camHeightRangeM": 0,
+    "camErrStartDeg": 0,
+    "camErrEndDeg": 0.5,
+    "peakSpeed": 2.931,
+    "clipsSeen": [
+     "Idle",
+     "Walk_Fwd",
+     "Run_Fwd"
+    ],
+    "smooth": {
+     "frames": 44,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 4.609,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk",
+      "Run"
+     ]
+    }
+   },
+   "mouse_right": {
+    "source": "mouse",
+    "vec": [
+     0.707,
+     0
+    ],
+    "speed": 1.019,
+    "yawDeg": -90
+   }
+  },
+  "run": {
+   "shift": {
+    "loco": "Run",
+    "speed": 3.016,
+    "clips": [
+     [
+      "Run_Fwd",
+      1,
+      1
+     ]
+    ],
+    "yawDeg": 90
+   },
+   "afterShift": {
+    "loco": "Walk",
+    "speed": 1.442,
+    "clips": [
+     [
+      "Walk_Fwd",
+      1,
+      1
+     ]
+    ],
+    "yawDeg": 90
+   },
+   "shiftSmooth": {
+    "frames": 80,
+    "maxWeightStep": 0.4,
+    "maxWeightStepAllowed": 0.401,
+    "maxYawRate": 7,
+    "walkBackFrames": 0,
+    "rootYMax": 0,
+    "states": [
+     "Idle",
+     "Walk",
+     "Run",
+     "Walk"
+    ]
+   },
+   "capsOn": true,
+   "caps": {
+    "loco": "Run",
+    "speed": 3.016,
+    "clips": [
+     [
+      "Run_Fwd",
+      1,
+      1
+     ]
+    ],
+    "yawDeg": -180
+   },
+   "capsSmooth": {
+    "frames": 43,
+    "maxWeightStep": 0.4,
+    "maxWeightStepAllowed": 0.401,
+    "maxYawRate": 7,
+    "walkBackFrames": 0,
+    "rootYMax": 0,
+    "states": [
+     "Idle",
+     "Walk",
+     "Run"
+    ]
+   },
+   "capsOff": false
+  },
+  "presets": {
+   "FRONT": {
+    "herPos": [
+     -0.429,
+     -33.155
+    ],
+    "herYawDeg": -90,
+    "camPosErrM": 0,
+    "targetErrM": 0,
+    "cameraAngleInHerFrameDeg": 0,
+    "screenshot": "/workspace/development/HumanoidAlpha/reports/exp002_1c/c08_preset_FRONT_after_move_rotate.png"
+   },
+   "BACK": {
+    "herPos": [
+     -0.429,
+     -33.155
+    ],
+    "herYawDeg": -90,
+    "camPosErrM": 0,
+    "targetErrM": 0,
+    "cameraAngleInHerFrameDeg": 180,
+    "screenshot": "/workspace/development/HumanoidAlpha/reports/exp002_1c/c09_preset_BACK_after_move_rotate.png"
+   },
+   "LEFT": {
+    "herPos": [
+     -0.429,
+     -33.155
+    ],
+    "herYawDeg": -90,
+    "camPosErrM": 0,
+    "targetErrM": 0,
+    "cameraAngleInHerFrameDeg": 90,
+    "screenshot": "/workspace/development/HumanoidAlpha/reports/exp002_1c/c10_preset_LEFT_after_move_rotate.png"
+   },
+   "RIGHT": {
+    "herPos": [
+     -0.429,
+     -33.155
+    ],
+    "herYawDeg": -90,
+    "camPosErrM": 0,
+    "targetErrM": 0,
+    "cameraAngleInHerFrameDeg": -90
+   },
+   "TOP": {
+    "herPos": [
+     -0.429,
+     -33.155
+    ],
+    "herYawDeg": -90,
+    "camPosErrM": 0,
+    "targetErrM": 0,
+    "cameraAngleInHerFrameDeg": null
+   },
+   "RESET": {
+    "herPos": [
+     -0.429,
+     -33.155
+    ],
+    "herYawDeg": -90,
+    "camPosErrM": 0,
+    "targetErrM": 0,
+    "cameraAngleInHerFrameDeg": 38
+   }
+  },
+  "oneShots": {
+   "space_Jump": {
+    "key": "Space",
+    "clip": "Jump",
+    "clipDurationS": 2.867,
+    "playSimS": 2.8,
+    "holdSimS": 0,
+    "visibleSimS": 3.3,
+    "phases": [
+     "Idle",
+     "Jump:play",
+     "Jump:hold",
+     "returning",
+     "Idle"
+    ],
+    "maxWeight": 1,
+    "rootXZDriftM": 0,
+    "rootYMax": 0,
+    "pelvisYMin": 0.62,
+    "pelvisYMax": 1.285,
+    "endState": "Idle",
+    "endClips": [
+     "Idle:1"
+    ],
+    "restarts": 0,
+    "smooth": {
+     "frames": 40,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 0,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Action",
+      "Idle"
+     ]
+    },
+    "extra": {
+     "apexPelvisY": 1.263,
+     "apexOneShot": {
+      "name": "Jump",
+      "phase": "play",
+      "time": 1.5000000000000002,
+      "duration": 2.866666555404663,
+      "holdLeft": 0
+     },
+     "squatDuringJump": {
+      "ok": false,
+      "name": "Squat",
+      "reason": "busy: Jump playing",
+      "t": 203.9999999999927
+     },
+     "wDuringJump": {
+      "speed": 0,
+      "pos": {
+       "x": -0.42949990946530214,
+       "y": 0,
+       "z": -33.15466910818853
+      },
+      "oneShot": "Jump"
+     }
+    },
+    "startedFromYawDeg": 51.6,
+    "screenshots": [
+     "/workspace/development/HumanoidAlpha/reports/exp002_1c/c11_jump_space.png"
+    ],
+    "lastOneShot": {
+     "ok": false,
+     "name": "Squat",
+     "reason": "busy: Jump playing",
+     "t": 203.9999999999927
+    }
+   },
+   "digit1_ToPlank": {
+    "key": "Digit1",
+    "clip": "ToPlank",
+    "clipDurationS": 3.967,
+    "playSimS": 3.9,
+    "holdSimS": 1.9,
+    "visibleSimS": 6.7,
+    "phases": [
+     "Idle",
+     "ToPlank:play",
+     "ToPlank:hold",
+     "returning",
+     "Idle"
+    ],
+    "maxWeight": 1,
+    "rootXZDriftM": 0,
+    "rootYMax": 0,
+    "pelvisYMin": 0.354,
+    "pelvisYMax": 0.915,
+    "endState": "Idle",
+    "endClips": [
+     "Idle:1"
+    ],
+    "restarts": 0,
+    "smooth": {
+     "frames": 73,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 0,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Action",
+      "Idle"
+     ]
+    },
+    "extra": {
+     "atHold": {
+      "name": "ToPlank",
+      "phase": "hold",
+      "time": 3.9666666984558105,
+      "duration": 3.9666666984558105,
+      "holdLeft": 0.39999999999999936
+     }
+    },
+    "startedFromYawDeg": 51.6,
+    "screenshots": [
+     "/workspace/development/HumanoidAlpha/reports/exp002_1c/c12_toplank_1_hold.png"
+    ],
+    "lastOneShot": {
+     "ok": true,
+     "name": "ToPlank",
+     "reason": "started",
+     "t": 208.69999999999243
+    }
+   },
+   "digit2_ToBridge": {
+    "key": "Digit2",
+    "clip": "ToBridge",
+    "clipDurationS": 4.3,
+    "playSimS": 4.3,
+    "holdSimS": 1.9,
+    "visibleSimS": 7.1,
+    "phases": [
+     "Idle",
+     "ToBridge:play",
+     "ToBridge:hold",
+     "returning",
+     "Idle"
+    ],
+    "maxWeight": 1,
+    "rootXZDriftM": 0,
+    "rootYMax": 0,
+    "pelvisYMin": 0.122,
+    "pelvisYMax": 0.914,
+    "endState": "Idle",
+    "endClips": [
+     "Idle:1"
+    ],
+    "restarts": 0,
+    "smooth": {
+     "frames": 78,
+     "maxWeightStep": 0.167,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 0,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Action",
+      "Idle"
+     ]
+    },
+    "extra": {
+     "atHold": {
+      "name": "ToBridge",
+      "phase": "hold",
+      "time": 4.300000190734863,
+      "duration": 4.300000190734863,
+      "holdLeft": 0.49999999999999933
+     }
+    },
+    "startedFromYawDeg": 51.6,
+    "screenshots": [
+     "/workspace/development/HumanoidAlpha/reports/exp002_1c/c13_tobridge_2_hold.png"
+    ],
+    "lastOneShot": {
+     "ok": true,
+     "name": "ToBridge",
+     "reason": "started",
+     "t": 218.59999999999187
+    }
+   },
+   "digit3_Squat": {
+    "key": "Digit3",
+    "clip": "Squat",
+    "clipDurationS": 2.933,
+    "playSimS": 2.9,
+    "holdSimS": 0,
+    "visibleSimS": 3.4,
+    "phases": [
+     "Idle",
+     "Squat:play",
+     "Squat:hold",
+     "returning",
+     "Idle"
+    ],
+    "maxWeight": 1,
+    "rootXZDriftM": 0,
+    "rootYMax": 0,
+    "pelvisYMin": 0.42,
+    "pelvisYMax": 0.914,
+    "endState": "Idle",
+    "endClips": [
+     "Idle:1"
+    ],
+    "restarts": 0,
+    "smooth": {
+     "frames": 41,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 0,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Action",
+      "Idle"
+     ]
+    },
+    "extra": null,
+    "startedFromYawDeg": 51.6,
+    "screenshots": [
+     "/workspace/development/HumanoidAlpha/reports/exp002_1c/c14_squat_3.png"
+    ],
+    "lastOneShot": {
+     "ok": true,
+     "name": "Squat",
+     "reason": "started",
+     "t": 228.99999999999127
+    }
+   },
+   "numpad1_ToPlank_releasedByW": {
+    "key": "Numpad1",
+    "clip": "ToPlank",
+    "clipDurationS": 3.967,
+    "playSimS": 3.9,
+    "holdSimS": 1.3,
+    "visibleSimS": 6,
+    "phases": [
+     "Idle",
+     "ToPlank:play",
+     "ToPlank:hold",
+     "returning",
+     "Walk",
+     "Idle"
+    ],
+    "maxWeight": 1,
+    "rootXZDriftM": 2.602,
+    "rootYMax": 0,
+    "pelvisYMin": 0.354,
+    "pelvisYMax": 0.914,
+    "endState": "Idle",
+    "endClips": [
+     "Idle:1"
+    ],
+    "restarts": 0,
+    "smooth": {
+     "frames": 88,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 7,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Action",
+      "Idle",
+      "Walk",
+      "Idle"
+     ]
+    },
+    "extra": {
+     "holdBeforeW": {
+      "name": "ToPlank",
+      "phase": "hold",
+      "time": 3.9666666984558105,
+      "duration": 3.9666666984558105,
+      "holdLeft": 0.7999999999999993
+     },
+     "afterW": {
+      "loco": "Walk",
+      "speed": 1.442,
+      "oneShot": null
+     }
+    },
+    "startedFromYawDeg": 51.6,
+    "screenshots": [],
+    "lastOneShot": {
+     "ok": true,
+     "name": "ToPlank",
+     "reason": "started",
+     "t": 235.7999999999909
+    }
+   },
+   "walkThenJump": {
+    "speedAtTrigger": 1.442,
+    "brakeDistM": 0.064,
+    "theoreticalBrakeDistM": 0.13,
+    "stoppedAfterSimS": 0.1,
+    "movedDuringJumpAfterStopM": 0,
+    "resumedWalkingAfterJump": false,
+    "resumeAtSimS": null,
+    "smooth": {
+     "frames": 66,
+     "maxWeightStep": 0.4,
+     "maxWeightStepAllowed": 0.401,
+     "maxYawRate": 0,
+     "walkBackFrames": 0,
+     "rootYMax": 0,
+     "states": [
+      "Idle",
+      "Walk",
+      "Action",
+      "Idle"
+     ]
+    }
+   },
+   "debuggerPreview": {
+    "Jump": {
+     "state": "Preview",
+     "previewClip": "Jump",
+     "weight": 1,
+     "time": 1.4
+    },
+    "Walk_Back": {
+     "state": "Preview",
+     "previewClip": "Walk_Back",
+     "weight": 1,
+     "time": 1.4
+    },
+    "spaceInManual": {
+     "ok": false,
+     "name": "Jump",
+     "reason": "manual mode",
+     "t": 262.39999999999117
+    },
+    "backToAuto": "auto",
+    "idle": true
+   },
+   "debuggerFields": [
+    "State",
+    "Mode",
+    "Active clips",
+    "timeScale",
+    "Input",
+    "Input vector",
+    "Speed",
+    "Position",
+    "Facing",
+    "Run",
+    "One-shot",
+    "Move ref",
+    "Camera"
+   ],
+   "debuggerReadout": {
+    "state": "Idle",
+    "mode": "Automatic",
+    "active": "Idle",
+    "timeScale": "Idle ×1.00",
+    "source": "none",
+    "vector": "(0.00, 0.00) |0.00| gait 0.00",
+    "speed": "0.000 m/s  (target 0.000) · measured 0.000",
+    "position": "x -3.03  z -30.50 m",
+    "yaw": "0°",
+    "run": "off",
+    "oneShot": "ready · last Jump: rejected (manual mode)",
+    "ref": "-0° · idle (camera -0°)",
+    "cam": "idle · az 180° · err 0° · ω 0.00"
+   }
+  },
+  "overview": {
+   "screenshot": "/workspace/development/HumanoidAlpha/reports/exp002_1c/c16_moving_debugger_readouts.png",
+   "readout": {
+    "state": "Walk",
+    "mode": "Automatic",
+    "active": "Walk_Fwd",
+    "timeScale": "Walk_Fwd ×1.00",
+    "source": "keyboard",
+    "vector": "(-1.00, 0.00) |1.00| gait 0.00",
+    "speed": "1.442 m/s fwd (target 1.442) · measured 1.442",
+    "position": "x -5.94  z -26.27 m",
+    "yaw": "-35°",
+    "run": "off",
+    "oneShot": "ready · last Jump: rejected (manual mode)",
+    "ref": "-125° · input start (camera -36°)",
+    "cam": "aligning · az 145° · err 1° · ω 0.02"
+   }
+  }
+ },
+ "fps": 5.6,
+ "errors": [],
+ "oneShotLog": [
+  "info: [animation] one-shot Space {\"ok\":true,\"name\":\"Jump\",\"reason\":\"started\",\"t\":202.0999999999928}",
+  "info: [animation] one-shot Digit3 {\"ok\":false,\"name\":\"Squat\",\"reason\":\"busy: Jump playing\",\"t\":203.9999999999927}",
+  "info: [animation] one-shot Digit1 {\"ok\":true,\"name\":\"ToPlank\",\"reason\":\"started\",\"t\":208.69999999999243}",
+  "info: [animation] one-shot Digit2 {\"ok\":true,\"name\":\"ToBridge\",\"reason\":\"started\",\"t\":218.59999999999187}",
+  "info: [animation] one-shot Digit3 {\"ok\":true,\"name\":\"Squat\",\"reason\":\"started\",\"t\":228.99999999999127}",
+  "info: [animation] one-shot Numpad1 {\"ok\":true,\"name\":\"ToPlank\",\"reason\":\"started\",\"t\":235.7999999999909}",
+  "info: [animation] one-shot Space {\"ok\":true,\"name\":\"Jump\",\"reason\":\"started\",\"t\":248.89999999999014}",
+  "info: [animation] one-shot Space {\"ok\":false,\"name\":\"Jump\",\"reason\":\"manual mode\",\"t\":262.39999999999117}"
+ ]
+}

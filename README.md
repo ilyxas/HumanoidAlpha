@@ -15,6 +15,7 @@
 | **1** | **Debug** | Полная консоль: суставы, моторы, диагностика, управление физикой. Position / Torque / Assisted. |
 | **2** | **Experiment** | Экран тестировщика: Xandra, белый пол, камеры, часы и Screenshot. Моторы управляются через `humanoid`. Без страховочных сил. |
 | **3** | **Harness** | Тот же чистый экран наблюдения и те же 33 мотора, плюс физическая страховка на тазе (внешняя сила, не фиксация позы). Стики мыши/геймпада: [HUMAN_CONTROL.md](docs/HUMAN_CONTROL.md). |
+| **4** | **Animation** | Тот же экран, что в Experiment/Harness, но **без физики**: Xandra из `assets/Xandra_Animated.glb` ходит по сцене. WASD или левый стик — движение относительно камеры (S — разворот и шаг вперёд; Shift — бег, Caps Lock — постоянный бег), отпустил — плавная остановка и Idle; камера сама плавно заходит за спину при движении. Space — прыжок, 1/2/3 — планка/мостик/присед. Панель ANIMATION DEBUG: состояние, клипы, веса, скорость, просмотр клипов, лицевые morph targets. Подробно: [ANIMATION_MODE.md](docs/ANIMATION_MODE.md). |
 | **0** | **Stop** | Остановка проекта. |
 
 Адрес для обоих режимов: **http://127.0.0.1:8788/**
@@ -29,6 +30,7 @@
 ./START.command debug
 ./START.command experiment
 ./START.command harness
+./START.command animation
 ./START.command stop
 ```
 
@@ -65,4 +67,4 @@
 `.venv`, временные файлы и журналы экспериментов в архив не включаются.
 
 Документация: [столкновения](docs/COLLISIONS.md),
-[наблюдение и камеры](docs/OBSERVATION_VIEW.md), [актуаторы](docs/ACTUATOR_API.md).
+[наблюдение и камеры](docs/OBSERVATION_VIEW.md), [режим Animation](docs/ANIMATION_MODE.md), [актуаторы](docs/ACTUATOR_API.md).
