@@ -3,11 +3,11 @@
  "spec": "EXP002.1-A merge: cumulative 8-clip animation set",
  "glb": {
   "path": "assets/Xandra_Animated.glb",
-  "size_bytes": 74025548,
-  "sha256": "0cffd0422a5cf9c03820a9e8752e5b3065ad56aa631849aaa29202514d97230f"
+  "size_bytes": 74357796,
+  "sha256": "f2e77335c00e6e445843bf20814c8450760d33a6ab636a202c9d3df435d4f4ce"
  },
  "build": {
-  "source_blend": "/workspace/XandraAnimation/Xandra_Animations.blend (box; backup Xandra_Animations_v3_pre_merge.blend)",
+  "source_blend": "/workspace/XandraAnimation/Xandra_Animations.blend (box; v5 clothes built in by clothes/c12_build_clothes.py; pre-clothes backup Xandra_Animations_v4_pre_clothes.blend; previous no-clothes GLB backed up as export/backup/Xandra_Animated_8clips_noclothes.glb, sha256 0cffd0422a5cf9c03820a9e8752e5b3065ad56aa631849aaa29202514d97230f)",
   "export_script": "/workspace/XandraAnimation/scripts/30_export_glb.py (canonical; writes this file directly)",
   "blender": "4.3.2",
   "exporter_settings": "glTF binary, export_animation_mode=ACTIONS, morph targets on, skins on (4 influences), vertex colours NONE, slide-to-zero, sampled 30 fps"
@@ -42,7 +42,7 @@
   ],
   "note_glb_animation_order": "glTF animations[] are stored alphabetically by the exporter: Idle, Jump, Run_Fwd, Squat, ToBridge, ToPlank, Walk_Back, Walk_Fwd; look clips up by name, not index",
   "replaced": "old clip 'Walk' (Xandra_Walk) is replaced by Walk_Fwd and is no longer in the file",
-  "materials": "Principled glTF skin (light, metallic 0 via MR texture factor), no COLOR_0 vertex colours, brown hair tint patch - same as the previous Xandra_Animated.glb (materials JSON identical)"
+  "materials": "Skin/eyes/teeth/hair materials JSON identical to the previous (no-clothes) Xandra_Animated.glb incl. the brown hair tint baseColorFactor [0.1697, 0.1006, 0.0921, 1]; no COLOR_0 vertex colours; MI_BlueUnderwear removed; two fabric materials added (see clothing)"
  },
  "clips": {
   "Idle": {
@@ -501,5 +501,55 @@
    "previous_5clip": "Xandra_Animated.glb sha256 f7b79f60... (box: /workspace/XandraAnimation/export/Xandra_Animated.glb)",
    "locomotion": "Xandra_Locomotion.glb sha256 e004a9f7... (box: /workspace/XandraAnimation/export/Xandra_Locomotion.glb)"
   }
+ },
+ "clothing": {
+  "version": "v5 (approved look: V-neck crop sports top with rounded, partially bridged bust - slight nipple relief accepted by Ilya; yoga shorts)",
+  "source": "built from Xandra's own body topology (top: F4_Torso + F4_Head shoulder strip; shorts: F4_Legs_Censored surface) by /workspace/XandraAnimation/clothes/c12_build_clothes.py (+ garmentlib.py, bustgrid.py); no third-party garment assets downloaded or used",
+  "license": "original work made for this project (see /workspace/XandraAnimation/mocap/LICENSES.txt, section Clothing)",
+  "meshes": {
+   "Xandra_Top": {
+    "material": "MI_Xandra_Top_Fabric",
+    "blend_verts": 8338,
+    "blend_faces": 16279,
+    "construction": "double shell (1.3 mm fabric) with rim; rolled 5-6 mm edges at neck/armholes; 2.4 cm hem band; 1.2 mm min offset over the skin"
+   },
+   "Xandra_Shorts": {
+    "material": "MI_Xandra_Shorts_Fabric",
+    "blend_verts": 4746,
+    "blend_faces": 9236,
+    "construction": "double shell (1.3 mm) with rim; 3.8 cm waistband + rolled waist edge; rolled leg hems (mid-thigh)"
+   }
+  },
+  "materials": {
+   "MI_Xandra_Top_Fabric": "Principled/glTF PBR, baseColorFactor linear (0.0168, 0.0513, 0.195) dark blue, metallic 0, roughness 0.72, KHR_materials_sheen (0.35 weight in Blender; sheenColor (0.75,0.8,1), sheenRoughness 0.5), no textures",
+   "MI_Xandra_Shorts_Fabric": "Principled/glTF PBR, baseColorFactor linear (0.0075, 0.011, 0.0242) near-black navy, metallic 0, roughness 0.70, KHR_materials_sheen, no textures"
+  },
+  "rigging": "skinned to the same `root` skin (341 joints); weights = nearest-face barycentric transfer from the body (same rule as Data Transfer POLYINTERP_NEAREST) using the body's top-4 weights, limited to 4 influences, normalised",
+  "removed": "Blue_Underwear mesh and MI_BlueUnderwear material are no longer exported (hidden in the blend)",
+  "body_faces_removed_in_export": {
+   "rule": "export session only (blend body intact): body vertices >= 5-6 mm inside every garment edge (2.2 cm at the V-neck, 1.2 cm for the neck edge on F4_Head) whose whole 1-ring is >= 2 mm inside the garment, so every removed face lies fully under the fabric",
+   "deleted_vertices": {
+    "F4_Torso": 724,
+    "F4_Legs_Nude.001": 5011,
+    "F4_Head": 41
+   },
+   "F4_Head_note": "only shoulder-skin vertices under the straps (z < 1.43 m); they carry no displacement (> 1 mm) in any of the 52 exported morphs; face/head untouched; all 52 morph targets kept with identical names"
+  },
+  "added_extension": "KHR_materials_sheen (extensionsUsed)",
+  "poke_through_check": {
+   "method": "body vertices >=4 mm inside a garment edge (rest-pose cut fields) of the exported body (F4_Torso, F4_Head<1.47 m, F4_Legs_Nude) still present in the GLB; every 2nd + last frame of each clip; a vertex is a poke-through if its signed distance to the nearest face of the skinned garment OUTER shell is >0 (within 3 cm) AND a ray along its deformed normal (3 cm) hits no garment face (exposed skin). Ray hits are counted separately: leaving through an outer face = inside the fabric thickness (not visible); hitting the inner shell = covered (crease/fold false positive of the nearest-face test)",
+   "max_depth_mm_per_clip": {
+    "Idle": 1.88,
+    "Walk_Fwd": 2.72,
+    "Run_Fwd": 3.81,
+    "Walk_Back": 2.23,
+    "Squat": 2.1,
+    "Jump": 0.84,
+    "ToPlank": 2.15,
+    "ToBridge": 1.4
+   },
+   "note": "residual: small skin push-through (<= 3.8 mm) at 2-3 spots: front armhole corners (Idle/Walk/Run, mostly hidden by the arm) and the shorts waist sides in deep hip flexion (Squat/ToPlank); see validation/clothes"
+  },
+  "validation": "/workspace/XandraAnimation/validation/clothes (stills, per-clip mp4s, reel, poke.json, verify.json)"
  }
 }
