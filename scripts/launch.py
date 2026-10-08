@@ -1,4 +1,5 @@
-"""One supervisor for the debug console and the experiment runtime (Mac/Linux)."""
+"""One supervisor for the debug console, the experiment runtime and the
+physics-free animation viewer (Mac/Linux)."""
 import argparse
 import fcntl
 import hashlib
@@ -39,9 +40,43 @@ def stop_managed(root=None):
     return True
 
 
-def run(args):
+def spawn_physics(args):
+    """Start the MuJoCo + WebSocket runtime for the physics modes."""
+    (ROOT / 'reports').mkdir(exist_ok=True)
+    subprocess.run([sys.executable, str(ROOT / 'physics/control_console.py'),
+                    '--inventory', str(ROOT / 'reports/control_inventory.json')],
+                   cwd=ROOT, check=True)
+    command = [sys.executable, str(ROOT / 'physics/control_console.py'), '--port', str(args.ws_port)]
+    if args.mode in ('experiment', 'harness', 'assisted'):
+        command.extend(['--actuator-api', '--actuator-log', str(ROOT / 'reports/actuator_commands.jsonl')])
+    if args.mode == 'assisted':
+        command.append('--assisted-stand')
+    if args.mode == 'harness':
+        command.append('--harness')
+    return subprocess.Popen(command, cwd=ROOT)
+
+
+def wait_for_physics(process, args, stop):
+    """Block until the runtime streams on its WebSocket (or fail/stop)."""
     from websockets.sync.client import connect
+    deadline = time.monotonic() + 15
+    while not stop.is_set():
+        if process.poll() is not None:
+            raise RuntimeError('Physics failed to start; see the error above.')
+        try:
+            with connect(f'ws://127.0.0.1:{args.ws_port}', open_timeout=.3) as connection:
+                connection.recv(timeout=1)
+                break
+        except OSError:
+            if time.monotonic() > deadline:
+                raise RuntimeError('Physics startup timed out.')
+            stop.wait(.05)
+
+
+def run(args):
     os.chdir(ROOT)
+    # Animation mode is a static viewer: no MuJoCo process, no WebSocket.
+    physics = args.mode != 'animation'
     state = ROOT / '.runtime'
     state.mkdir(mode=0o700, exist_ok=True)
     lock = (state / 'launcher.lock').open('w')
@@ -58,8 +93,13 @@ def run(args):
     http_started = False
     control_started = False
     path = control_path()
-    page = 'console.html' if args.mode == 'debug' else 'observation.html'  # experiment, harness, assisted
-    route = f'/viewer/{page}?wsPort={args.ws_port}'
+    if args.mode == 'debug':
+        page = 'console.html'
+    elif args.mode == 'animation':
+        page = 'animation.html'
+    else:
+        page = 'observation.html'  # experiment, harness, assisted
+    route = f'/viewer/{page}?wsPort={args.ws_port}' if physics else f'/viewer/{page}'
 
     class Handler(SimpleHTTPRequestHandler):
         def do_HEAD(self):
@@ -109,12 +149,13 @@ def run(args):
     try:
         # Check before spawning anything; never connect to or kill an unrelated
         # service that happens to occupy a required port.
-        with socket.socket() as probe:
-            probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            try:
-                probe.bind(('127.0.0.1', args.ws_port))
-            except OSError as error:
-                raise RuntimeError(f'Port {args.ws_port} is busy. Stop the previous project first.') from error
+        if physics:
+            with socket.socket() as probe:
+                probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                try:
+                    probe.bind(('127.0.0.1', args.ws_port))
+                except OSError as error:
+                    raise RuntimeError(f'Port {args.ws_port} is busy. Stop the previous project first.') from error
         try:
             http = ThreadingHTTPServer(('127.0.0.1', args.http_port), Handler)
         except OSError as error:
@@ -130,37 +171,16 @@ def run(args):
         control_started = True
         threading.Thread(target=http.serve_forever, daemon=True).start()
         http_started = True
-        (ROOT / 'reports').mkdir(exist_ok=True)
-        subprocess.run([sys.executable, str(ROOT / 'physics/control_console.py'),
-                        '--inventory', str(ROOT / 'reports/control_inventory.json')],
-                       cwd=ROOT, check=True)
-        command = [sys.executable, str(ROOT / 'physics/control_console.py'), '--port', str(args.ws_port)]
-        if args.mode in ('experiment', 'harness', 'assisted'):
-            command.extend(['--actuator-api', '--actuator-log', str(ROOT / 'reports/actuator_commands.jsonl')])
-        if args.mode == 'assisted':
-            command.append('--assisted-stand')
-        if args.mode == 'harness':
-            command.append('--harness')
-        process = subprocess.Popen(command, cwd=ROOT)
-        deadline = time.monotonic() + 15
-        while not stop.is_set():
-            if process.poll() is not None:
-                raise RuntimeError('Physics failed to start; see the error above.')
-            try:
-                with connect(f'ws://127.0.0.1:{args.ws_port}', open_timeout=.3) as connection:
-                    connection.recv(timeout=1)
-                    break
-            except OSError:
-                if time.monotonic() > deadline:
-                    raise RuntimeError('Physics startup timed out.')
-                stop.wait(.05)
+        if physics:
+            process = spawn_physics(args)
+            wait_for_physics(process, args, stop)
         url = f'http://127.0.0.1:{args.http_port}/'
         if not stop.is_set():
             print(f'\n{args.mode.upper()} — {url}\nCtrl+C to stop.\n', flush=True)
             if not args.no_open:
                 webbrowser.open(url)
         while not stop.wait(.1):
-            if process.poll() is not None:
+            if process is not None and process.poll() is not None:
                 raise RuntimeError('Physics stopped; closing the viewer server.')
     finally:
         if process is not None and process.poll() is None:
@@ -185,7 +205,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['debug', 'experiment', 'harness', 'assisted'])
+    parser.add_argument('mode', choices=['debug', 'experiment', 'harness', 'assisted', 'animation'])
     parser.add_argument('--no-open', action='store_true', help='Print the URL without opening a browser')
     parser.add_argument('--http-port', type=int, default=8788)
     parser.add_argument('--ws-port', type=int, default=8766)
