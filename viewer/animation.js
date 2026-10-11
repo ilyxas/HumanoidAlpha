@@ -24,10 +24,11 @@ import { DEFAULT_SPEEDS, createMovementController, createReferenceLatch, forward
 import { EXPECTED_CLIPS, createAnimationController } from './animation/anim-controller.js';
 import { mountDebugger } from './animation/debugger.js';
 
-const MODEL_URL = '../assets/Xandra_Animated.glb';
+const params = new URLSearchParams(location.search);
+// ?outfit=blacklace loads the Black Lace fitting export (same rig, clips and morphs).
+const MODEL_URL = params.get('outfit') === 'blacklace' ? '../assets/Xandra_BlackLace.glb' : '../assets/Xandra_Animated.glb';
 const MANIFEST_URL = '../assets/Xandra_Animated.manifest.json';
 
-const params = new URLSearchParams(location.search);
 const perf = createProfiler(params.get('profile') === '1');
 const canvas = document.querySelector('#scene'), overlay = document.querySelector('#overlay');
 const context = overlay.getContext('2d');
