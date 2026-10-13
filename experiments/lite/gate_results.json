@@ -1,0 +1,93 @@
+{
+ "g1": {
+  "stand_20s": {
+   "fell": null,
+   "max_tilt_deg": 2.31
+  },
+  "reached_single_support": false,
+  "t_single": 28.0,
+  "fell": 22.93,
+  "max_tilt_deg": 103.05,
+  "support_events": [],
+  "pass": false
+ },
+ "g2": {
+  "stepped": false,
+  "foot_advance_m": [
+   -0.416,
+   0.016
+  ],
+  "fell": 3.92,
+  "max_tilt_deg": 105.11,
+  "final_skill": "walk",
+  "log": {
+   "qpos_writes": [
+    [
+     0.0,
+     "reset seed"
+    ]
+   ],
+   "xfrc_events": [],
+   "force_abs_max": {
+    "hip_roll_l": 120.0,
+    "hip_pitch_l": 120.0,
+    "leg_l": 900.0,
+    "ankle_l": 80.0,
+    "ankle_roll_l": 60.0,
+    "hip_roll_r": 120.0,
+    "hip_pitch_r": 120.0,
+    "leg_r": 900.0,
+    "ankle_r": 80.0,
+    "ankle_roll_r": 60.0,
+    "shoulder": 52.3
+   },
+   "saturated_fraction": {
+    "hip_pitch_l": 0.0895,
+    "leg_l": 0.3075,
+    "ankle_l": 0.046,
+    "hip_pitch_r": 0.0312,
+    "leg_r": 0.0023,
+    "ankle_r": 0.0552,
+    "hip_roll_l": 0.0392,
+    "hip_roll_r": 0.0564,
+    "ankle_roll_r": 0.1775,
+    "ankle_roll_l": 0.0444
+   },
+   "positive_work_J": 749.8,
+   "peak_power_W": 6578.7,
+   "contact_force_max_N": 2022.5,
+   "stance_slip_max_cm": 3.75,
+   "stabilizer_max_cm": 5.66,
+   "support_events": [],
+   "skill_events": [
+    [
+     1.0,
+     "stand",
+     "walk"
+    ],
+    [
+     4.0,
+     "walk",
+     "shift timeout"
+    ],
+    [
+     7.002,
+     "walk",
+     "shift timeout"
+    ],
+    [
+     10.004,
+     "walk",
+     "shift timeout"
+    ],
+    [
+     13.006,
+     "walk",
+     "shift timeout"
+    ]
+   ],
+   "sim_steps": 7500
+  },
+  "pass": false
+ }
+}
