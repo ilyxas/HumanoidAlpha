@@ -1,0 +1,374 @@
+{
+ "diagnostics": {
+  "total_mass": 60.00000000000001,
+  "joints": [
+   {
+    "actuator": "lumbar_x_motor",
+    "hold_torque": -0.778,
+    "k_grav": 65.71,
+    "kp": 38.14,
+    "kd": 3.032,
+    "inertia": 2.35757,
+    "kd_dt_over_I": 0.003
+   },
+   {
+    "actuator": "lumbar_y_motor",
+    "hold_torque": 0.0,
+    "k_grav": 65.71,
+    "kp": 38.14,
+    "kd": 3.032,
+    "inertia": 2.91718,
+    "kd_dt_over_I": 0.002
+   },
+   {
+    "actuator": "lumbar_z_motor",
+    "hold_torque": 0.0,
+    "k_grav": -0.0,
+    "kp": 38.14,
+    "kd": 3.032,
+    "inertia": 0.7305,
+    "kd_dt_over_I": 0.008
+   },
+   {
+    "actuator": "thoracic_x_motor",
+    "hold_torque": 4.914,
+    "k_grav": 33.75,
+    "kp": 35.8,
+    "kd": 2.864,
+    "inertia": 1.08546,
+    "kd_dt_over_I": 0.005
+   },
+   {
+    "actuator": "thoracic_y_motor",
+    "hold_torque": 0.0,
+    "k_grav": 33.75,
+    "kp": 35.8,
+    "kd": 2.864,
+    "inertia": 1.63568,
+    "kd_dt_over_I": 0.004
+   },
+   {
+    "actuator": "thoracic_z_motor",
+    "hold_torque": 0.0,
+    "k_grav": -0.0,
+    "kp": 35.8,
+    "kd": 2.864,
+    "inertia": 0.71481,
+    "kd_dt_over_I": 0.008
+   },
+   {
+    "actuator": "neck_x_motor",
+    "hold_torque": 0.027,
+    "k_grav": 5.41,
+    "kp": 14.32,
+    "kd": 1.432,
+    "inertia": 0.07668,
+    "kd_dt_over_I": 0.037
+   },
+   {
+    "actuator": "neck_y_motor",
+    "hold_torque": 0.0,
+    "k_grav": 5.41,
+    "kp": 14.32,
+    "kd": 1.432,
+    "inertia": 0.07667,
+    "kd_dt_over_I": 0.037
+   },
+   {
+    "actuator": "neck_z_motor",
+    "hold_torque": 0.0,
+    "k_grav": -0.0,
+    "kp": 14.32,
+    "kd": 1.432,
+    "inertia": 0.01915,
+    "kd_dt_over_I": 0.15
+   },
+   {
+    "actuator": "hip_l_x_motor",
+    "hold_torque": 0.36,
+    "k_grav": -40.68,
+    "kp": 128.53,
+    "kd": 7.958,
+    "inertia": 2.41578,
+    "kd_dt_over_I": 0.007
+   },
+   {
+    "actuator": "hip_l_y_motor",
+    "hold_torque": -2.21,
+    "k_grav": -40.68,
+    "kp": 128.53,
+    "kd": 7.958,
+    "inertia": 2.4199,
+    "kd_dt_over_I": 0.007
+   },
+   {
+    "actuator": "hip_l_z_motor",
+    "hold_torque": 0.0,
+    "k_grav": -0.0,
+    "kp": 128.53,
+    "kd": 7.958,
+    "inertia": 0.02517,
+    "kd_dt_over_I": 0.632
+   },
+   {
+    "actuator": "hip_r_x_motor",
+    "hold_torque": 0.36,
+    "k_grav": -40.68,
+    "kp": 128.53,
+    "kd": 7.958,
+    "inertia": 2.41577,
+    "kd_dt_over_I": 0.007
+   },
+   {
+    "actuator": "hip_r_y_motor",
+    "hold_torque": 2.21,
+    "k_grav": -40.68,
+    "kp": 128.53,
+    "kd": 7.958,
+    "inertia": 2.4199,
+    "kd_dt_over_I": 0.007
+   },
+   {
+    "actuator": "hip_r_z_motor",
+    "hold_torque": 0.0,
+    "k_grav": -0.0,
+    "kp": 128.53,
+    "kd": 7.958,
+    "inertia": 0.02517,
+    "kd_dt_over_I": 0.632
+   },
+   {
+    "actuator": "shoulder_l_x_motor",
+    "hold_torque": -1.577,
+    "k_grav": -6.41,
+    "kp": 21.48,
+    "kd": 2.148,
+    "inertia": 0.20757,
+    "kd_dt_over_I": 0.021
+   },
+   {
+    "actuator": "shoulder_l_y_motor",
+    "hold_torque": -4.779,
+    "k_grav": -6.41,
+    "kp": 21.48,
+    "kd": 2.148,
+    "inertia": 0.28718,
+    "kd_dt_over_I": 0.015
+   },
+   {
+    "actuator": "shoulder_l_z_motor",
+    "hold_torque": 0.0,
+    "k_grav": -0.0,
+    "kp": 21.48,
+    "kd": 2.148,
+    "inertia": 0.12835,
+    "kd_dt_over_I": 0.033
+   },
+   {
+    "actuator": "shoulder_r_x_motor",
+    "hold_torque": -1.577,
+    "k_grav": -6.41,
+    "kp": 21.48,
+    "kd": 2.148,
+    "inertia": 0.20757,
+    "kd_dt_over_I": 0.021
+   },
+   {
+    "actuator": "shoulder_r_y_motor",
+    "hold_torque": 4.779,
+    "k_grav": -6.41,
+    "kp": 21.48,
+    "kd": 2.148,
+    "inertia": 0.28718,
+    "kd_dt_over_I": 0.015
+   },
+   {
+    "actuator": "shoulder_r_z_motor",
+    "hold_torque": 0.0,
+    "k_grav": -0.0,
+    "kp": 21.48,
+    "kd": 2.148,
+    "inertia": 0.12835,
+    "kd_dt_over_I": 0.033
+   },
+   {
+    "actuator": "knee_l_motor",
+    "hold_torque": -0.16,
+    "k_grav": -9.78,
+    "kp": 294.46,
+    "kd": 20.415,
+    "inertia": 0.34521,
+    "kd_dt_over_I": 0.118
+   },
+   {
+    "actuator": "knee_r_motor",
+    "hold_torque": -0.16,
+    "k_grav": -9.78,
+    "kp": 294.46,
+    "kd": 20.415,
+    "inertia": 0.34521,
+    "kd_dt_over_I": 0.118
+   },
+   {
+    "actuator": "elbow_l_motor",
+    "hold_torque": 1.243,
+    "k_grav": -1.47,
+    "kp": 17.9,
+    "kd": 1.79,
+    "inertia": 0.05829,
+    "kd_dt_over_I": 0.061
+   },
+   {
+    "actuator": "elbow_r_motor",
+    "hold_torque": 1.243,
+    "k_grav": -1.47,
+    "kp": 17.9,
+    "kd": 1.79,
+    "inertia": 0.05829,
+    "kd_dt_over_I": 0.061
+   },
+   {
+    "actuator": "ankle_l_dp_motor",
+    "hold_torque": -0.588,
+    "k_grav": -0.3,
+    "kp": 139.27,
+    "kd": 5.643,
+    "inertia": 0.00811,
+    "kd_dt_over_I": 1.392
+   },
+   {
+    "actuator": "ankle_l_ie_motor",
+    "hold_torque": -0.015,
+    "k_grav": -0.0,
+    "kp": 139.27,
+    "kd": 5.643,
+    "inertia": 0.00287,
+    "kd_dt_over_I": 3.927
+   },
+   {
+    "actuator": "ankle_r_dp_motor",
+    "hold_torque": -0.588,
+    "k_grav": -0.3,
+    "kp": 139.27,
+    "kd": 5.643,
+    "inertia": 0.00811,
+    "kd_dt_over_I": 1.392
+   },
+   {
+    "actuator": "ankle_r_ie_motor",
+    "hold_torque": 0.015,
+    "k_grav": 0.0,
+    "kp": 139.27,
+    "kd": 5.643,
+    "inertia": 0.00287,
+    "kd_dt_over_I": 3.927
+   },
+   {
+    "actuator": "wrist_l_flex_motor",
+    "hold_torque": 0.113,
+    "k_grav": -0.1,
+    "kp": 7.16,
+    "kd": 0.716,
+    "inertia": 0.00312,
+    "kd_dt_over_I": 0.459
+   },
+   {
+    "actuator": "wrist_l_dev_motor",
+    "hold_torque": 0.006,
+    "k_grav": 0.02,
+    "kp": 7.16,
+    "kd": 0.716,
+    "inertia": 0.00215,
+    "kd_dt_over_I": 0.667
+   },
+   {
+    "actuator": "wrist_r_flex_motor",
+    "hold_torque": 0.113,
+    "k_grav": -0.1,
+    "kp": 7.16,
+    "kd": 0.716,
+    "inertia": 0.00312,
+    "kd_dt_over_I": 0.459
+   },
+   {
+    "actuator": "wrist_r_dev_motor",
+    "hold_torque": 0.006,
+    "k_grav": 0.02,
+    "kp": 7.16,
+    "kd": 0.716,
+    "inertia": 0.00215,
+    "kd_dt_over_I": 0.667
+   }
+  ],
+  "com_jacobian_column_norm_m_per_rad": {
+   "ankle_l_dp": 0.0011186040412888044,
+   "knee_l": 0.016647861584994907,
+   "hip_l": 0.06911877792753389,
+   "lumbar": 0.1116388233833085
+  },
+  "floor_force_at_qpos0_N": 14735.4,
+  "weight_N": 588.6,
+  "foot_geom_margin_m": 0.006,
+  "equilibrium_seed_lift_mm": 4.6,
+  "floor_contacts_per_foot_at_seed": {
+   "foot_l_geom": 2,
+   "foot_r_geom": 1
+  }
+ },
+ "assisted_existing": [
+  {
+   "variant": "mesh",
+   "sim_s": 15.0,
+   "old_criteria_fail_at_s": 1.7320000000000013,
+   "torso_criteria_fail_at_s": 0.3740000000000003,
+   "max_torso_pitch_deg": 91.6,
+   "max_head_pitch_deg": 118.8
+  },
+  {
+   "variant": "flat_sole",
+   "sim_s": 15.0,
+   "old_criteria_fail_at_s": 1.8840000000000015,
+   "torso_criteria_fail_at_s": 0.3880000000000003,
+   "max_torso_pitch_deg": 82.5,
+   "max_head_pitch_deg": 149.2
+  }
+ ],
+ "stance_hold": {
+  "mesh/free": {
+   "fell_at_s": 0.352,
+   "max_pelvis_tilt_deg": 149.95,
+   "max_torso_tilt_deg": 107.19,
+   "max_saturated": 23
+  },
+  "flat_sole/free": {
+   "fell_at_s": null,
+   "max_pelvis_tilt_deg": 0.31,
+   "max_torso_tilt_deg": 0.25,
+   "max_saturated": 0
+  },
+  "flat_sole/corners": {
+   "fell_at_s": null,
+   "max_pelvis_tilt_deg": 0.14,
+   "max_torso_tilt_deg": 0.24,
+   "max_saturated": 0
+  }
+ },
+ "pushes": {
+  "fwd_5Ns": null,
+  "fwd_10Ns": null,
+  "fwd_20Ns": 1.346,
+  "back_5Ns": null,
+  "back_10Ns": 1.602,
+  "back_20Ns": 1.412,
+  "side_5Ns": null,
+  "side_10Ns": 1.648,
+  "side_20Ns": 1.43
+ },
+ "noisy_start_0.05rad": [
+  0.752,
+  null,
+  0.598,
+  0.416,
+  0.3
+ ]
+}
