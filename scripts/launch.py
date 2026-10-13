@@ -53,6 +53,8 @@ def spawn_physics(args):
         command.append('--assisted-stand')
     if args.mode in ('stand-v2', 'debug-v2'):
         command.append('--stand-v2')  # experimental flat-sole + inverse-dynamics stance
+    if args.mode == 'animation':
+        command.append('--anim-physics')  # optional PHYSICS toggle on the Animation page
     if args.mode == 'harness':
         command.append('--harness')
     return subprocess.Popen(command, cwd=ROOT)
@@ -77,8 +79,8 @@ def wait_for_physics(process, args, stop):
 
 def run(args):
     os.chdir(ROOT)
-    # Animation mode is a static viewer: no MuJoCo process, no WebSocket.
-    physics = args.mode != 'animation'
+    # Animation mode also starts the stand-v2 runtime for its optional PHYSICS toggle.
+    physics = True
     state = ROOT / '.runtime'
     state.mkdir(mode=0o700, exist_ok=True)
     lock = (state / 'launcher.lock').open('w')

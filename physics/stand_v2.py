@@ -228,11 +228,29 @@ class StanceController(StanceID):
 
     CORNER_DZ = 0.004  # m
     FOOT_SPEED_MAX = 0.3  # m/s
+    LEG_POSTURE_W = 0.05  # weight of the leg posture target inside the stance solve
 
     def __init__(self, m, **kw):
         super().__init__(m, cop="corners", **kw)
         self.Jcom = np.zeros((3, m.nv))
         self.upper = np.setdiff1d(np.arange(6, m.nv), np.r_[self.leg[0], self.leg[1]])
+        # Targets (set by reset or by a clip each tick): joint/pelvis-orientation pose q_des, its
+        # velocity qd_des, pelvis height z_des, COM offset from the mean of the stance soles,
+        # and which feet the target expects on the floor (a foot the clip lifts is a swing foot).
+        self.qd_des = None
+        self.com_ref = np.zeros(2)
+        self.stance_hint = [True, True]
+        self.leg_posture_w = self.dls  # LEG_POSTURE_W while a clip drives the legs
+
+    def reset(self, d):
+        super().reset(d)
+        self.qd_des = None
+        self.stance_hint = [True, True]
+        self.com_ref = d.subtree_com[self.P, :2] - self.sole_centre(d, [True, True])
+
+    def sole_centre(self, d, which):
+        pts = [self._corners(d, k)[1][:2] for k in range(2) if which[k]] or [self._corners(d, k)[1][:2] for k in range(2)]
+        return np.mean(pts, axis=0)
 
     def _corners(self, d, k):
         g = self.sole[k]
@@ -244,22 +262,18 @@ class StanceController(StanceID):
         nv = m.nv
         qacc = np.zeros(nv)
         e = np.zeros(3)
+        vd = self.qd_des if self.qd_des is not None else np.zeros(nv)
         for j in self.joints:
             qa, va = m.jnt_qposadr[j], m.jnt_dofadr[j]
             if m.jnt_type[j] == mujoco.mjtJoint.mjJNT_BALL:
                 mujoco.mju_subQuat(e, self.q_des[qa:qa + 4], d.qpos[qa:qa + 4])
-                qacc[va:va + 3] = self.kp_j * e - self.kd_j * d.qvel[va:va + 3]
+                qacc[va:va + 3] = self.kp_j * e + self.kd_j * (vd[va:va + 3] - d.qvel[va:va + 3])
             else:
-                qacc[va] = self.kp_j * (self.q_des[qa] - d.qpos[qa]) - self.kd_j * d.qvel[va]
+                qacc[va] = self.kp_j * (self.q_des[qa] - d.qpos[qa]) + self.kd_j * (vd[va] - d.qvel[va])
         up = self.upper
         qacc[up] += np.linalg.solve(self.M[np.ix_(up, up)], ugen[up])
         mujoco.mju_subQuat(e, self.q_des[3:7], d.qpos[3:7])
-        qacc[3:6] = self.kp_o * e - self.kd_o * d.qvel[3:6]
-        mujoco.mj_jacSubtreeCom(m, d, self.Jcom, self.P)
-        comv = self.Jcom @ d.qvel
-        com = d.subtree_com[self.P]
-        a_com = np.r_[self.kp_com * (self._mid(d) + self.com_off - com[:2]) - self.kd_com * comv[:2],
-                      self.kp_z * (self.z_des - d.qpos[2]) - self.kd_z * d.qvel[2]]
+        qacc[3:6] = self.kp_o * e + self.kd_o * (vd[3:6] - d.qvel[3:6])
         stance, jf = [], {}
         for k, f in enumerate(self.feet):
             pt = d.xpos[f].copy()
@@ -267,7 +281,18 @@ class StanceController(StanceID):
             mujoco.mj_jac(m, d, self.jp, self.jr, pt, f)
             jf[k] = np.vstack([self.jp, self.jr])
             low = min(p[2] for p in self._corners(d, k)[0])
-            stance.append(low < self.CORNER_DZ and np.linalg.norm(self.jp @ d.qvel) < self.FOOT_SPEED_MAX)
+            stance.append(bool(self.stance_hint[k]) and low < self.CORNER_DZ
+                          and np.linalg.norm(self.jp @ d.qvel) < self.FOOT_SPEED_MAX)
+        if not any(stance):
+            # No support: exact floating-base dynamics, the root accelerates as physics dictates.
+            a = np.arange(6, nv)
+            qacc[:6] = -np.linalg.solve(self.M[:6, :6], self.M[:6, a] @ qacc[a] + d.qfrc_bias[:6])
+            return qacc, stance
+        mujoco.mj_jacSubtreeCom(m, d, self.Jcom, self.P)
+        comv = self.Jcom @ d.qvel
+        com = d.subtree_com[self.P]
+        a_com = np.r_[self.kp_com * (self.sole_centre(d, stance) + self.com_ref - com[:2]) - self.kd_com * comv[:2],
+                      self.kp_z * (self.z_des - d.qpos[2]) - self.kd_z * d.qvel[2]]
         unk = np.concatenate([np.arange(3)] + [self.leg[k] for k in range(2) if stance[k]])
         known = np.setdiff1d(np.arange(nv), unk)
         rows_a, rows_b = [self.Jcom[:, unk]], [a_com - self.Jcom[:, known] @ qacc[known]]
@@ -278,7 +303,11 @@ class StanceController(StanceID):
         a, b = np.vstack(rows_a), np.concatenate(rows_b)
         w = np.r_[np.ones(3), np.full(a.shape[0] - 3, 10.0)]  # feet-fixed rows dominate the COM task
         aw = w[:, None] * a
-        qacc[unk] = np.linalg.solve(aw.T @ aw + self.dls * np.eye(len(unk)), aw.T @ (w * b))
+        # Regularize toward the joint-PD accelerations, not toward zero: at a straight knee the
+        # stance leg is singular for vertical motion and only the posture target can bend it.
+        reg = np.full(len(unk), self.leg_posture_w)
+        reg[:3] = self.dls
+        qacc[unk] = np.linalg.solve(aw.T @ aw + np.diag(reg), aw.T @ (w * b) + reg * qacc[unk])
         return qacc, stance
 
     def _distribute(self, m, d, f_all, stance):
@@ -348,8 +377,10 @@ class StandV2Assist:
     tilts past TORSO_FAIL or the pelvis drops below Z_FAIL; humanoid-assist reset re-seeds.
     """
 
-    TORSO_FAIL_DEG = 45.0
-    Z_FAIL = 0.55
+    TORSO_FAIL_DEG = 40.0  # beyond the target torso tilt
+    Z_FAIL_DROP = 0.30  # m below the target pelvis height
+    BLEND_S = 0.4
+    RETURNS_TO_STAND = ("Jump", "Squat")  # one-shots that end standing; others hold their last frame
 
     def __init__(self, model: mujoco.MjModel):
         self.model = model
@@ -361,6 +392,84 @@ class StandV2Assist:
         self._fade = 1.0
         self._seed_lift = 0.0
         self._last_diag: dict[str, Any] = {}
+        self.clips: dict[str, dict] = {}
+        self._clip = None  # dict(name, loop, t, done)
+        self._blend = None  # (from_targets, elapsed)
+        self._stand = None
+        self._tilt_target = 0.0
+
+    def set_clips(self, clips: dict) -> None:
+        """Retargeted clips (clip_retarget.Retargeter.clip) available to play()."""
+        self.clips = dict(clips)
+
+    def _targets_now(self):
+        st = self.stance
+        return dict(q=st.q_des.copy(), qd=None if st.qd_des is None else st.qd_des.copy(), z=st.z_des,
+                    com=st.com_ref.copy(), hint=list(st.stance_hint), tilt=self._tilt_target)
+
+    def play(self, name: str, loop: bool | None = None) -> None:
+        if name not in self.clips:
+            raise ValueError(f"unknown clip {name!r}; have {sorted(self.clips)}")
+        self._blend = (self._targets_now(), 0.0)
+        self._clip = dict(name=name, loop=bool(self.clips[name].get("loop")) if loop is None else bool(loop), t=0.0, done=False)
+        self._fade = max(self._fade, 0.0)
+
+    def stop_clip(self) -> None:
+        if self._clip is not None:
+            self._blend = (self._targets_now(), 0.0)
+        self._clip = None
+
+    def _clip_targets(self):
+        c = self.clips[self._clip["name"]]
+        t = self._clip["t"]
+        dur = c["duration"]
+        if self._clip["loop"]:
+            t = t % dur
+        elif t >= dur:
+            self._clip["done"] = True
+            t = dur
+        x = min(t * c["fps"], len(c["t"]) - 1.000001)
+        i, u = int(x), x - int(x)
+        q = np.empty(self.model.nq)
+        mujoco.mj_differentiatePos(self.model, self._dq, 1.0, c["qpos"][i], c["qpos"][i + 1])
+        q[:] = c["qpos"][i]
+        mujoco.mj_integratePos(self.model, q, self._dq, u)
+        qd = (1 - u) * c["qvel"][i] + u * c["qvel"][i + 1]
+        if self._clip["done"]:
+            qd = np.zeros(self.model.nv)
+        k = int(round(x))
+        return dict(q=q, qd=qd, z=float(q[2]), com=c["com_off"][k].copy(), hint=list(c["stance"][k]),
+                    tilt=float(c["torso_tilt"][k]))
+
+    def _stand_targets(self):
+        return dict(self._stand)
+
+    def _apply_targets(self, dt):
+        if self._clip is not None:
+            self._clip["t"] += dt
+            tgt = self._clip_targets()
+            if self._clip["done"] and self._clip["name"] in self.RETURNS_TO_STAND:
+                self.stop_clip()
+                tgt = self._stand_targets()
+        else:
+            tgt = self._stand_targets()
+        if self._blend is not None:
+            src, el = self._blend
+            el += dt
+            w = min(1.0, el / self.BLEND_S)
+            self._blend = None if w >= 1.0 else (src, el)
+            q = src["q"].copy()
+            mujoco.mj_differentiatePos(self.model, self._dq, 1.0, src["q"], tgt["q"])
+            mujoco.mj_integratePos(self.model, q, self._dq, w)
+            tgt = dict(q=q, qd=None if tgt["qd"] is None else w * tgt["qd"], z=(1 - w) * src["z"] + w * tgt["z"],
+                       com=(1 - w) * src["com"] + w * tgt["com"], hint=tgt["hint"] if w > 0.5 else src["hint"],
+                       tilt=(1 - w) * src["tilt"] + w * tgt["tilt"])
+        st = self.stance
+        st.q_des, st.qd_des, st.z_des, st.com_ref, st.stance_hint = tgt["q"], tgt["qd"], tgt["z"], tgt["com"], tgt["hint"]
+        # Posture-regularized legs only while a clip (or a blend) drives them; the plain stand keeps
+        # the pure constraint solve, which is more robust to pushes.
+        st.leg_posture_w = st.LEG_POSTURE_W if (self._clip is not None or self._blend is not None) else st.dls
+        self._tilt_target = tgt["tilt"]
 
     def reset_to_stand(self, model, data, sole_lift=False):
         mujoco.mj_resetData(model, data)
@@ -368,21 +477,28 @@ class StandV2Assist:
         self.stance.reset(data)
         self._fade = 1.0
         self._last_diag = {}
+        self._dq = np.zeros(model.nv)
+        self._clip, self._blend, self._tilt_target = None, None, 0.0
+        self._stand = self._targets_now()
 
     def compute(self, model, data, u_cmd):
         u = np.asarray(u_cmd, dtype=np.float64).reshape(-1)
         if u.shape[0] != model.nu:
             raise ValueError(f"u_cmd length {u.shape[0]} != nu {model.nu}")
+        self._apply_targets(model.opt.timestep)
         tau_stance = self.stance.compute(model, data, u if self._fade > 0 else None)
         torso = tilt_deg(data, self._torso)
         pelvis_z = float(data.xpos[self._pelvis, 2])
-        fallen = torso > self.TORSO_FAIL_DEG or pelvis_z < self.Z_FAIL
+        fallen = torso > self._tilt_target + self.TORSO_FAIL_DEG or pelvis_z < self.stance.z_des - self.Z_FAIL_DROP
         self._fade = max(0.0, self._fade - 0.05) if fallen else min(1.0, self._fade + 0.1)
         tau = np.clip(u + self._fade * tau_stance, self._lo, self._hi)
         self._last_diag = dict(controller="stand_v2", pelvis_z=pelvis_z, pelvis_tilt_deg=tilt_deg(data, self._pelvis),
                                torso_tilt_deg=torso, stance_feet=self.stance.diag["stance"],
                                saturated=self.stance.diag["saturated"], task_scale=self.stance.diag["alpha"], fade=float(self._fade),
-                               seed_lift_mm=round(self._seed_lift * 1000, 2))
+                               seed_lift_mm=round(self._seed_lift * 1000, 2),
+                               clip=None if self._clip is None else self._clip["name"],
+                               clip_t=None if self._clip is None else round(self._clip["t"], 2),
+                               stance_hint=[bool(h) for h in self.stance.stance_hint], fallen=bool(fallen))
         return tau
 
     @property

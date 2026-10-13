@@ -1,0 +1,122 @@
+{
+ "Idle": {
+  "loop": true,
+  "sim_s": 9.5,
+  "fell_after_start_s": null,
+  "joint_rms_err_deg": 14.4,
+  "pelvis_z_err_cm": 0.7,
+  "min_torque_scale": 1.0,
+  "max_saturated": 0,
+  "clip_flight_fraction": 0.0,
+  "final_pelvis_z": 0.886,
+  "final_xy": [
+   0.09,
+   0.01
+  ]
+ },
+ "Jump": {
+  "loop": false,
+  "sim_s": 5.37,
+  "fell_after_start_s": 0.96,
+  "joint_rms_err_deg": 44.7,
+  "pelvis_z_err_cm": 62.6,
+  "min_torque_scale": 0.0,
+  "max_saturated": 16,
+  "clip_flight_fraction": 0.19,
+  "final_pelvis_z": 0.123,
+  "final_xy": [
+   0.09,
+   0.3
+  ]
+ },
+ "Run_Fwd": {
+  "loop": true,
+  "sim_s": 3.5,
+  "fell_after_start_s": 0.63,
+  "joint_rms_err_deg": 60.9,
+  "pelvis_z_err_cm": 66.8,
+  "min_torque_scale": 0.0,
+  "max_saturated": 14,
+  "clip_flight_fraction": 0.48,
+  "final_pelvis_z": 0.129,
+  "final_xy": [
+   0.15,
+   0.02
+  ]
+ },
+ "Squat": {
+  "loop": false,
+  "sim_s": 5.43,
+  "fell_after_start_s": 1.98,
+  "joint_rms_err_deg": 37.0,
+  "pelvis_z_err_cm": 34.0,
+  "min_torque_scale": 0.0,
+  "max_saturated": 20,
+  "clip_flight_fraction": 0.0,
+  "final_pelvis_z": 0.13,
+  "final_xy": [
+   -0.13,
+   0.46
+  ]
+ },
+ "ToBridge": {
+  "loop": false,
+  "sim_s": 6.8,
+  "fell_after_start_s": 2.09,
+  "joint_rms_err_deg": 53.3,
+  "pelvis_z_err_cm": 44.0,
+  "min_torque_scale": 0.0,
+  "max_saturated": 15,
+  "clip_flight_fraction": 0.04,
+  "final_pelvis_z": 0.15,
+  "final_xy": [
+   -0.66,
+   0.59
+  ]
+ },
+ "ToPlank": {
+  "loop": false,
+  "sim_s": 6.47,
+  "fell_after_start_s": 0.89,
+  "joint_rms_err_deg": 36.7,
+  "pelvis_z_err_cm": 26.5,
+  "min_torque_scale": 0.0,
+  "max_saturated": 14,
+  "clip_flight_fraction": 0.0,
+  "final_pelvis_z": 0.119,
+  "final_xy": [
+   -0.12,
+   0.43
+  ]
+ },
+ "Walk_Back": {
+  "loop": true,
+  "sim_s": 3.83,
+  "fell_after_start_s": 0.99,
+  "joint_rms_err_deg": 52.2,
+  "pelvis_z_err_cm": 62.1,
+  "min_torque_scale": 0.0,
+  "max_saturated": 16,
+  "clip_flight_fraction": 0.0,
+  "final_pelvis_z": 0.11,
+  "final_xy": [
+   0.99,
+   0.03
+  ]
+ },
+ "Walk_Fwd": {
+  "loop": true,
+  "sim_s": 3.5,
+  "fell_after_start_s": 0.71,
+  "joint_rms_err_deg": 55.3,
+  "pelvis_z_err_cm": 63.3,
+  "min_torque_scale": 0.0,
+  "max_saturated": 16,
+  "clip_flight_fraction": 0.0,
+  "final_pelvis_z": 0.132,
+  "final_xy": [
+   0.5,
+   -0.11
+  ]
+ }
+}

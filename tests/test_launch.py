@@ -87,7 +87,7 @@ class LaunchTests(unittest.TestCase):
                     process.communicate(timeout=5)
 
 
-    def test_animation_mode_serves_viewer_without_physics(self):
+    def test_animation_mode_serves_viewer_with_optional_physics(self):
         with tempfile.TemporaryDirectory(prefix='ha-launch-') as directory:
             root = Path(directory)
             for name in ('physics', 'viewer', 'assets'):
@@ -106,7 +106,7 @@ class LaunchTests(unittest.TestCase):
                         self.fail(process.communicate()[1].decode())
                     try:
                         with urlopen(f'http://127.0.0.1:{http_port}/', timeout=.2) as response:
-                            self.assertTrue(response.url.endswith('/viewer/animation.html'))
+                            self.assertIn('/viewer/animation.html?wsPort=', response.url)
                             self.assertIn('animation.js', response.read().decode())
                             break
                     except OSError:
@@ -118,13 +118,19 @@ class LaunchTests(unittest.TestCase):
                 # The viewer reads loop flags / ground speeds from the manifest next to the GLB.
                 with urlopen(f'http://127.0.0.1:{http_port}/assets/Xandra_Animated.manifest.json', timeout=2) as response:
                     self.assertEqual(json.loads(response.read())['global_info']['clip_count'], 8)
-                for name in ('animation.css', 'animation/anim-controller.js', 'animation/debugger.js', 'human/locomotion.js'):
+                for name in ('animation.css', 'animation/anim-controller.js', 'animation/debugger.js', 'human/locomotion.js',
+                             'animation/physics-link.js'):
                     with urlopen(f'http://127.0.0.1:{http_port}/viewer/{name}', timeout=2) as response:
                         self.assertEqual(response.status, 200)
-                # No physics: nothing listens on the WebSocket port, no reports written.
-                with socket.socket() as probe:
-                    self.assertNotEqual(probe.connect_ex(('127.0.0.1', ws_port)), 0)
-                self.assertFalse((root / 'reports').exists())
+                # Branch exp/assisted-stand-claude: Animation also starts the stand-v2 runtime
+                # (--anim-physics) for its optional PHYSICS toggle; the page is usable before it is up.
+                for _ in range(400):
+                    with socket.socket() as probe:
+                        if probe.connect_ex(('127.0.0.1', ws_port)) == 0:
+                            break
+                    time.sleep(.05)
+                else:
+                    self.fail('anim-physics WebSocket did not start')
                 self.assertTrue(stop_managed(root))
                 process.communicate(timeout=5)
                 with socket.socket() as probe:

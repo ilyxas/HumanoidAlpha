@@ -54,7 +54,7 @@ def quaternion(value, limit=math.pi):
     return q
 
 class Controller:
-    def __init__(self, assisted_stand=False, harness=False, stand_v2=False):
+    def __init__(self, assisted_stand=False, harness=False, stand_v2=False, clips=False):
         # stand_v2: flat-sole contact variant (built in memory) + StandV2Assist instead of the
         # PD/COM assist. Modes, CLI and the viewer stream are unchanged.
         self.stand_v2 = bool(stand_v2)
@@ -68,6 +68,10 @@ class Controller:
         self.assisted = False
         # Capability always available in console; --assisted-stand only auto-enables on serve.
         self.assist = StandV2Assist(self.m) if self.stand_v2 else AssistedStandController(self.m)
+        if clips:
+            # Retarget the 8 Xandra_Animated.glb clips onto this model once (~5 s).
+            from clip_retarget import Retargeter
+            self.assist.set_clips(Retargeter(self.m).all_clips())
         # HARNESS is a separate launcher mode. Disabled means the step loop never
         # calls it, so RAW/experiment leaves xfrc_applied alone.
         self.harness = HarnessSupport(self.m)
@@ -187,6 +191,23 @@ class Controller:
                 self.paused = False
             else:
                 raise ValueError('assist value must be on|off|reset')
+        elif op in ('clip', 'clip_stop'):
+            # anim-physics (stand v2 only): a clip becomes the target of the stance controller;
+            # MuJoCo still computes the motion. Starts assist if it is off.
+            if not hasattr(self.assist, 'play'):
+                raise ValueError('Clips need --stand-v2 / --anim-physics')
+            if not self.assisted or self.mode != 'dynamic':
+                self.mode = 'dynamic'
+                self.set_assisted(True)
+            self.paused = False
+            if op == 'clip':
+                name = cmd.get('name')
+                loop = cmd.get('loop')
+                if not isinstance(name, str) or (loop is not None and not isinstance(loop, bool)):
+                    raise ValueError('clip needs name (str) and optional loop (bool)')
+                self.assist.play(name, loop)
+            else:
+                self.assist.stop_clip()
         elif op == 'pause': self.paused = True
         elif op == 'resume':
             if self.mode != 'dynamic': raise ValueError('Resume requires dynamic mode')
@@ -378,12 +399,17 @@ class Controller:
                 qpos=self.d.qpos.tolist(), qvel=self.d.qvel.tolist(), ctrl=self.d.ctrl.tolist(),
                 u_cmd=self.u_cmd.tolist(),
                 joint_anchors=self.d.xanchor.tolist(), joint_axes=self.d.xaxis.tolist(),
-                body_positions=self.d.xpos.tolist(), ncon=int(self.d.ncon)))
+                body_positions=self.d.xpos.tolist(), ncon=int(self.d.ncon),
+                stand=self.assist.diagnostics if self.stand_v2 and self.assisted else None))
 
-async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_stand=False, harness=False, stand_v2=False):
+async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_stand=False, harness=False, stand_v2=False,
+                anim_physics=False):
     if assisted_stand and harness:
         raise RuntimeError('harness and assisted stand cannot both auto-start')
-    c = Controller(assisted_stand=assisted_stand, harness=harness, stand_v2=stand_v2)
+    c = Controller(assisted_stand=assisted_stand, harness=harness, stand_v2=stand_v2 or anim_physics, clips=anim_physics)
+    if anim_physics:
+        # Animation page owns this runtime over the WebSocket: start standing, dynamic, assist on.
+        c.handle({'op': 'mode', 'value': 'assisted'})
     queue = asyncio.Queue(maxsize=128)
     clients = set()
     api_owner = object() if actuator_socket else None
@@ -488,6 +514,8 @@ if __name__ == '__main__':
                         help='Auto-enable ASSISTED stand on start (unadvertised assisted launch; capability always on)')
     parser.add_argument('--harness', action='store_true',
                         help='HARNESS mode: observation runtime plus pelvis xfrc support (not a pose weld)')
+    parser.add_argument('--anim-physics', action='store_true',
+                        help='Experimental: stand v2 + retargeted animation clips as stance targets, driven by the Animation page')
     parser.add_argument('--stand-v2', action='store_true',
                         help='Experimental: flat-sole contact variant + inverse-dynamics stance as the Assisted layer')
     args = parser.parse_args()
@@ -504,4 +532,4 @@ if __name__ == '__main__':
             parser.error('--stand-v2 and --harness are mutually exclusive')
         asyncio.run(serve(args.port, args.actuator_socket if args.actuator_api else None,
                           args.actuator_log, assisted_stand=args.assisted_stand, harness=args.harness,
-                          stand_v2=args.stand_v2))
+                          stand_v2=args.stand_v2, anim_physics=args.anim_physics))
