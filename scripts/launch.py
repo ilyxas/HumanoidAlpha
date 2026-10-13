@@ -47,10 +47,12 @@ def spawn_physics(args):
                     '--inventory', str(ROOT / 'reports/control_inventory.json')],
                    cwd=ROOT, check=True)
     command = [sys.executable, str(ROOT / 'physics/control_console.py'), '--port', str(args.ws_port)]
-    if args.mode in ('experiment', 'harness', 'assisted'):
+    if args.mode in ('experiment', 'harness', 'assisted', 'stand-v2'):
         command.extend(['--actuator-api', '--actuator-log', str(ROOT / 'reports/actuator_commands.jsonl')])
-    if args.mode == 'assisted':
+    if args.mode in ('assisted', 'stand-v2'):
         command.append('--assisted-stand')
+    if args.mode in ('stand-v2', 'debug-v2'):
+        command.append('--stand-v2')  # experimental flat-sole + inverse-dynamics stance
     if args.mode == 'harness':
         command.append('--harness')
     return subprocess.Popen(command, cwd=ROOT)
@@ -93,12 +95,12 @@ def run(args):
     http_started = False
     control_started = False
     path = control_path()
-    if args.mode == 'debug':
+    if args.mode in ('debug', 'debug-v2'):
         page = 'console.html'
     elif args.mode == 'animation':
         page = 'animation.html'
     else:
-        page = 'observation.html'  # experiment, harness, assisted
+        page = 'observation.html'  # experiment, harness, assisted, stand-v2
     route = f'/viewer/{page}?wsPort={args.ws_port}' if physics else f'/viewer/{page}'
 
     class Handler(SimpleHTTPRequestHandler):
@@ -205,7 +207,7 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['debug', 'experiment', 'harness', 'assisted', 'animation'])
+    parser.add_argument('mode', choices=['debug', 'experiment', 'harness', 'assisted', 'animation', 'stand-v2', 'debug-v2'])
     parser.add_argument('--no-open', action='store_true', help='Print the URL without opening a browser')
     parser.add_argument('--http-port', type=int, default=8788)
     parser.add_argument('--ws-port', type=int, default=8766)

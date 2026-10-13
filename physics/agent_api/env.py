@@ -58,9 +58,14 @@ ALLOWED_INITIAL_KEYS = {
 class HumanoidEnv:
     """Torque-controlled humanoid. MuJoCo is sole physics SoT."""
 
-    def __init__(self, model_path: str | Path | None = None, seed: int = 0):
-        path = Path(model_path) if model_path else DEFAULT_MODEL
-        self.model = mujoco.MjModel.from_xml_path(str(path))
+    def __init__(self, model_path: str | Path | None = None, seed: int = 0,
+                 model: "mujoco.MjModel | None" = None):
+        # ``model`` lets a caller pass an already compiled variant (stand_v2 flat-sole model).
+        if model is not None:
+            self.model = model
+        else:
+            path = Path(model_path) if model_path else DEFAULT_MODEL
+            self.model = mujoco.MjModel.from_xml_path(str(path))
         self.data = mujoco.MjData(self.model)
         self._rng = np.random.default_rng(seed)
         self._seed = int(seed)

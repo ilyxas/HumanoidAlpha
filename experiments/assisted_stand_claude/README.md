@@ -17,3 +17,5 @@ Writes `results.json` next to this file.
 - `run_suite.py`: diagnostics (gravity stiffness vs kp, explicit-PD margin, start impulse, foot contacts, COM-Jacobian authority) and these tests:
   - the existing controller on both variants;
   - StanceID: a 120 s hold, 0.1 s pushes, noisy starts.
+
+The controller and the flat-sole variant were moved to `physics/stand_v2.py`, which the launcher modes `stand-v2` and `debug-v2` use. `stand_lib.py` re-exports them.

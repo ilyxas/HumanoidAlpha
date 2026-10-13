@@ -20,6 +20,7 @@ from diagnostic_api.diag import HumanoidDiag
 from bridge_full.mapping_full import BODY_TO_BONE, DERIVED_BONE_SOURCES, extract_full_pose
 from collision_guard import PositionCollisionGuard
 from assisted_stand import AssistedStandController
+from stand_v2 import StandV2Assist, load_flat_sole_model
 from harness import HarnessSupport
 
 # Zero the human actuator vector if the browser stops streaming. Harness wrench
@@ -53,8 +54,11 @@ def quaternion(value, limit=math.pi):
     return q
 
 class Controller:
-    def __init__(self, assisted_stand=False, harness=False):
-        self.env = HumanoidEnv()
+    def __init__(self, assisted_stand=False, harness=False, stand_v2=False):
+        # stand_v2: flat-sole contact variant (built in memory) + StandV2Assist instead of the
+        # PD/COM assist. Modes, CLI and the viewer stream are unchanged.
+        self.stand_v2 = bool(stand_v2)
+        self.env = HumanoidEnv(model=load_flat_sole_model()) if self.stand_v2 else HumanoidEnv()
         self.diag = HumanoidDiag(self.env)
         self.m, self.d = self.env.model, self.env.data
         self.position_guard = PositionCollisionGuard(self.m)
@@ -63,7 +67,7 @@ class Controller:
         self.revision = 0
         self.assisted = False
         # Capability always available in console; --assisted-stand only auto-enables on serve.
-        self.assist = AssistedStandController(self.m)
+        self.assist = StandV2Assist(self.m) if self.stand_v2 else AssistedStandController(self.m)
         # HARNESS is a separate launcher mode. Disabled means the step loop never
         # calls it, so RAW/experiment leaves xfrc_applied alone.
         self.harness = HarnessSupport(self.m)
@@ -376,10 +380,10 @@ class Controller:
                 joint_anchors=self.d.xanchor.tolist(), joint_axes=self.d.xaxis.tolist(),
                 body_positions=self.d.xpos.tolist(), ncon=int(self.d.ncon)))
 
-async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_stand=False, harness=False):
+async def serve(port=8766, actuator_socket=None, actuator_log=None, assisted_stand=False, harness=False, stand_v2=False):
     if assisted_stand and harness:
         raise RuntimeError('harness and assisted stand cannot both auto-start')
-    c = Controller(assisted_stand=assisted_stand, harness=harness)
+    c = Controller(assisted_stand=assisted_stand, harness=harness, stand_v2=stand_v2)
     queue = asyncio.Queue(maxsize=128)
     clients = set()
     api_owner = object() if actuator_socket else None
@@ -484,6 +488,8 @@ if __name__ == '__main__':
                         help='Auto-enable ASSISTED stand on start (unadvertised assisted launch; capability always on)')
     parser.add_argument('--harness', action='store_true',
                         help='HARNESS mode: observation runtime plus pelvis xfrc support (not a pose weld)')
+    parser.add_argument('--stand-v2', action='store_true',
+                        help='Experimental: flat-sole contact variant + inverse-dynamics stance as the Assisted layer')
     args = parser.parse_args()
     if args.inventory:
         args.inventory.write_text(json.dumps(Controller().inventory, indent=2))
@@ -494,5 +500,8 @@ if __name__ == '__main__':
             parser.error('--assisted-stand requires --actuator-api')
         if args.harness and not args.actuator_api:
             parser.error('--harness requires --actuator-api')
+        if args.stand_v2 and args.harness:
+            parser.error('--stand-v2 and --harness are mutually exclusive')
         asyncio.run(serve(args.port, args.actuator_socket if args.actuator_api else None,
-                          args.actuator_log, assisted_stand=args.assisted_stand, harness=args.harness))
+                          args.actuator_log, assisted_stand=args.assisted_stand, harness=args.harness,
+                          stand_v2=args.stand_v2))
