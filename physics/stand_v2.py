@@ -213,6 +213,134 @@ class StanceID:
         return tau
 
 
+class StanceController(StanceID):
+    """StanceID used by the launcher modes, with three fixes found under disturbances:
+
+    1. u_cmd on non-leg joints is a known input: it accelerates those joints and the whole-body
+       solve compensates its reaction (head, arms, torso moved by the user).
+    2. The COM task is solved jointly with root translation and the stance legs (pelvis != COM
+       when the upper body moves); stance feet stay fixed by the same solve.
+    3. Torque-feasible task scaling: if the task needs more than ctrlrange, all task accelerations
+       are scaled by one alpha in [0, 1] so torques fit, instead of clipping into an inconsistent
+       command (clipping made the legs kick and the solve blow up). Only sole corners actually on
+       the floor carry force; a fast-moving or lifted foot is not a stance foot.
+    """
+
+    CORNER_DZ = 0.004  # m
+    FOOT_SPEED_MAX = 0.3  # m/s
+
+    def __init__(self, m, **kw):
+        super().__init__(m, cop="corners", **kw)
+        self.Jcom = np.zeros((3, m.nv))
+        self.upper = np.setdiff1d(np.arange(6, m.nv), np.r_[self.leg[0], self.leg[1]])
+
+    def _corners(self, d, k):
+        g = self.sole[k]
+        rot, ctr = d.geom_xmat[g].reshape(3, 3), d.geom_xpos[g]
+        sx, sy, sz = self.m.geom_size[g]
+        return [ctr + rot @ np.array([a * sx, b * sy, -sz]) for a in (-1, 1) for b in (-1, 1)], ctr + rot @ np.array([0, 0, -sz])
+
+    def _task_qacc(self, m, d, ugen):
+        nv = m.nv
+        qacc = np.zeros(nv)
+        e = np.zeros(3)
+        for j in self.joints:
+            qa, va = m.jnt_qposadr[j], m.jnt_dofadr[j]
+            if m.jnt_type[j] == mujoco.mjtJoint.mjJNT_BALL:
+                mujoco.mju_subQuat(e, self.q_des[qa:qa + 4], d.qpos[qa:qa + 4])
+                qacc[va:va + 3] = self.kp_j * e - self.kd_j * d.qvel[va:va + 3]
+            else:
+                qacc[va] = self.kp_j * (self.q_des[qa] - d.qpos[qa]) - self.kd_j * d.qvel[va]
+        up = self.upper
+        qacc[up] += np.linalg.solve(self.M[np.ix_(up, up)], ugen[up])
+        mujoco.mju_subQuat(e, self.q_des[3:7], d.qpos[3:7])
+        qacc[3:6] = self.kp_o * e - self.kd_o * d.qvel[3:6]
+        mujoco.mj_jacSubtreeCom(m, d, self.Jcom, self.P)
+        comv = self.Jcom @ d.qvel
+        com = d.subtree_com[self.P]
+        a_com = np.r_[self.kp_com * (self._mid(d) + self.com_off - com[:2]) - self.kd_com * comv[:2],
+                      self.kp_z * (self.z_des - d.qpos[2]) - self.kd_z * d.qvel[2]]
+        stance, jf = [], {}
+        for k, f in enumerate(self.feet):
+            pt = d.xpos[f].copy()
+            pt[2] = 0.0
+            mujoco.mj_jac(m, d, self.jp, self.jr, pt, f)
+            jf[k] = np.vstack([self.jp, self.jr])
+            low = min(p[2] for p in self._corners(d, k)[0])
+            stance.append(low < self.CORNER_DZ and np.linalg.norm(self.jp @ d.qvel) < self.FOOT_SPEED_MAX)
+        unk = np.concatenate([np.arange(3)] + [self.leg[k] for k in range(2) if stance[k]])
+        known = np.setdiff1d(np.arange(nv), unk)
+        rows_a, rows_b = [self.Jcom[:, unk]], [a_com - self.Jcom[:, known] @ qacc[known]]
+        for k in range(2):
+            if stance[k]:
+                rows_a.append(jf[k][:, unk])
+                rows_b.append(-jf[k][:, known] @ qacc[known] - 20.0 * (jf[k] @ d.qvel))
+        a, b = np.vstack(rows_a), np.concatenate(rows_b)
+        w = np.r_[np.ones(3), np.full(a.shape[0] - 3, 10.0)]  # feet-fixed rows dominate the COM task
+        aw = w[:, None] * a
+        qacc[unk] = np.linalg.solve(aw.T @ aw + self.dls * np.eye(len(unk)), aw.T @ (w * b))
+        return qacc, stance
+
+    def _distribute(self, m, d, f_all, stance):
+        cols, normal = [], []
+        for k, f in enumerate(self.feet):
+            if not stance[k]:
+                continue
+            corners, ctr = self._corners(d, k)
+            for p in corners:
+                if p[2] > self.CORNER_DZ:
+                    continue
+                mujoco.mj_jac(m, d, self.jp, self.jr, p, f)
+                cols.append(self.jp.T @ np.array([0, 0, 1.0]))
+                normal.append(True)
+            mujoco.mj_jac(m, d, self.jp, self.jr, ctr, f)
+            for v in (np.array([1.0, 0, 0]), np.array([0, 1.0, 0])):
+                cols.append(self.jp.T @ v)
+                normal.append(False)
+            cols.append(self.jr.T @ np.array([0, 0, 1.0]))
+            normal.append(False)
+        if not cols:
+            return f_all
+        g = np.array(cols).T
+        normal = np.array(normal)
+        wr = np.r_[np.ones(3), np.full(3, self.w_ang)]
+        a, b = wr[:, None] * g[:6], wr * f_all[:6]
+        free = np.ones(g.shape[1], bool)
+        for _ in range(12):  # active set for normal forces >= 0
+            af = a[:, free]
+            lam = np.zeros(g.shape[1])
+            lam[free] = np.linalg.solve(af.T @ af + 1e-6 * np.eye(af.shape[1]), af.T @ b)
+            neg = free & normal & (lam < 0)
+            if not neg.any():
+                break
+            free &= ~neg
+        return f_all - g @ lam
+
+    def compute(self, m, d, u=None):
+        """Controller torque only; the caller adds u. tau_total = u + this, within ctrlrange when alpha < 1."""
+        mujoco.mj_fullM(m, d, self.M)
+        ugen = np.zeros(m.nv)
+        if u is not None:
+            np.add.at(ugen, self.adof, u)
+        qacc, stance = self._task_qacc(m, d, ugen)
+        base = d.qfrc_bias - ugen
+        t1 = self._distribute(m, d, self.M @ qacc + base, stance)[self.adof]
+        t0 = self._distribute(m, d, base.copy(), stance)[self.adof]  # hold against gravity, no task
+        alpha, dt = 1.0, t1 - t0
+        with np.errstate(divide="ignore", invalid="ignore"):
+            for lim in (self.hi, self.lo):
+                r = (lim - t0) / dt
+                ok = np.isfinite(r) & (r > 0) & (np.sign(dt) == np.sign(lim - t0))
+                if ok.any():
+                    alpha = min(alpha, float(r[ok].min()))
+        alpha = max(0.0, alpha)
+        tau = t1 if alpha >= 1.0 else self._distribute(m, d, alpha * (self.M @ qacc) + base, stance)[self.adof]
+        tau = np.clip(tau, self.lo, self.hi)
+        self.diag = dict(stance=int(sum(stance)), alpha=round(alpha, 3),
+                         saturated=int(np.sum((tau <= self.lo + 1e-9) | (tau >= self.hi - 1e-9))))
+        return tau
+
+
 class StandV2Assist:
     """Drop-in for AssistedStandController in the console (reset_to_stand / compute / diagnostics).
 
@@ -226,7 +354,7 @@ class StandV2Assist:
     def __init__(self, model: mujoco.MjModel):
         self.model = model
         self.enabled = False
-        self.stance = StanceID(model, cop="corners")
+        self.stance = StanceController(model)
         self._pelvis = model.body("pelvis").id
         self._torso = model.body("torso_upper").id
         self._lo, self._hi = model.actuator_ctrlrange[:, 0], model.actuator_ctrlrange[:, 1]
@@ -245,7 +373,7 @@ class StandV2Assist:
         u = np.asarray(u_cmd, dtype=np.float64).reshape(-1)
         if u.shape[0] != model.nu:
             raise ValueError(f"u_cmd length {u.shape[0]} != nu {model.nu}")
-        tau_stance = self.stance.compute(model, data)
+        tau_stance = self.stance.compute(model, data, u if self._fade > 0 else None)
         torso = tilt_deg(data, self._torso)
         pelvis_z = float(data.xpos[self._pelvis, 2])
         fallen = torso > self.TORSO_FAIL_DEG or pelvis_z < self.Z_FAIL
@@ -253,7 +381,7 @@ class StandV2Assist:
         tau = np.clip(u + self._fade * tau_stance, self._lo, self._hi)
         self._last_diag = dict(controller="stand_v2", pelvis_z=pelvis_z, pelvis_tilt_deg=tilt_deg(data, self._pelvis),
                                torso_tilt_deg=torso, stance_feet=self.stance.diag["stance"],
-                               saturated=self.stance.diag["saturated"], fade=float(self._fade),
+                               saturated=self.stance.diag["saturated"], task_scale=self.stance.diag["alpha"], fade=float(self._fade),
                                seed_lift_mm=round(self._seed_lift * 1000, 2))
         return tau
 
