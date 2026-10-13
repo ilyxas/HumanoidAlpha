@@ -20,6 +20,7 @@ import { createProfiler } from './observation-perf.js';
 import { readGamepad } from './human/normalize.js';
 import { mountSticks } from './human/sticks-ui.js';
 import { createWalkSession } from './human/walk-control.js';
+import { enableEightBoneSkinning } from './human/skin8.js';
 import { DEFAULT_SPEEDS, createMovementController, createReferenceLatch, forwardOfYaw, keyboardInput, selectLocomotion, stickInput, wrapAngle, yawOf } from './human/locomotion.js';
 import { EXPECTED_CLIPS, createAnimationController } from './animation/anim-controller.js';
 import { mountDebugger } from './animation/debugger.js';
@@ -259,6 +260,7 @@ const manifestReady = fetch(MANIFEST_URL, { cache: 'no-cache' }).then(r => (r.ok
 new GLTFLoader().load(MODEL_URL, async gltf => {
   manifest = await manifestReady;
   gltfRoot = gltf.scene;
+  const skin8 = enableEightBoneSkinning(gltfRoot);  // GLB carries 8 influences (JOINTS_1/WEIGHTS_1)
   gltfRoot.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   character.add(gltfRoot);
   clips = gltf.animations;
@@ -281,7 +283,7 @@ new GLTFLoader().load(MODEL_URL, async gltf => {
   debug.setMorphs(morph.names, getMorph, setMorph, morph.meshName);
   session.setMoveLabel('move'); session.setWalkLabel('walk');
   console.info('[animation] clips', JSON.stringify(info.map(c => ({ name: c.name, duration: +c.duration.toFixed(3), loop: c.loop }))),
-    'speeds', JSON.stringify(speeds), 'footPhases', JSON.stringify(footPhases), 'morphs', morph.names.length);
+    'skin8 meshes', skin8, 'speeds', JSON.stringify(speeds), 'footPhases', JSON.stringify(footPhases), 'morphs', morph.names.length);
   if (anim.warnings.length) console.warn('[animation]', anim.warnings.join('; '));
   perf.instrument(gltfRoot); perf.event('model-load-complete', { elapsedMs: performance.now() - loadStart });
 }, undefined, error => { perf.event('model-load-error'); errEl.textContent = 'Model load failed: ' + (error?.message || error); });
