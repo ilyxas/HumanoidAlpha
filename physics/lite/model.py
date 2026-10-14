@@ -24,7 +24,6 @@ from __future__ import annotations
 import mujoco
 
 HIP_Z = 0.90          # hip joint height when standing at full leg length (= LEG_LEN + ANKLE_Z)
-HIP_Y = 0.09          # half hip width
 LEG_LEN = 0.82        # hip -> ankle at full length
 ANKLE_Z = 0.08        # ankle above the sole
 SOLE = (0.24, 0.08, 0.03)  # length, width, thickness
@@ -32,6 +31,12 @@ HEEL = 0.06           # sole extends this far behind the ankle
 SHOULDER_Z = 0.43     # above the hip centre
 ARM_LEN = 0.56
 LEG_MAX_SHORTEN = 0.40
+
+# Geometry variants (compared in isolation; only these three numbers differ):
+#   v0  original: feet 18 cm apart (hips +-0.09), sole width 8 cm, thigh radius 0.065
+#   v1  step width 12 cm (hips +-0.06), sole width 10 cm, thigh radius 0.055 (else the thighs overlap)
+GEOMETRY = {"v0": dict(hip_y=0.09, sole_w=0.08, thigh_r=0.065),
+            "v1": dict(hip_y=0.06, sole_w=0.10, thigh_r=0.055)}
 
 ACTUATORS = ["hip_roll_l", "hip_pitch_l", "leg_l", "ankle_l", "ankle_roll_l",
              "hip_roll_r", "hip_pitch_r", "leg_r", "ankle_r", "ankle_roll_r", "shoulder"]
@@ -49,15 +54,16 @@ def limit_key(actuator: str) -> str:
     return actuator if actuator == "shoulder" else actuator.rsplit("_", 1)[0]
 
 
-def _leg(side: str, y: float) -> str:
-    sl, sw, st = SOLE
+def _leg(side: str, y: float, sole_w: float, thigh_r: float) -> str:
+    sl, _sw, st = SOLE
+    sw = sole_w
     fx = sl / 2 - HEEL  # sole centre relative to the ankle
     thigh_len = LEG_LEN / 2
     return f"""
       <body name="thigh_{side}" pos="0 {y} 0">
         <joint name="hip_roll_{side}" type="hinge" axis="1 0 0" range="-0.5 0.5" damping="1"/>
         <joint name="hip_pitch_{side}" type="hinge" axis="0 -1 0" range="-0.9 1.9" damping="1"/>
-        <geom name="thigh_{side}" type="capsule" fromto="0 0 0 0 0 {-thigh_len:.3f}" size="0.065" mass="6.5"/>
+        <geom name="thigh_{side}" type="capsule" fromto="0 0 0 0 0 {-thigh_len:.3f}" size="{thigh_r}" mass="6.5"/>
         <body name="shank_{side}" pos="0 0 {-thigh_len:.3f}">
           <joint name="leg_{side}" type="slide" axis="0 0 1" range="0 {LEG_MAX_SHORTEN}" damping="20"/>
           <geom name="shank_{side}" type="capsule" fromto="0 0 0 0 0 {-(LEG_LEN - thigh_len):.3f}" size="0.045" mass="3.0"/>
@@ -75,8 +81,10 @@ JOINT_RANGES = {"hip_roll": (-0.5, 0.5), "hip_pitch": (-0.9, 1.9), "leg": (0.0, 
                 "ankle": (-0.8, 0.8), "ankle_roll": (-0.35, 0.35), "shoulder": (-0.8, 3.2)}
 
 
-def build_xml(world: str = "", extra_actuators: str = "", start=(0.0, 0.0, 0.0), servo: bool = True) -> str:
+def build_xml(world: str = "", extra_actuators: str = "", start=(0.0, 0.0, 0.0), servo: bool = True,
+              geometry: str = "v0") -> str:
     """MJCF for Xandra-Lite standing at start=(x, y, ground z) plus caller-supplied world geometry."""
+    g = GEOMETRY[geometry]
     start = tuple(start) + (0.0,) * (3 - len(start))
     stand_z = HIP_Z + start[2]
     if servo:
@@ -118,8 +126,8 @@ def build_xml(world: str = "", extra_actuators: str = "", start=(0.0, 0.0, 0.0),
         <site name="hand_l" pos="0 0.22 {-ARM_LEN:.3f}"/>
         <site name="hand_r" pos="0 -0.22 {-ARM_LEN:.3f}"/>
       </body>
-      {_leg("l", HIP_Y)}
-      {_leg("r", -HIP_Y)}
+      {_leg("l", g["hip_y"], g["sole_w"], g["thigh_r"])}
+      {_leg("r", -g["hip_y"], g["sole_w"], g["thigh_r"])}
     </body>
   </worldbody>
   <contact>
@@ -141,5 +149,6 @@ def build_xml(world: str = "", extra_actuators: str = "", start=(0.0, 0.0, 0.0),
 </mujoco>"""
 
 
-def build(world: str = "", extra_actuators: str = "", start=(0.0, 0.0, 0.0), servo: bool = True) -> mujoco.MjModel:
-    return mujoco.MjModel.from_xml_string(build_xml(world, extra_actuators, start, servo))
+def build(world: str = "", extra_actuators: str = "", start=(0.0, 0.0, 0.0), servo: bool = True,
+          geometry: str = "v0") -> mujoco.MjModel:
+    return mujoco.MjModel.from_xml_string(build_xml(world, extra_actuators, start, servo, geometry))

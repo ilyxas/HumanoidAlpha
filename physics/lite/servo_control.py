@@ -27,8 +27,10 @@ SWING_S = 0.8
 SHIFT_S = 1.0           # COM moves along a smooth path over this time (a step change flung the body)
 SHIFT_TIMEOUT_S = 3.0
 COM_FWD = -0.02          # COM target relative to a sole centre (= 4 cm ahead of the ankle)
-LAT_MARGIN = 0.020       # single support: COM this far inside from the sole centre towards the body
-SETTLE_VEL = 0.03        # ... and moving slower than this [m/s] (an outward drift at lift-off tipped her over the sole edge)
+# Baseline = the configuration reported to Codex (g1 pass, g2 fail): margin 1 cm, no velocity gate.
+# The 2nd attempt (margin 2 cm + settle gate 0.03 m/s) also failed and is kept as 'baseline_attempt2'.
+LAT_MARGIN = 0.010       # single support: COM this far inside from the sole centre towards the body
+SETTLE_VEL = float('inf')  # lift only when the COM moves slower than this [m/s]; inf = no velocity gate
 ARRIVE_TOL = 0.012       # measured COM must be this close to its target before a foot lifts
 UNLOAD_FRAC = 0.12       # ... and the swing foot may carry at most this fraction of body weight
 CONTACT_DIST = 0.003
@@ -177,6 +179,7 @@ class ServoController:
         soles = [self.sole(d, k) for k in range(2)]
         height_drop = CROUCH_DROP if a.crouch else STAND_DROP
         swing = None
+        self.unload = None  # (foot, 0..1) the foot being unloaded before lift-off (used by force-level controllers)
 
         if self.skill == "stand":
             com_t = 0.5 * (soles[0][:2] + soles[1][:2]) + np.array([COM_FWD, 0.0])
@@ -197,6 +200,10 @@ class ServoController:
                 if "from" not in w:
                     w["from"] = self.last_com_t.copy()
                 com_t = w["from"] + smooth(w["t"] / SHIFT_S) * (over_stance - w["from"])
+                # unloading follows the MEASURED COM progress towards the stance foot, not the clock
+                span = max(1e-3, float(np.linalg.norm(over_stance - w["from"])))
+                u_com = float(np.clip(1.0 - np.linalg.norm(com[:2] - over_stance) / span, 0.0, 1.0))
+                self.unload = (sw, min(smooth(w["t"] / SHIFT_S), u_com))
                 jc = np.zeros((3, self.m.nv))
                 mujoco.mj_jacSubtreeCom(self.m, d, jc, self.torso)
                 arrived = np.linalg.norm(com[:2] - over_stance) < ARRIVE_TOL and np.linalg.norm((jc @ d.qvel)[:2]) < SETTLE_VEL
@@ -232,6 +239,18 @@ class ServoController:
                     self._set_skill(d, "stand")
 
         self.last_com_t = com_t.copy()
+        stance = [on[k] and not (swing is not None and swing[0] == k) for k in range(2)]
+        torso_z = float(np.mean([soles[k][2] for k in range(2) if stance[k]] or [soles[0][2], soles[1][2]])) + HIP_Z - height_drop
+        shoulder = 3.05 if a.grab else 0.0
+        err = com_t - com[:2]
+        self._actuate(d, stance, swing, com_t, torso_z, shoulder)  # low level: the only part variants swap
+        self._log(d, on)
+        self.prev = a
+        self.diag = dict(skill=self.skill, support=self.support, com_err_cm=round(float(np.linalg.norm(err)) * 100, 2))
+
+    # ------------------------------------------------------------ low level: PD-COM stabilizer + IK + servos
+    def _actuate(self, d, stance, swing, com_t, torso_z, shoulder):
+        com = self.com(d)
         # slow COM stabilizer: plan the COM a little against the measured error (bounded)
         err = com_t - com[:2]
         jc = np.zeros((3, self.m.nv))
@@ -240,17 +259,10 @@ class ServoController:
         self.stab = np.clip(STAB_KP * err - STAB_KD * com_vel, -STAB_MAX, STAB_MAX)
         self.log.stabilizer_max_cm = max(self.log.stabilizer_max_cm, float(np.linalg.norm(self.stab)) * 100)
         plan_com = com_t + self.stab
-
-        stance = [on[k] and not (swing is not None and swing[0] == k) for k in range(2)]
         if self.k % self.plan_every == 0:
-            torso_z = float(np.mean([soles[k][2] for k in range(2) if stance[k]] or [soles[0][2], soles[1][2]])) + HIP_Z - height_drop
-            shoulder = 3.05 if a.grab else 0.0
             self._plan(d, stance, swing, plan_com, torso_z, shoulder)
         self.k += 1
         d.ctrl[self.act] = np.clip(self.plan_q[self.act_q], self.qlo, self.qhi)
-        self._log(d, on)
-        self.prev = a
-        self.diag = dict(skill=self.skill, support=self.support, com_err_cm=round(float(np.linalg.norm(err)) * 100, 2))
 
     # ------------------------------------------------------------ planner (IK)
     def _plan(self, d, stance, swing, com_xy, torso_z, shoulder, iters=4):
