@@ -1,5 +1,6 @@
 """Isolated launch/stop checks; safe to run alongside a live experiment."""
 import asyncio
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -87,11 +88,11 @@ class LaunchTests(unittest.TestCase):
                     process.communicate(timeout=5)
 
 
-    @unittest.skipUnless((ROOT / '.lite_deps' / 'osqp').exists(), 'Xandra-Lite needs osqp in .lite_deps')
+    @unittest.skipUnless(importlib.util.find_spec('osqp') is not None, 'Xandra-Lite needs osqp (requirements.txt)')
     def test_lite_mode_serves_page_and_runtime(self):
         with tempfile.TemporaryDirectory(prefix='ha-launch-') as directory:
             root = Path(directory)
-            for name in ('physics', 'viewer', 'assets', '.lite_deps'):
+            for name in ('physics', 'viewer', 'assets'):
                 (root / name).symlink_to(ROOT / name, target_is_directory=True)
             http_port, ws_port = free_port(), free_port()
             code = ('import sys; from pathlib import Path; from argparse import Namespace; '

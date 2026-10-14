@@ -23,12 +23,16 @@ from pathlib import Path
 import mujoco
 import numpy as np
 
-# osqp/scipy live in an isolated folder of the experiment branch (approved by Ilya, 2026-10-14);
-# appended, so numpy and mujoco still come from the project venv.
-_DEPS = Path(__file__).resolve().parents[2] / ".lite_deps"
-if str(_DEPS) not in sys.path:
-    sys.path.append(str(_DEPS))
-import osqp  # noqa: E402
+# osqp/scipy are regular project dependencies (requirements.txt; START.command installs them).
+# Fallback: an older experiment checkout kept them in .lite_deps (appended, so numpy/mujoco still
+# come from the project venv).
+try:
+    import osqp
+except ImportError:
+    _DEPS = Path(__file__).resolve().parents[2] / ".lite_deps"
+    if str(_DEPS) not in sys.path:
+        sys.path.append(str(_DEPS))
+    import osqp  # noqa: E402
 import scipy.sparse as sp  # noqa: E402
 
 from .servo_control import ServoController  # noqa: E402

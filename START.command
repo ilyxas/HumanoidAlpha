@@ -41,7 +41,7 @@ if ! .venv/bin/python -c 'import sys; assert (3,11) <= sys.version_info[:2] <= (
   fi
   "$interpreter" -m venv .venv
 fi
-if ! .venv/bin/python -c 'import mujoco,numpy,websockets' >/dev/null 2>&1; then
+if ! .venv/bin/python -c 'import mujoco,numpy,websockets,osqp' >/dev/null 2>&1; then
   .venv/bin/python -m pip install -r requirements.txt
 fi
 exec .venv/bin/python scripts/launch.py "$@"

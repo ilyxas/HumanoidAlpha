@@ -47,8 +47,7 @@ class LiteRuntime:
         try:
             from lite.qp_control import QPController
         except ImportError as error:  # osqp lives in .lite_deps of the experiment branch
-            raise SystemExit(f"Xandra-Lite needs osqp in .lite_deps ({error}). "
-                             "Install it there (pip --target .lite_deps osqp scipy jinja2 markupsafe --no-deps).")
+            raise SystemExit(f"Xandra-Lite needs osqp ({error}). Run: .venv/bin/python -m pip install -r requirements.txt")
         self.geometry = geometry
         self.m = build(servo=False, geometry=geometry)
         self.d = mujoco.MjData(self.m)
