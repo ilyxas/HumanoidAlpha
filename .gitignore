@@ -223,3 +223,10 @@ node_modules/
 .~lock*
 *.lock#
 viewer/.bak_*/
+experiments/.DS_Store
+physics/.DS_Store
+reports/.DS_Store
+viewer/.DS_Store
+viewer/.DS_Store
+viewer/.DS_Store
+.DS_Store
