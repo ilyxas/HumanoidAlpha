@@ -11,16 +11,16 @@ import { HUMAN_CMD_HZ } from './gamepad-map.js';
 
 export { HUMAN_CMD_HZ };
 
-export function humanCmdMessage(u, t) {
-  if (!Array.isArray(u) || u.length !== 33 || u.some((n) => typeof n !== 'number' || !Number.isFinite(n))) {
-    throw new TypeError('human_cmd u must be 33 finite numbers');
+export function humanCmdMessage(u, t, nu = 33) {
+  if (!Array.isArray(u) || u.length !== nu || u.some((n) => typeof n !== 'number' || !Number.isFinite(n))) {
+    throw new TypeError(`human_cmd u must be ${nu} finite numbers`);
   }
   if (typeof t !== 'number' || !Number.isFinite(t)) throw new TypeError('human_cmd t must be milliseconds');
   return { op: 'human_cmd', u, t };
 }
 
-export function encodeHumanCmd(u, t = Date.now()) {
-  return JSON.stringify(humanCmdMessage(u, t));
+export function encodeHumanCmd(u, t = Date.now(), nu = 33) {
+  return JSON.stringify(humanCmdMessage(u, t, nu));
 }
 
 /**
@@ -32,13 +32,14 @@ export function startCommandPump(getSocket, getU, options = {}) {
   const setTimer = options.setIntervalFn || setInterval;
   const clearTimer = options.clearIntervalFn || clearInterval;
   const now = options.now || Date.now;
+  const nu = options.nu || 33;
   const id = setTimer(() => {
     try {
       const socket = getSocket();
       if (!socket || socket.readyState !== 1) return;
       const u = getU();
       if (!u) return;
-      socket.send(encodeHumanCmd(u, now()));
+      socket.send(encodeHumanCmd(u, now(), nu));
     } catch (err) {
       console.log('human_cmd send failed', err && err.message ? err.message : err);
     }

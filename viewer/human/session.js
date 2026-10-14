@@ -15,8 +15,8 @@ import { AUTHORITY_LEVELS, DEADZONE, DEFAULT_AUTHORITY, DEFAULT_EXPO_GAMMA, EXPO
 import { createMapper } from './joint-mapper.js';
 import { buttonDown, stickFromGamepadAxes } from './normalize.js';
 
-export function createSession(actuators) {
-  const mapper = createMapper(actuators);
+export function createSession(actuators, options = {}) {
+  const mapper = createMapper(actuators, options);
   const mouse = {
     left: { dragging: false, horizontal: 0, vertical: 0, z: false },
     right: { dragging: false, horizontal: 0, vertical: 0, z: false },

@@ -20,7 +20,7 @@ import numpy as np
 from .model import ACTUATORS, HIP_Z, JOINT_RANGES, LIMITS, limit_key
 
 STAND_DROP = 0.03
-CROUCH_DROP = 0.40
+CROUCH_DROP = 0.30      # 0.40 = the full leg-slide range: the joint hit its stop and she fell (measured)
 STEP_LEN = 0.20
 STEP_HEIGHT = 0.06
 SWING_S = 0.8
@@ -78,8 +78,11 @@ def smooth(u):
 
 
 class ServoController:
-    def __init__(self, m: mujoco.MjModel, plan_every: int = 5):
+    def __init__(self, m: mujoco.MjModel, plan_every: int = 5, gait: dict | None = None):
         self.m = m
+        # gait profile; the gate tests use the defaults (slow, quasi-static), the interactive mode a faster one
+        self.gait = dict(step=STEP_LEN, swing=SWING_S, shift=SHIFT_S, arrive=ARRIVE_TOL, height=STEP_HEIGHT)
+        self.gait.update(gait or {})
         self.pd = mujoco.MjData(m)  # planner's private kinematic copy
         self.plan_every = plan_every
         self.torso = m.body("torso").id
@@ -199,21 +202,21 @@ class ServoController:
                 self._set_support(d, "double")
                 if "from" not in w:
                     w["from"] = self.last_com_t.copy()
-                com_t = w["from"] + smooth(w["t"] / SHIFT_S) * (over_stance - w["from"])
+                com_t = w["from"] + smooth(w["t"] / self.gait["shift"]) * (over_stance - w["from"])
                 # unloading follows the MEASURED COM progress towards the stance foot, not the clock
                 span = max(1e-3, float(np.linalg.norm(over_stance - w["from"])))
                 u_com = float(np.clip(1.0 - np.linalg.norm(com[:2] - over_stance) / span, 0.0, 1.0))
-                self.unload = (sw, min(smooth(w["t"] / SHIFT_S), u_com))
+                self.unload = (sw, min(smooth(w["t"] / self.gait["shift"]), u_com))
                 jc = np.zeros((3, self.m.nv))
                 mujoco.mj_jacSubtreeCom(self.m, d, jc, self.torso)
-                arrived = np.linalg.norm(com[:2] - over_stance) < ARRIVE_TOL and np.linalg.norm((jc @ d.qvel)[:2]) < SETTLE_VEL
+                arrived = np.linalg.norm(com[:2] - over_stance) < self.gait["arrive"] and np.linalg.norm((jc @ d.qvel)[:2]) < SETTLE_VEL
                 unloaded = self.foot_force(d, sw) < UNLOAD_FRAC * self.weight
                 stop = abs(a.move) <= 0.1
                 aligned = abs(soles[sw][0] - soles[st][0]) < 0.02
                 if stop and aligned:
                     w.update(phase="center", t=0.0, **{"from": com_t.copy()})
-                elif arrived and unloaded and w["t"] >= SHIFT_S:
-                    adv = 0.0 if stop else (STEP_LEN / 2 if w["first"] else STEP_LEN)
+                elif arrived and unloaded and w["t"] >= self.gait["shift"]:
+                    adv = 0.0 if stop else (self.gait["step"] / 2 if w["first"] else self.gait["step"])
                     goal = np.array([soles[st][0] + adv, soles[sw][1], soles[st][2]])
                     w.update(phase="swing", t=0.0, first=False, p0=soles[sw].copy(), goal=goal, hold=com_t.copy())
                 elif w["t"] > SHIFT_TIMEOUT_S:
@@ -221,11 +224,11 @@ class ServoController:
                     w.update(t=0.0)
             if w["phase"] == "swing":
                 self._set_support(d, "single_l" if st == 0 else "single_r")
-                u = min(1.0, w["t"] / SWING_S)
+                u = min(1.0, w["t"] / self.gait["swing"])
                 p = w["p0"] + smooth(u) * (w["goal"] - w["p0"])
-                p[2] = w["p0"][2] + STEP_HEIGHT * np.sin(np.pi * u) + smooth(u) * (w["goal"][2] - w["p0"][2])
+                p[2] = w["p0"][2] + self.gait["height"] * np.sin(np.pi * u) + smooth(u) * (w["goal"][2] - w["p0"][2])
                 if u >= 1.0:
-                    p[2] -= min(0.03, 0.05 * (w["t"] - SWING_S))  # keep reaching down until it touches
+                    p[2] -= min(0.03, 0.05 * (w["t"] - self.gait["swing"]))  # keep reaching down until it touches
                 swing = (sw, p)
                 com_t = w["hold"]
                 if u >= 1.0 and on[sw]:
@@ -234,8 +237,8 @@ class ServoController:
             if w["phase"] == "center":
                 self._set_support(d, "double")
                 mid_t = 0.5 * (soles[0][:2] + soles[1][:2]) + np.array([COM_FWD, 0.0])
-                com_t = w["from"] + smooth(w["t"] / SHIFT_S) * (mid_t - w["from"])
-                if np.linalg.norm(com[:2] - mid_t) < ARRIVE_TOL and w["t"] > SHIFT_S:
+                com_t = w["from"] + smooth(w["t"] / self.gait["shift"]) * (mid_t - w["from"])
+                if np.linalg.norm(com[:2] - mid_t) < self.gait["arrive"] and w["t"] > self.gait["shift"]:
                     self._set_skill(d, "stand")
 
         self.last_com_t = com_t.copy()

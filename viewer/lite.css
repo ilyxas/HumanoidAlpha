@@ -1,0 +1,44 @@
+/* Xandra-Lite page (EXPERIMENTAL). Loaded after observation.css; Observation is unchanged. */
+.lite-mode #lite {
+  position: absolute;
+  z-index: 8;
+  top: calc(64px + env(safe-area-inset-top, 0px));
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  width: min(360px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12px system-ui;
+  color: #f5f7fa;
+}
+.lite-mode .lite-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.lite-mode #lite button {
+  height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: rgba(24, 32, 43, .9);
+  color: #f5f7fa;
+  font: inherit;
+  cursor: pointer;
+}
+.lite-mode #lite button[aria-pressed="true"] { background: #d5eee5; color: #172d25; }
+.lite-mode .lite-status {
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: rgba(24, 32, 43, .78);
+  font: 500 12px ui-monospace, monospace;
+  white-space: pre-wrap;
+}
+.lite-mode .lite-hint {
+  padding: 6px 10px;
+  border-radius: 7px;
+  background: rgba(24, 32, 43, .55);
+  font: 400 11px system-ui;
+  line-height: 1.35;
+}
+.lite-mode #err:empty { display: none; }
+@media (max-width: 720px) {
+  /* camera buttons occupy the top right; keep the Lite panel below them */
+  .lite-mode #lite { top: calc(150px + env(safe-area-inset-top, 0px)); }
+}

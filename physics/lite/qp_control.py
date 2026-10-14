@@ -34,6 +34,7 @@ import scipy.sparse as sp  # noqa: E402
 from .servo_control import ServoController  # noqa: E402
 
 MU = 0.8          # friction used by the controller (model: 1.0)
+OWN_WEIGHT = 1.0  # cost of the controller's own torque on a motor the human is driving
 G = 9.81
 
 
@@ -65,8 +66,12 @@ def _hull_margin(point, pts):
 
 
 class QPController(ServoController):
-    def __init__(self, m: mujoco.MjModel):
-        super().__init__(m, plan_every=1)
+    def __init__(self, m: mujoco.MjModel, qp_every: int = 1, gait: dict | None = None):
+        super().__init__(m, plan_every=1, gait=gait)
+        # solve the QP every qp_every physics steps and hold the torque in between (the interactive
+        # mode uses 2 = 250 Hz to stay real-time; the gate tests use 1)
+        self.qp_every = max(1, int(qp_every))
+        self.qp_k = 0
         self.nv, self.nu = m.nv, len(self.act)
         self.S = np.zeros((self.nu, self.nv))
         for i, v in enumerate(self.act_v):
@@ -77,6 +82,15 @@ class QPController(ServoController):
         self.qp_rows = []
         self.qp_stats = dict(solves=0, not_solved=0, tau_active_steps=0, friction_active_steps=0, edge_steps=0)
         self.jc = np.zeros((3, self.nv))
+        # Joystick torques (like Harness), added to the balance controller's command. While a joint gets
+        # a non-zero human torque its posture target is dropped (balance stops straightening it but may
+        # still use the motor for balance); the human torque is a known input to the QP and the total
+        # stays within the motor limits. assist=False: raw human torques only (as in Experiment).
+        # (Fixing the controller part of a human motor to 0 made the QP infeasible with hard feet.)
+        self.u_ext = np.zeros(self.nu)
+        self.assist = True
+        self.shoulder_ref = None  # rate-limited shoulder target (follows the arm while the human drives it)
+        self.i_shoulder = [m.actuator(int(a)).name for a in self.act].index("shoulder")
 
     def reset(self, d, joint_noise=0.0, seed=0):
         super().reset(d, joint_noise, seed)
@@ -90,6 +104,13 @@ class QPController(ServoController):
     # -------------------------------------------------------------- the QP
     def _actuate(self, d, stance, swing, com_t, torso_z, shoulder):
         m, nv, nu = self.m, self.nv, self.nu
+        if not self.assist:
+            d.ctrl[self.act] = np.clip(self.u_ext, -self.lim, self.lim)
+            return
+        self.qp_k += 1
+        if self.qp_k % self.qp_every and self.qp_k > 1:
+            d.ctrl[self.act] = np.clip(self.tau + np.clip(self.u_ext, -self.lim, self.lim), -self.lim, self.lim)
+            return
         mujoco.mj_fullM(m, d, self.M)
         c = d.qfrc_bias.copy()
         rows_J, rows_b, rows_w = [], [], []
@@ -121,7 +142,9 @@ class QPController(ServoController):
             J = np.vstack([self.jp, self.jr])
             b = -np.vstack([jpd, jrd]) @ d.qvel - 20.0 * (J @ d.qvel)
             b[3:] += 60.0 * np.cross(d.xmat[self.feet[k]].reshape(3, 3)[:, 2], [0, 0, 1.0])
-            task(J, b, 1000.0)
+            task(J, b, 1000.0)  # soft (high weight). A hard equality broke walking (QP not solved
+            # after the first step, measured); the sliding seen with soft feet came from forbidding the
+            # controller to use a human-driven motor, now only made expensive (OWN_WEIGHT).
         nc = len(cpts)
         if swing is not None:
             k, pt = swing
@@ -141,9 +164,20 @@ class QPController(ServoController):
         task(self.jp[2:3].copy(), np.array([100.0 * (torso_z - d.xpos[self.torso, 2]) - 20.0 * (self.jp[2] @ d.qvel)]), 100.0)
         R = d.xmat[self.torso].reshape(3, 3)
         task(self.jr.copy(), 100.0 * (np.cross(R[:, 2], [0, 0, 1.0]) + np.cross(R[:, 0], [1.0, 0, 0])) - 20.0 * (self.jr @ d.qvel), 50.0)
+        # shoulder: while the human drives it the target follows the arm; afterwards it returns to the
+        # planner's target at <= 1 rad/s (an instant return swung 6.5 kg of arms and threw her over)
+        qs = d.qpos[m.jnt_qposadr[m.joint("shoulder").id]]
+        if self.shoulder_ref is None or abs(self.u_ext[self.i_shoulder]) > 1e-9:
+            self.shoulder_ref = float(qs)
+        else:
+            step = 1.0 * m.opt.timestep
+            self.shoulder_ref += float(np.clip(shoulder - self.shoulder_ref, -step, step))
         # shoulder + weak posture
-        for name, q0, w in (("shoulder", shoulder, 10.0), ("hip_roll_l", 0, 0.01), ("hip_roll_r", 0, 0.01),
+        owned = {m.actuator(int(a)).name for a, uv in zip(self.act, self.u_ext) if abs(uv) > 1e-9}
+        for name, q0, w in (("shoulder", self.shoulder_ref, 10.0), ("hip_roll_l", 0, 0.01), ("hip_roll_r", 0, 0.01),
                             ("ankle_roll_l", 0, 0.01), ("ankle_roll_r", 0, 0.01), ("ankle_l", 0, 0.01), ("ankle_r", 0, 0.01)):
+            if name in owned:
+                continue
             j = m.joint(name).id
             e = np.zeros(nv)
             e[m.jnt_dofadr[j]] = 1.0
@@ -157,25 +191,29 @@ class QPController(ServoController):
         q = np.zeros(nx)
         P[:nv, :nv] = 2 * (J.T * W) @ J + 1e-6 * np.eye(nv)
         q[:nv] = -2 * (J.T * W) @ b
-        P[nv:nv + nu, nv:nv + nu] = 2e-4 * np.eye(nu)
+        # controller torque on a human-driven motor is expensive (not forbidden): balance yields that
+        # motor to the human unless it really needs it (forbidding it made the QP infeasible)
+        own_w = np.where(np.abs(self.u_ext) > 1e-9, OWN_WEIGHT, 1e-4)
+        P[nv:nv + nu, nv:nv + nu] = 2 * np.diag(own_w)
         if nc:
             P[nv + nu:, nv + nu:] = 2e-6 * np.eye(3 * nc)
 
-        # dynamics: M qacc - S^T tau - Jc^T f = -c
+        # dynamics: M qacc - S^T tau - Jc^T f = -c + S^T u_ext   (tau = controller part)
+        u_ext = np.clip(self.u_ext, -self.lim, self.lim)
         Aeq = np.zeros((nv, nx))
         Aeq[:, :nv] = self.M
         Aeq[:, nv:nv + nu] = -self.S.T
         for i, (p, k) in enumerate(zip(cpts, cfoot)):
             mujoco.mj_jac(m, d, self.jp, self.jr, p, self.feet[k])
             Aeq[:, nv + nu + 3 * i: nv + nu + 3 * i + 3] = -self.jp.T
-        beq = -c
+        beq = -c + self.S.T @ u_ext
         # inequalities
         Ain, lo, hi = [], [], []
         T = np.zeros((nu, nx))
         T[:, nv:nv + nu] = np.eye(nu)
         Ain.append(T)
-        lo.append(-self.lim)
-        hi.append(self.lim)
+        lo.append(-self.lim - u_ext)  # total command tau + u_ext stays within the motor limits
+        hi.append(self.lim - u_ext)
         # the planner is shifting weight off the foot it will lift: that foot's total normal force is
         # capped by (1 - u) * body weight, u = shift progress 0..1 (a soft penalty was not enough: the QP
         # kept ~22 % of the weight on it). An infeasible cap is reported by the solver, not hidden.
@@ -214,12 +252,12 @@ class QPController(ServoController):
         if res.info.status not in ("solved", "solved inaccurate"):
             self.qp_stats["not_solved"] += 1
             self._event("qp_not_solved", t, status=res.info.status)
-            d.ctrl[self.act] = self.tau  # hold the last command
+            d.ctrl[self.act] = np.clip(self.tau + u_ext, -self.lim, self.lim)  # hold the last command
             return
         x = res.x
         qacc, tau, f = x[:nv], x[nv:nv + nu], x[nv + nu:].reshape(-1, 3) if nc else np.zeros((0, 3))
-        self.tau = np.clip(tau, -self.lim, self.lim)
-        d.ctrl[self.act] = self.tau
+        self.tau = np.clip(tau, -self.lim - u_ext, self.lim - u_ext)
+        d.ctrl[self.act] = self.tau + u_ext
 
         # ---------------- diagnostics
         tau_active = [self.m.actuator(int(a)).name for a, tv, lv in zip(self.act, tau, self.lim) if abs(tv) >= lv - 1e-3]
