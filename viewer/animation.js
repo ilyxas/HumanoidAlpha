@@ -16,6 +16,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { enableEightBoneSkinning } from './human/skin8.js';
 import { createProfiler } from './observation-perf.js';
 import { readGamepad } from './human/normalize.js';
 import { mountSticks } from './human/sticks-ui.js';
@@ -272,6 +273,7 @@ const manifestReady = fetch(MANIFEST_URL, { cache: 'no-cache' }).then(r => (r.ok
 new GLTFLoader().load(MODEL_URL, async gltf => {
   manifest = await manifestReady;
   gltfRoot = gltf.scene;
+  window.SKIN8 = enableEightBoneSkinning(gltfRoot); // the GLB carries 8 influences; stock three.js reads 4
   gltfRoot.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   character.add(gltfRoot);
   clips = gltf.animations;
