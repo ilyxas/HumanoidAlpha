@@ -23,6 +23,7 @@ import { createWalkSession } from './human/walk-control.js';
 import { DEFAULT_SPEEDS, createMovementController, createReferenceLatch, forwardOfYaw, keyboardInput, selectLocomotion, stickInput, wrapAngle, yawOf } from './human/locomotion.js';
 import { EXPECTED_CLIPS, createAnimationController } from './animation/anim-controller.js';
 import { mountDebugger } from './animation/debugger.js';
+import { createPhysicsLink } from './animation/physics-link.js';
 
 const MODEL_URL = '../assets/Xandra_Animated.glb';
 const MANIFEST_URL = '../assets/Xandra_Animated.manifest.json';
@@ -67,6 +68,18 @@ const TARGET_OFFSET = new THREE.Vector3(0, .7, 0);
 const UP = new THREE.Vector3(0, 1, 0);
 const presets = { FRONT: [0, 1.6, 5.5], LEFT: [5.5, 1.6, 0], BACK: [0, 1.6, -5.5], RIGHT: [-5.5, 1.6, 0], TOP: [0, 6.2, 0], RESET: [3.6, 2.5, 4.6] };
 const errEl = document.getElementById('err');
+// EXPERIMENTAL PHYSICS toggle (branch exp/assisted-stand-claude): see animation/physics-link.js.
+const physToggle = document.getElementById('physToggle'), physStatus = document.getElementById('physStatus');
+const physics = createPhysicsLink({
+  wsPort: /^\d{1,5}$/.test(params.get('wsPort') || '') ? params.get('wsPort') : '8766',
+  onStatus(text, on) { physStatus.textContent = text; physToggle.textContent = on ? 'PHYSICS ON' : 'PHYSICS OFF'; physToggle.setAttribute('aria-pressed', String(on)); },
+});
+physToggle.onclick = () => {
+  const on = !physics.enabled;
+  if (on) { character.position.set(0, 0, 0); character.rotation.y = 0; movement.reset({ x: 0, z: 0 }, 0); }
+  physics.setEnabled(on);
+  physToggle.blur();
+};
 let locked = false, follow = true;
 const followPos = new THREE.Vector3();
 let lastPreset = 'RESET';
@@ -142,6 +155,7 @@ let shiftHeld = false, capsLock = false;
 const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
 function typingTarget(e) { const t = e.target; return t && (t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && /^(text|search|number)$/.test(t.type))); }
 function onKey(e) {
+  if (physics.onKey(e)) return;
   const down = e.type === 'keydown';
   if (e.code === 'CapsLock') {
     // macOS Chrome reports CapsLock as keydown = on, keyup = off; elsewhere each press is a keydown.
@@ -271,6 +285,7 @@ new GLTFLoader().load(MODEL_URL, async gltf => {
   if (!manifest) errEl.textContent = 'Manifest not found: using built-in speeds; one-shot loop flags assumed.';
   for (const n of ['foot_l', 'foot_r', 'ball_l', 'ball_r']) feet[n] = gltfRoot.getObjectByName(n) || null;
   pelvisBone = gltfRoot.getObjectByName('pelvis') || null;
+  physics.setModel(gltfRoot);
   const footPhases = anim.analyzeFootPhases(feet.foot_l);
   morph = collectMorphs(gltfRoot);
   const order = manifest?.global_info?.clip_names || EXPECTED_CLIPS;
@@ -299,6 +314,7 @@ function update(dt) {
   lastSample = session.sample();
   sticksUi.paint(lastSample);
   if (!anim) return;
+  if (physics.enabled) return; // MuJoCo owns the pose; the mixer and the movement controller pause
   const paused = anim.paused;
   const simDt = paused ? 0 : dt * anim.speed;
   let input = anim.mode === 'auto' ? gatherInput(lastSample) : null;
@@ -342,10 +358,12 @@ function update(dt) {
 
 const _prev = new THREE.Vector3();
 function pelvisWorldY() { if (!pelvisBone) return null; pelvisBone.getWorldPosition(_feetTmp); return _feetTmp.y; }
+const _physFollow = new THREE.Vector3();
 function updateFollow(dt) {
   if (!follow) return;
   _prev.copy(followPos);
-  followPos.lerp(character.position, 1 - Math.exp(-6 * dt));
+  const goal = physics.enabled && physics.pelvisWorld(_physFollow) ? _physFollow.setY(0) : character.position;
+  followPos.lerp(goal, 1 - Math.exp(-6 * dt));
   const delta = _prev.subVectors(followPos, _prev);
   controls.target.add(delta); camera.position.add(delta);
   light.position.copy(followPos).add(LIGHT_OFFSET); light.target.position.copy(followPos);
@@ -401,7 +419,7 @@ function animate(t) {
   const dt = Math.min(clockDelta.getDelta(), 0.1);
   update(dt);
   updateFollow(dt);
-  if (anim) { const mv = movement.snapshot(); updateAutoAlign(dt, !anim.paused && anim.mode === 'auto' && Math.abs(mv.speed) > AUTO_ALIGN.minSpeed, mv.yaw); }
+  if (anim) { const mv = movement.snapshot(); updateAutoAlign(dt, !physics.enabled && !anim.paused && anim.mode === 'auto' && Math.abs(mv.speed) > AUTO_ALIGN.minSpeed, mv.yaw); }
   if (anim && debug.open) debug.update(liveData());
   controls.update(); renderScene(); perf.sample('frameWorkCpuMs', performance.now() - start);
 }
@@ -409,6 +427,7 @@ requestAnimationFrame(animate);
 
 // Read-only hook (plus recorder/morph helpers) for automated checks in headless tests.
 window.__animation = {
+  get physics() { return { enabled: physics.enabled, state: physics.state?.stand ?? null }; },
   get ready() { return !!anim; },
   get clips() { return clips.map(c => ({ name: c.name, duration: c.duration, loop: anim?.entries.get(c.name)?.loop ?? null })); },
   get morphs() { return { names: [...morph.names], meshes: morph.meshes.length, meshName: morph.meshName }; },

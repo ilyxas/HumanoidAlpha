@@ -54,3 +54,18 @@ Capability is **always available** in the developer console (`./START.command de
 
 `u_cmd` (act/zero/console sliders) + AssistedStand PD/COM(+modest vertical) → clip to ctrlrange → `data.ctrl` → `mj_step`.  
 No MJCF edits. No `qpos` writes during sim (only at enable/reset).
+
+## Stand v2 (experimental, branch `exp/assisted-stand-claude`)
+
+```bash
+./START.command stand-v2   # observation + actuator CLI, stand v2 on (menu 5)
+./START.command debug-v2   # developer console; the Assisted button uses stand v2 (menu 6)
+```
+
+The stand-v2 and debug-v2 modes differ from the existing Assisted in two ways:
+- **Model:** a flat-sole contact variant, built in memory by `physics/stand_v2.py:load_flat_sole_model`. The floor touches one box per foot instead of the convex foot hull. `physics/model/humanoid_alpha.xml` is unchanged.
+- **Controller:** `StandV2Assist`, a floating-base inverse-dynamics stance with the centre of pressure kept inside the soles. Its start pose is the equilibrium seed rather than raw qpos0.
+
+Like the existing Assisted, it outputs actuator torques only, clipped to ctrlrange: no xfrc and no qpos writes except the seed. `./humanoid act` still adds `u_cmd`, and `humanoid-assist on|off|reset|status` work the same way. Past 45° of torso tilt or below 0.55 m of pelvis height the assist fades to zero, and `humanoid-assist reset` re-seeds the pose.
+
+Status: holds 120 s undisturbed and survives 0.1 s pushes of 5 N·s. It falls after 10 N·s backward or sideways. Why it was needed: `reports/ASSISTED_STAND_CLAUDE.md`.

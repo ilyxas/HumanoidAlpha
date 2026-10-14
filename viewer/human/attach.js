@@ -7,7 +7,8 @@ import { readGamepad } from './normalize.js';
 import { startCommandPump } from './transport.js';
 import { mountSticks } from './sticks-ui.js';
 
-export function createHumanControls(doc = document) {
+/** options.nu: actuator count of the model (33 default; Xandra-Lite uses 11). */
+export function createHumanControls(doc = document, { nu = 33, initial } = {}) {
   const host = doc.getElementById('human');
   let session = null;
   let ui = null;
@@ -32,7 +33,7 @@ export function createHumanControls(doc = document) {
     if (started || !session) return;
     started = true;
     ui = mountSticks(host, session);
-    stopPump = startCommandPump(() => socket, currentU);
+    stopPump = startCommandPump(() => socket, currentU, { nu });
     raf = requestAnimationFrame(loop);
   }
 
@@ -40,8 +41,8 @@ export function createHumanControls(doc = document) {
     bindSocket(next) { socket = next; },
     onInventory(inventory) {
       const actuators = inventory && inventory.actuators;
-      if (!Array.isArray(actuators) || actuators.length !== 33) {
-        console.log('human control waiting for 33-actuator inventory');
+      if (!Array.isArray(actuators) || actuators.length !== nu) {
+        console.log(`human control waiting for ${nu}-actuator inventory`);
         return;
       }
       if (session) return;
@@ -50,7 +51,7 @@ export function createHumanControls(doc = document) {
         name: a.name,
         joint: a.joint,
         ctrlrange: a.ctrlrange,
-      })));
+      })), initial ? { nu, initial } : { nu });
       ensureRunning();
     },
     stop() {

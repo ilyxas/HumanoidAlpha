@@ -107,3 +107,37 @@
 .anim-debug .ad-morph[hidden] { display: none; }
 .anim-debug .ad-morph-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #c9d6e2; }
 .anim-debug .ad-morph-val { text-align: right; color: #93dfcd; }
+
+/* ---- EXPERIMENTAL physics toggle (branch exp/assisted-stand-claude) ---- */
+#physics {
+  position: absolute;
+  z-index: 8;
+  top: calc(16px + var(--safe-t));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  max-width: calc(100vw - 32px);
+  font: 600 12px system-ui;
+  color: #f5f7fa;
+}
+#physics button {
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: rgba(24, 32, 43, .9);
+  color: #f5f7fa;
+  font: inherit;
+  cursor: pointer;
+}
+#physics button[aria-pressed="true"] { background: #d5eee5; color: #172d25; }
+#physStatus {
+  padding: 9px 10px;
+  border-radius: 7px;
+  background: rgba(24, 32, 43, .75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

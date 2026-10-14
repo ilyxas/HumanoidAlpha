@@ -43,14 +43,15 @@ export function jointCtrlIds(joint) {
   return Object.values(joint.axes).map((a) => a.id);
 }
 
-export function buildJointCatalog(actuators) {
-  if (!Array.isArray(actuators) || actuators.length !== NU) {
-    throw new Error(`expected ${NU} actuators`);
+/** nu: number of actuators of the model (33 for the full model, 11 for Xandra-Lite). */
+export function buildJointCatalog(actuators, nu = NU) {
+  if (!Array.isArray(actuators) || actuators.length !== nu) {
+    throw new Error(`expected ${nu} actuators`);
   }
   const groups = new Map();
   for (const a of actuators) {
     if (!a || typeof a.joint !== 'string' || !a.joint) throw new Error('actuator missing joint name');
-    if (!Number.isInteger(a.id) || a.id < 0 || a.id >= NU) throw new Error('actuator id out of range');
+    if (!Number.isInteger(a.id) || a.id < 0 || a.id >= nu) throw new Error('actuator id out of range');
     if (!Array.isArray(a.ctrlrange) || a.ctrlrange.length !== 2) throw new Error('actuator missing ctrlrange');
     if (!groups.has(a.joint)) groups.set(a.joint, []);
     groups.get(a.joint).push(a);
@@ -113,8 +114,8 @@ function writeJoint(u, joint, stick, authority, gamma) {
   // Releasing Z simply stops writing Z (that element stays 0). No latch.
 }
 
-export function createMapper(actuators) {
-  const catalog = buildJointCatalog(actuators);
+export function createMapper(actuators, { nu = NU, initial = ['shoulder_l', 'shoulder_r'] } = {}) {
+  const catalog = buildJointCatalog(actuators, nu);
   const list = catalog.cycle;
   if (list.length < 2) throw new Error('need two joints for slots A and B');
 
@@ -124,8 +125,8 @@ export function createMapper(actuators) {
     return jointCtrlIds(list[j]).some((id) => ids.has(id));
   }
 
-  let indexA = list.findIndex((j) => j.name === 'shoulder_l');
-  let indexB = list.findIndex((j) => j.name === 'shoulder_r');
+  let indexA = list.findIndex((j) => j.name === initial[0]);
+  let indexB = list.findIndex((j) => j.name === initial[1]);
   if (indexA < 0) indexA = 0;
   if (indexB < 0) indexB = (indexA + 1) % list.length;
   if (overlaps(indexA, indexB)) {
@@ -178,7 +179,7 @@ export function createMapper(actuators) {
    * Each ctrl index is written by at most one slot.
    */
   function command(input) {
-    const u = new Array(NU).fill(0);
+    const u = new Array(nu).fill(0);
     const view = {};
     const taken = new Set();
     for (const side of ['left', 'right']) {

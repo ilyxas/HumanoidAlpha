@@ -42,15 +42,23 @@ def stop_managed(root=None):
 
 def spawn_physics(args):
     """Start the MuJoCo + WebSocket runtime for the physics modes."""
+    if args.mode == 'lite':
+        # Xandra-Lite (experimental): its own reduced model and QP runtime, no 33-motor inventory
+        return subprocess.Popen([sys.executable, str(ROOT / 'physics/lite/server.py'), '--port', str(args.ws_port),
+                                 '--geometry', getattr(args, 'lite_geometry', 'v0')], cwd=ROOT)
     (ROOT / 'reports').mkdir(exist_ok=True)
     subprocess.run([sys.executable, str(ROOT / 'physics/control_console.py'),
                     '--inventory', str(ROOT / 'reports/control_inventory.json')],
                    cwd=ROOT, check=True)
     command = [sys.executable, str(ROOT / 'physics/control_console.py'), '--port', str(args.ws_port)]
-    if args.mode in ('experiment', 'harness', 'assisted'):
+    if args.mode in ('experiment', 'harness', 'assisted', 'stand-v2'):
         command.extend(['--actuator-api', '--actuator-log', str(ROOT / 'reports/actuator_commands.jsonl')])
-    if args.mode == 'assisted':
+    if args.mode in ('assisted', 'stand-v2'):
         command.append('--assisted-stand')
+    if args.mode in ('stand-v2', 'debug-v2'):
+        command.append('--stand-v2')  # experimental flat-sole + inverse-dynamics stance
+    if args.mode == 'animation':
+        command.append('--anim-physics')  # optional PHYSICS toggle on the Animation page
     if args.mode == 'harness':
         command.append('--harness')
     return subprocess.Popen(command, cwd=ROOT)
@@ -75,8 +83,8 @@ def wait_for_physics(process, args, stop):
 
 def run(args):
     os.chdir(ROOT)
-    # Animation mode is a static viewer: no MuJoCo process, no WebSocket.
-    physics = args.mode != 'animation'
+    # Animation mode also starts the stand-v2 runtime for its optional PHYSICS toggle.
+    physics = True
     state = ROOT / '.runtime'
     state.mkdir(mode=0o700, exist_ok=True)
     lock = (state / 'launcher.lock').open('w')
@@ -93,12 +101,14 @@ def run(args):
     http_started = False
     control_started = False
     path = control_path()
-    if args.mode == 'debug':
+    if args.mode in ('debug', 'debug-v2'):
         page = 'console.html'
     elif args.mode == 'animation':
         page = 'animation.html'
+    elif args.mode == 'lite':
+        page = 'lite.html'
     else:
-        page = 'observation.html'  # experiment, harness, assisted
+        page = 'observation.html'  # experiment, harness, assisted, stand-v2
     route = f'/viewer/{page}?wsPort={args.ws_port}' if physics else f'/viewer/{page}'
 
     class Handler(SimpleHTTPRequestHandler):
@@ -205,10 +215,12 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['debug', 'experiment', 'harness', 'assisted', 'animation'])
+    parser.add_argument('mode', choices=['debug', 'experiment', 'harness', 'assisted', 'animation', 'stand-v2', 'debug-v2', 'lite'])
     parser.add_argument('--no-open', action='store_true', help='Print the URL without opening a browser')
     parser.add_argument('--http-port', type=int, default=8788)
     parser.add_argument('--ws-port', type=int, default=8766)
+    parser.add_argument('--lite-geometry', choices=['v0', 'v1'], default='v0',
+                        help='Xandra-Lite geometry: v0 feet 18 cm apart, sole 8 cm; v1 12 cm, 10 cm')
     try:
         run(parser.parse_args())
     except (RuntimeError, OSError) as error:
