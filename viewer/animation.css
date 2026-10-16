@@ -141,3 +141,58 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ---- COLLISIONS toggle + panel (animation/collision-overlay.js) ---- */
+#collisions {
+  position: absolute;
+  z-index: 8;
+  top: calc(58px + var(--safe-t));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  max-width: calc(100vw - 32px);
+  font: 600 12px system-ui;
+  color: #f5f7fa;
+}
+#collisions button {
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: rgba(24, 32, 43, .9);
+  color: #f5f7fa;
+  font: inherit;
+  cursor: pointer;
+}
+#collisions button[aria-pressed="true"] { background: #f6d6d3; color: #3a1512; }
+#collStatus {
+  padding: 9px 10px;
+  border-radius: 7px;
+  background: rgba(24, 32, 43, .75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.coll-panel {
+  position: absolute;
+  z-index: 7;
+  top: calc(160px + var(--safe-t));
+  right: calc(16px + var(--safe-r));
+  width: min(320px, calc(100vw - 32px));
+  max-height: calc(100vh - 160px - 260px - var(--safe-b) - var(--safe-t));
+  overflow-y: auto;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(24, 32, 43, .88);
+  color: #f5f7fa;
+  font: 11px/1.45 ui-monospace, monospace;
+}
+.coll-panel[hidden] { display: none; }
+.coll-panel .cp-head { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; margin-bottom: 4px; }
+.coll-panel .cp-strip { width: 100%; height: 34px; display: block; margin-bottom: 6px; border-radius: 4px; }
+.coll-panel .cp-row { border-left: 3px solid #ff3b30; padding: 2px 0 2px 6px; margin-bottom: 4px; }
+.coll-panel .cp-row.cp-joint { border-color: #ffb020; }
+.coll-panel .cp-row.cp-floor { border-color: #3aa0ff; }
+.coll-panel .cp-row span { color: #c9d6e2; }

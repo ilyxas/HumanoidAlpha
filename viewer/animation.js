@@ -25,9 +25,11 @@ import { DEFAULT_SPEEDS, createMovementController, createReferenceLatch, forward
 import { EXPECTED_CLIPS, createAnimationController } from './animation/anim-controller.js';
 import { mountDebugger } from './animation/debugger.js';
 import { createPhysicsLink } from './animation/physics-link.js';
+import { createCollisionOverlay } from './animation/collision-overlay.js';
 
 const MODEL_URL = '../assets/Xandra_Animated.glb';
 const MANIFEST_URL = '../assets/Xandra_Animated.manifest.json';
+const COLLISIONS_URL = '../reports/clip_collisions/Xandra_Animated.collisions.json'; // physics/clip_collisions.py
 
 const params = new URLSearchParams(location.search);
 const perf = createProfiler(params.get('profile') === '1');
@@ -81,6 +83,14 @@ physToggle.onclick = () => {
   physics.setEnabled(on);
   physToggle.blur();
 };
+// COLLISIONS toggle: hits from the precomputed clip report (see animation/collision-overlay.js).
+// Display only - the animation is not changed. Off while PHYSICS owns the pose.
+const collToggle = document.getElementById('collToggle'), collStatus = document.getElementById('collStatus');
+const collisions = createCollisionOverlay({
+  scene, container: document.body, url: COLLISIONS_URL,
+  onStatus(text, on) { collStatus.textContent = text; collToggle.textContent = on ? 'COLLISIONS ON' : 'COLLISIONS OFF'; collToggle.setAttribute('aria-pressed', String(on)); },
+});
+collToggle.onclick = () => { collisions.setEnabled(!collisions.enabled); collToggle.blur(); };
 let locked = false, follow = true;
 const followPos = new THREE.Vector3();
 let lastPreset = 'RESET';
@@ -288,6 +298,7 @@ new GLTFLoader().load(MODEL_URL, async gltf => {
   for (const n of ['foot_l', 'foot_r', 'ball_l', 'ball_r']) feet[n] = gltfRoot.getObjectByName(n) || null;
   pelvisBone = gltfRoot.getObjectByName('pelvis') || null;
   physics.setModel(gltfRoot);
+  collisions.setModel(gltfRoot);
   const footPhases = anim.analyzeFootPhases(feet.foot_l);
   morph = collectMorphs(gltfRoot);
   const order = manifest?.global_info?.clip_names || EXPECTED_CLIPS;
@@ -423,6 +434,7 @@ function animate(t) {
   updateFollow(dt);
   if (anim) { const mv = movement.snapshot(); updateAutoAlign(dt, !physics.enabled && !anim.paused && anim.mode === 'auto' && Math.abs(mv.speed) > AUTO_ALIGN.minSpeed, mv.yaw); }
   if (anim && debug.open) debug.update(liveData());
+  if (anim && collisions.enabled) collisions.update(physics.enabled ? null : anim.snapshot());
   controls.update(); renderScene(); perf.sample('frameWorkCpuMs', performance.now() - start);
 }
 requestAnimationFrame(animate);
@@ -430,6 +442,7 @@ requestAnimationFrame(animate);
 // Read-only hook (plus recorder/morph helpers) for automated checks in headless tests.
 window.__animation = {
   get physics() { return { enabled: physics.enabled, state: physics.state?.stand ?? null }; },
+  collisions,
   get ready() { return !!anim; },
   get clips() { return clips.map(c => ({ name: c.name, duration: c.duration, loop: anim?.entries.get(c.name)?.loop ?? null })); },
   get morphs() { return { names: [...morph.names], meshes: morph.meshes.length, meshName: morph.meshName }; },

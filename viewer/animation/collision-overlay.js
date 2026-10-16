@@ -1,0 +1,113 @@
+// COLLISIONS toggle for the Animation mode (physics-free). Shows where the playing clip makes
+// Xandra's body pass through itself or the floor, from the precomputed report of
+// physics/clip_collisions.py (MuJoCo collision hulls placed on the clip's bones, mj_collision
+// only, no physics step). The animation itself is untouched.
+//
+// Per hit: two points, one on each body part (the deepest point of that part inside the other),
+// drawn as spheres joined by a line, plus a row in the panel with both points as (x, y, z).
+// Panel coordinates are the report's: metres, Blender/MuJoCo frame (Z up), clip-local.
+// The frame shown is the one of the clip with the largest weight; during a crossfade the body is
+// a blend of clips, so the overlay is marked "≈".
+import * as THREE from 'three';
+import { dominantClip, frameAt, glbFromReport } from './collision-data.js';
+
+const KIND_COLOR = { self: 0xff3b30, joint: 0xffb020, floor: 0x3aa0ff };
+
+const fmt = p => `(${p.map(v => (v >= 0 ? '+' : '') + v.toFixed(3)).join(', ')})`;
+
+export function createCollisionOverlay({ scene, container, url, onStatus }) {
+  let enabled = false, report = null, loading = null, root = null, showJoint = true, lastKey = '';
+  const group = new THREE.Group(); group.name = 'CollisionOverlay'; group.visible = false; group.renderOrder = 999;
+  scene.add(group);
+  const sphereGeo = new THREE.SphereGeometry(0.016, 12, 8);
+  const pool = [];
+  function marker(i) {
+    if (pool[i]) return pool[i];
+    const mat = k => new THREE.MeshBasicMaterial({ color: k, depthTest: false, transparent: true, opacity: 0.95 });
+    const a = new THREE.Mesh(sphereGeo, mat(0xffffff)), b = new THREE.Mesh(sphereGeo, mat(0xffffff));
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
+      new THREE.LineBasicMaterial({ color: 0xffffff, depthTest: false, transparent: true }));
+    for (const o of [a, b, line]) { o.renderOrder = 999; group.add(o); }
+    return (pool[i] = { a, b, line });
+  }
+
+  const panel = document.createElement('div');
+  panel.className = 'coll-panel'; panel.hidden = true;
+  panel.innerHTML = '<div class="cp-head"><span class="cp-title"></span><label><input type="checkbox" checked> joint</label></div>'
+    + '<canvas class="cp-strip" width="300" height="34"></canvas><div class="cp-rows"></div>';
+  container.append(panel);
+  const title = panel.querySelector('.cp-title'), rowsEl = panel.querySelector('.cp-rows'), strip = panel.querySelector('.cp-strip');
+  panel.querySelector('input').onchange = e => { showJoint = e.target.checked; lastKey = ''; };
+
+  function setModel(gltfRoot) { root = gltfRoot; }
+
+  async function load() {
+    if (report || loading) return loading;
+    loading = fetch(url, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(j => { report = j; status(); })
+      .catch(e => { report = null; loading = null; status(`no report (${e.message}): run .venv/bin/python physics/clip_collisions.py`); });
+    return loading;
+  }
+
+  function status(extra) {
+    const text = !enabled ? 'precomputed clip report' : extra || (report ? `${report.glb} · ${Object.keys(report.clips).length} clips` : 'loading…');
+    onStatus?.(text, enabled);
+  }
+
+  function setEnabled(on) {
+    enabled = !!on; panel.hidden = !enabled; group.visible = enabled; lastKey = '';
+    if (enabled) load();
+    status();
+  }
+
+  function drawStrip(clip, time) {
+    const ctx = strip.getContext('2d'), w = strip.width, h = strip.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(0, 0, w, h);
+    const evs = clip.events.filter(e => showJoint || e.kind !== 'joint');
+    const lane = Math.max(3, Math.min(8, (h - 4) / Math.max(1, evs.length)));
+    evs.forEach((e, i) => {
+      ctx.fillStyle = '#' + KIND_COLOR[e.kind].toString(16).padStart(6, '0');
+      const x0 = (e.start / clip.duration) * w, x1 = Math.max(x0 + 2, ((e.end + 1 / clip.fps) / clip.duration) * w);
+      ctx.fillRect(x0, 2 + (i * lane) % (h - 4), x1 - x0, lane - 1);
+    });
+    const t = clip.loop !== false && time > clip.duration ? time % clip.duration : Math.min(time, clip.duration);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect((t / clip.duration) * w - 1, 0, 2, h);
+  }
+
+  /** Per frame, after the mixer: snapshot = anim.snapshot(). Returns the hits shown (for tests). */
+  function update(snapshot) {
+    if (!enabled || !report || !root || !snapshot) { group.visible = false; return null; }
+    const dom = dominantClip(snapshot), clip = dom && report.clips[dom.name];
+    if (!clip) { group.visible = false; title.textContent = dom ? `${dom.name}: not in report` : 'no clip'; rowsEl.textContent = ''; return null; }
+    const fr = frameAt(clip, dom.time);
+    const hits = fr.hits.filter(h => showJoint || h.kind !== 'joint');
+    root.updateMatrixWorld(true);
+    group.visible = true;
+    hits.forEach((h, i) => {
+      const m = marker(i), pa = root.localToWorld(new THREE.Vector3(...glbFromReport(h.pa))), pb = root.localToWorld(new THREE.Vector3(...glbFromReport(h.pb)));
+      m.a.position.copy(pa); m.b.position.copy(pb);
+      m.a.material.color.setHex(KIND_COLOR[h.kind]); m.b.material.color.setHex(0xffffff); m.line.material.color.setHex(KIND_COLOR[h.kind]);
+      m.line.geometry.setFromPoints([pa, pb]);
+      for (const o of [m.a, m.b, m.line]) o.visible = true;
+    });
+    for (let i = hits.length; i < pool.length; i++) for (const o of Object.values(pool[i])) o.visible = false;
+    const approx = dom.weight < 0.95 ? '≈ ' : '';
+    title.textContent = `${approx}${dom.name} ${fr.t.toFixed(2)} s · ${hits.length} hit${hits.length === 1 ? '' : 's'}`;
+    drawStrip(clip, dom.time);
+    const key = `${dom.name}|${fr.t}|${showJoint}`;
+    if (key !== lastKey) {
+      lastKey = key;
+      rowsEl.replaceChildren(...hits.map(h => {
+        const row = document.createElement('div');
+        row.className = `cp-row cp-${h.kind}`;
+        row.innerHTML = `<b>${h.a} ↔ ${h.b}</b> <span>${h.depth_mm.toFixed(1)} mm · ${h.kind}</span>`
+          + `<div>a ${fmt(h.pa)}</div><div>b ${fmt(h.pb)}</div>`;
+        return row;
+      }));
+    }
+    return hits;
+  }
+
+  return { setModel, setEnabled, update, load, get enabled() { return enabled; }, get report() { return report; } };
+}
