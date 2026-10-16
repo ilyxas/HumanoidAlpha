@@ -27,11 +27,15 @@ import { mountDebugger } from './animation/debugger.js';
 import { createPhysicsLink } from './animation/physics-link.js';
 import { createCollisionOverlay } from './animation/collision-overlay.js';
 
-const MODEL_URL = '../assets/Xandra_Animated.glb';
-const MANIFEST_URL = '../assets/Xandra_Animated.manifest.json';
-const COLLISIONS_URL = '../reports/clip_collisions/Xandra_Animated.collisions.json'; // physics/clip_collisions.py
-
 const params = new URLSearchParams(location.search);
+// ?glb=<path relative to viewer/> plays another GLB with the same Xandra skeleton (e.g. a
+// RenderPipeline output copied to assets/external/). Default: the authoritative Xandra_Animated.glb.
+const GLB_PARAM = params.get('glb');
+const MODEL_URL = GLB_PARAM && /^[\w./-]+\.glb$/i.test(GLB_PARAM) && !GLB_PARAM.includes('//') ? GLB_PARAM : '../assets/Xandra_Animated.glb';
+const MODEL_STEM = MODEL_URL.split('/').pop().replace(/\.glb$/i, '');
+const MANIFEST_URL = MODEL_URL.replace(/\.glb$/i, '.manifest.json');
+const COLLISIONS_URL = `../reports/clip_collisions/${MODEL_STEM}.collisions.json`; // physics/clip_collisions.py
+
 const perf = createProfiler(params.get('profile') === '1');
 const canvas = document.querySelector('#scene'), overlay = document.querySelector('#overlay');
 const context = overlay.getContext('2d');

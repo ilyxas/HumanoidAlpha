@@ -231,3 +231,6 @@ viewer/.DS_Store
 viewer/.DS_Store
 .DS_Store
 .DS_Store
+
+# Local GLBs for ?glb= (e.g. RenderPipeline outputs), not committed
+assets/external/

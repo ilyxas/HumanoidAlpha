@@ -169,6 +169,13 @@ changed; nothing is simulated.
 - Limits: convex hull per segment (hands are mittens), no skin bending at joints, no hair/clothes;
   parent–child neighbours are only checked through the joint guards.
 
+**Another GLB** (same Xandra skeleton, e.g. a RenderPipeline output): copy it to
+`assets/external/` (git-ignored), run the script on it, then open
+`http://127.0.0.1:8788/viewer/animation.html?glb=../assets/external/<name>.glb`. Its clips appear in
+the debugger (Manual mode + Preview plays them in place); a clip not in the manifest is a one-shot
+and missing Idle/Walk clips fall back to the bind pose. The overlay reads
+`reports/clip_collisions/<name>.collisions.json`.
+
 On the page, **COLLISIONS** (under PHYSICS) loads that JSON. For the clip with the largest weight
 it draws each hit as a coloured sphere on `a`, a white sphere on `b` and a line (red self, amber
 joint, blue floor; visible through the skin), and lists both points in a panel with a strip of the
