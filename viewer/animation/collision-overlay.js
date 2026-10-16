@@ -109,7 +109,7 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
     const report = alt || base;
     if (!enabled || !report || !root || !snapshot) { group.visible = false; if (hullRoot) hullRoot.visible = false; return null; }
     const dom = dominantClip(snapshot), clip = dom && report.clips[dom.name];
-    if (!clip) { group.visible = false; if (hullRoot) hullRoot.visible = false; title.textContent = dom ? `${dom.name}: not in report` : 'no clip'; rowsEl.textContent = ''; return null; }
+    if (!clip) { group.visible = false; if (hullRoot) hullRoot.visible = false; title.textContent = dom ? `${dom.name}: not in ${report.glb} report - run .venv/bin/python physics/clip_collisions.py <this GLB>` : 'no clip'; rowsEl.textContent = ''; return null; }
     const fr = frameAt(clip, dom.time);
     const hits = fr.hits.filter(h => showJoint || h.kind !== 'joint');
     if (showHulls && fr.bodies) {

@@ -50,7 +50,7 @@ export function createReactLink({ url, onStatus }) {
   function apply(snapshot) {
     if (!enabled || !report || !root || !snapshot) return null;
     const dom = dominantClip(snapshot), clip = dom && report.clips[dom.name];
-    if (!clip || clip.frames.length < 2) { status(dom ? `${dom.name}: not in REACT report` : 'no clip'); return null; }
+    if (!clip || clip.frames.length < 2) { status(dom ? `${dom.name}: not in REACT report (${report.glb}) - run physics/clip_react.py <this GLB>` : 'no clip'); return null; }
     root.updateMatrixWorld(true);
     root.getWorldQuaternion(_rw);
     for (const body of ORDER) {
