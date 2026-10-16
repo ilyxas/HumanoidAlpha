@@ -26,6 +26,7 @@ import { EXPECTED_CLIPS, createAnimationController } from './animation/anim-cont
 import { mountDebugger } from './animation/debugger.js';
 import { createPhysicsLink } from './animation/physics-link.js';
 import { createCollisionOverlay } from './animation/collision-overlay.js';
+import { createReactLink } from './animation/react-link.js';
 
 const params = new URLSearchParams(location.search);
 // ?glb=<path relative to viewer/> plays another GLB with the same Xandra skeleton (e.g. a
@@ -35,6 +36,7 @@ const MODEL_URL = GLB_PARAM && /^[\w./-]+\.glb$/i.test(GLB_PARAM) && !GLB_PARAM.
 const MODEL_STEM = MODEL_URL.split('/').pop().replace(/\.glb$/i, '');
 const MANIFEST_URL = MODEL_URL.replace(/\.glb$/i, '.manifest.json');
 const COLLISIONS_URL = `../reports/clip_collisions/${MODEL_STEM}.collisions.json`; // physics/clip_collisions.py
+const REACT_URL = `../reports/clip_react/${MODEL_STEM}.react.json`; // physics/clip_react.py
 
 const perf = createProfiler(params.get('profile') === '1');
 const canvas = document.querySelector('#scene'), overlay = document.querySelector('#overlay');
@@ -95,6 +97,14 @@ const collisions = createCollisionOverlay({
   onStatus(text, on) { collStatus.textContent = text; collToggle.textContent = on ? 'COLLISIONS ON' : 'COLLISIONS OFF'; collToggle.setAttribute('aria-pressed', String(on)); },
 });
 collToggle.onclick = () => { collisions.setEnabled(!collisions.enabled); collToggle.blur(); };
+// EXPERIMENTAL REACT toggle (declared help, not Game): the skin plays the precomputed
+// self-collision response of physics/clip_react.py; COLLISIONS then shows its pushing contacts.
+const reactToggle = document.getElementById('reactToggle'), reactStatus = document.getElementById('reactStatus');
+const react = createReactLink({
+  url: REACT_URL,
+  onStatus(text, on) { reactStatus.textContent = text; reactToggle.textContent = on ? 'REACT ON' : 'REACT OFF'; reactToggle.setAttribute('aria-pressed', String(on)); },
+});
+reactToggle.onclick = () => { react.setEnabled(!react.enabled); reactToggle.blur(); };
 let locked = false, follow = true;
 const followPos = new THREE.Vector3();
 let lastPreset = 'RESET';
@@ -303,6 +313,7 @@ new GLTFLoader().load(MODEL_URL, async gltf => {
   pelvisBone = gltfRoot.getObjectByName('pelvis') || null;
   physics.setModel(gltfRoot);
   collisions.setModel(gltfRoot);
+  react.setModel(gltfRoot);
   const footPhases = anim.analyzeFootPhases(feet.foot_l);
   morph = collectMorphs(gltfRoot);
   const order = manifest?.global_info?.clip_names || EXPECTED_CLIPS;
@@ -438,7 +449,9 @@ function animate(t) {
   updateFollow(dt);
   if (anim) { const mv = movement.snapshot(); updateAutoAlign(dt, !physics.enabled && !anim.paused && anim.mode === 'auto' && Math.abs(mv.speed) > AUTO_ALIGN.minSpeed, mv.yaw); }
   if (anim && debug.open) debug.update(liveData());
-  if (anim && collisions.enabled) collisions.update(physics.enabled ? null : anim.snapshot());
+  const snap = anim && !physics.enabled && (collisions.enabled || react.enabled) ? anim.snapshot() : null;
+  const reacted = react.apply(snap); // after the mixer, before the overlay and the render
+  if (anim && collisions.enabled) collisions.update(snap, reacted ? react.report : null);
   controls.update(); renderScene(); perf.sample('frameWorkCpuMs', performance.now() - start);
 }
 requestAnimationFrame(animate);
@@ -447,6 +460,7 @@ requestAnimationFrame(animate);
 window.__animation = {
   get physics() { return { enabled: physics.enabled, state: physics.state?.stand ?? null }; },
   collisions,
+  react,
   get ready() { return !!anim; },
   get clips() { return clips.map(c => ({ name: c.name, duration: c.duration, loop: anim?.entries.get(c.name)?.loop ?? null })); },
   get morphs() { return { names: [...morph.names], meshes: morph.meshes.length, meshName: morph.meshName }; },

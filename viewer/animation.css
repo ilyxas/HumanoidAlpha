@@ -143,7 +143,7 @@
 }
 
 /* ---- COLLISIONS toggle + panel (animation/collision-overlay.js) ---- */
-#collisions {
+#collisions, #react {
   position: absolute;
   z-index: 8;
   top: calc(58px + var(--safe-t));
@@ -156,7 +156,7 @@
   font: 600 12px system-ui;
   color: #f5f7fa;
 }
-#collisions button {
+#collisions button, #react button {
   height: 36px;
   padding: 0 12px;
   border: 0;
@@ -167,7 +167,7 @@
   cursor: pointer;
 }
 #collisions button[aria-pressed="true"] { background: #f6d6d3; color: #3a1512; }
-#collStatus {
+#collStatus, #reactStatus {
   padding: 9px 10px;
   border-radius: 7px;
   background: rgba(24, 32, 43, .75);
@@ -196,3 +196,5 @@
 .coll-panel .cp-row.cp-joint { border-color: #ffb020; }
 .coll-panel .cp-row.cp-floor { border-color: #3aa0ff; }
 .coll-panel .cp-row span { color: #c9d6e2; }
+#react { top: calc(100px + var(--safe-t)); }
+#react button[aria-pressed="true"] { background: #e2d8f6; color: #24163a; }

@@ -183,6 +183,33 @@ clip's events and a time cursor. During a crossfade the body is a blend, marked 
 PHYSICS owns the pose. The `joint` checkbox hides `joint` hits; `hulls` draws the convex hulls
 that were tested, posed for the frame shown (each frame of the report stores every body's pose).
 
+## REACT (EXPERIMENTAL, declared help - not for Game)
+
+The clip drives the body; MuJoCo answers only when parts hit each other.
+
+```sh
+.venv/bin/python physics/clip_react.py [GLB ...] [--clip NAME] [--hz 15]   # ~40 s per 10 s of clip
+```
+
+- Settings (Ilya, 2026-10-16): self-collision response **on**; joint-limit enforcement **off** (only
+  the angle ranges and the child-into-parent joint guards are dropped - joints and drives stay);
+  floor collision response **off**; gravity off (nothing has to balance).
+- Body (built in memory from the existing model: same masses/inertias and skin hulls): pelvis is a
+  kinematic anchor (mocap body) on the clip's pelvis. Each part hangs on a ball joint at its lead
+  bone's head; upper torso, head and upper arms also get 3 slides, because the bones the model does
+  not have (spine_02–04, neck, clavicles) change that offset by up to 14 cm. The existing model's
+  1-axis elbows/knees are not used: on them the clip itself is off by 10–15 cm with no contact.
+- Drives: computed torque (M·(kp·e + kd·ė) + bias) toward the clip, 15 Hz critically damped.
+  Without contacts the pose follows the clip within a few mm (the report gives this baseline for
+  every clip); a contact (stiffer, ~250 Hz) pushes the parts apart and the drive brings them back.
+- Output `reports/clip_react/<glb>.react.json` (+ `.md`): per frame the reacted body poses, the
+  pushing contacts (two points, depth, force) and `dev` = distance from the clip per body
+  (bone-head mm, rotation °).
+- Page: **REACT** (under COLLISIONS). The 16 lead bones take the reacted orientations; spine,
+  clavicles, neck and fingers keep the clip. The status shows the body furthest from the clip in
+  this frame. With COLLISIONS on, the panel and markers show REACT's pushing contacts and `hulls`
+  shows the reacted hulls.
+
 ## Tests
 
 ```sh
@@ -190,7 +217,7 @@ node tests/test_locomotion.mjs      # movement controller, input mapping, state 
 node tests/test_anim_controller.mjs # one-shot arbitration, crossfades (synthetic clips, manifest timing)
 node tests/test_walk_control.mjs    # right-stick mapping (unchanged)
 node tests/test_collision_overlay.mjs # COLLISIONS helpers + the committed report
-.venv/bin/python -m unittest tests.test_clip_collisions
+.venv/bin/python -m unittest tests.test_clip_collisions tests.test_clip_react
 ```
 
 All also run inside `.venv/bin/python -m unittest discover -s tests`.

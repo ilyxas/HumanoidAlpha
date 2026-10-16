@@ -18,7 +18,8 @@ const KIND_COLOR = { self: 0xff3b30, joint: 0xffb020, floor: 0x3aa0ff };
 const fmt = p => `(${p.map(v => (v >= 0 ? '+' : '') + v.toFixed(3)).join(', ')})`;
 
 export function createCollisionOverlay({ scene, container, url, onStatus }) {
-  let enabled = false, report = null, loading = null, root = null, showJoint = true, showHulls = false, lastKey = '';
+  let enabled = false, base = null, loading = null, root = null, showJoint = true, showHulls = false, lastKey = '';
+  let alt = null;     // another report in the same frame format (REACT) shown instead of the clip's
   let hullRoot = null; // Z-up frame of the report under the GLB root; one child per body
   const hullBodies = new Map();
   const group = new THREE.Group(); group.name = 'CollisionOverlay'; group.visible = false; group.renderOrder = 999;
@@ -47,6 +48,7 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
   function setModel(gltfRoot) { root = gltfRoot; }
 
   function buildHulls() {
+    const report = alt || base;
     if (hullRoot || !report?.hulls || !root) return;
     hullRoot = new THREE.Group(); hullRoot.name = 'CollisionHulls';
     hullRoot.rotation.x = -Math.PI / 2; // report frame (Z up) -> GLB (Y up), same as glbFromReport
@@ -67,15 +69,15 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
   function setHulls(on) { showHulls = !!on; buildHulls(); if (hullRoot) hullRoot.visible = enabled && showHulls; }
 
   async function load() {
-    if (report || loading) return loading;
+    if (base || loading) return loading;
     loading = fetch(url, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(j => { report = j; status(); })
-      .catch(e => { report = null; loading = null; status(`no report (${e.message}): run .venv/bin/python physics/clip_collisions.py`); });
+      .then(j => { base = j; status(); })
+      .catch(e => { base = null; loading = null; status(`no report (${e.message}): run .venv/bin/python physics/clip_collisions.py`); });
     return loading;
   }
 
   function status(extra) {
-    const text = !enabled ? 'precomputed clip report' : extra || (report ? `${report.glb} · ${Object.keys(report.clips).length} clips` : 'loading…');
+    const text = !enabled ? 'precomputed clip report' : extra || (base ? `${base.glb} · ${Object.keys(base.clips).length} clips` : 'loading…');
     onStatus?.(text, enabled);
   }
 
@@ -101,8 +103,10 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
     ctx.fillStyle = '#ffffff'; ctx.fillRect((t / clip.duration) * w - 1, 0, 2, h);
   }
 
-  /** Per frame, after the mixer: snapshot = anim.snapshot(). Returns the hits shown (for tests). */
-  function update(snapshot) {
+  /** Per frame, after the mixer: snapshot = anim.snapshot(); source = REACT report or null. */
+  function update(snapshot, source = null) {
+    if (source !== alt) { alt = source; lastKey = ''; }
+    const report = alt || base;
     if (!enabled || !report || !root || !snapshot) { group.visible = false; if (hullRoot) hullRoot.visible = false; return null; }
     const dom = dominantClip(snapshot), clip = dom && report.clips[dom.name];
     if (!clip) { group.visible = false; if (hullRoot) hullRoot.visible = false; title.textContent = dom ? `${dom.name}: not in report` : 'no clip'; rowsEl.textContent = ''; return null; }
@@ -127,7 +131,7 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
     });
     for (let i = hits.length; i < pool.length; i++) for (const o of Object.values(pool[i])) o.visible = false;
     const approx = dom.weight < 0.95 ? '≈ ' : '';
-    title.textContent = `${approx}${dom.name} ${fr.t.toFixed(2)} s · ${hits.length} hit${hits.length === 1 ? '' : 's'}`;
+    title.textContent = `${alt ? 'REACT ' : ''}${approx}${dom.name} ${fr.t.toFixed(2)} s · ${hits.length} hit${hits.length === 1 ? '' : 's'}`;
     drawStrip(clip, dom.time);
     const key = `${dom.name}|${fr.t}|${showJoint}`;
     if (key !== lastKey) {
@@ -135,7 +139,8 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
       rowsEl.replaceChildren(...hits.map(h => {
         const row = document.createElement('div');
         row.className = `cp-row cp-${h.kind}`;
-        row.innerHTML = `<b>${h.a} ↔ ${h.b}</b> <span>${h.depth_mm.toFixed(1)} mm · ${h.kind}</span>`
+        const force = h.force_n != null ? ` · ${h.force_n.toFixed(0)} N` : '';
+        row.innerHTML = `<b>${h.a} ↔ ${h.b}</b> <span>${h.depth_mm.toFixed(1)} mm · ${h.kind}${force}</span>`
           + `<div>a ${fmt(h.pa)}</div><div>b ${fmt(h.pb)}</div>`;
         return row;
       }));
@@ -143,5 +148,5 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
     return hits;
   }
 
-  return { setModel, setEnabled, setHulls, update, load, get enabled() { return enabled; }, get report() { return report; } };
+  return { setModel, setEnabled, setHulls, update, load, get enabled() { return enabled; }, get report() { return base; } };
 }
