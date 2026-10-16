@@ -146,12 +146,43 @@ fixed in the world. Floor: 200 × 200 m, 1 m grid; movement is clamped to ±95 m
 her left/right side, TOP has her facing toward the bottom of the screen, RESET
 is the 3/4 view — wherever she is and whichever way she faces.
 
+## Collisions (COLLISIONS toggle)
+
+Shows where a clip makes Xandra's body pass through itself or the floor. The animation is not
+changed; nothing is simulated.
+
+```sh
+.venv/bin/python physics/clip_collisions.py [GLB ...]   # default assets/Xandra_Animated.glb, ~25 s
+```
+
+- For every frame (30 fps) the MuJoCo collision hulls (`assets/collision/*.obj`) are placed on
+  the clip's bones - each body takes its lead bone's world transform - and `mj_collision` runs.
+  No joints, motors or physics step. (Retargeting to the 33-motor joints first put the hands
+  10–15 cm off: 1-DoF elbows lose the forearm twist, so the joints are bypassed.)
+- Per hit: the two parts (`a`, `b`), the depth in mm and **two points (x, y, z)**: the deepest
+  point of each part inside the other. Metres, Blender/MuJoCo frame (Z up, she faces −Y), clip-local.
+  Consecutive frames of a pair form an event (from–to, worst frame).
+- `kind`: `self` (two non-neighbouring parts, e.g. hand–thigh, hand–hand), `joint` (a limb bent into
+  its parent; hulls may overlap at the seam, e.g. upper arm–torso at the armpit), `floor`.
+- Joint angles beyond the model's range are listed per clip (the physical body could not do this).
+- Output: `reports/clip_collisions/<glb>.collisions.json` (+ `.md` table).
+- Limits: convex hull per segment (hands are mittens), no skin bending at joints, no hair/clothes;
+  parent–child neighbours are only checked through the joint guards.
+
+On the page, **COLLISIONS** (under PHYSICS) loads that JSON. For the clip with the largest weight
+it draws each hit as a coloured sphere on `a`, a white sphere on `b` and a line (red self, amber
+joint, blue floor; visible through the skin), and lists both points in a panel with a strip of the
+clip's events and a time cursor. During a crossfade the body is a blend, marked "≈". Off while
+PHYSICS owns the pose. The checkbox hides `joint` hits.
+
 ## Tests
 
 ```sh
 node tests/test_locomotion.mjs      # movement controller, input mapping, state selection, reference latch
 node tests/test_anim_controller.mjs # one-shot arbitration, crossfades (synthetic clips, manifest timing)
 node tests/test_walk_control.mjs    # right-stick mapping (unchanged)
+node tests/test_collision_overlay.mjs # COLLISIONS helpers + the committed report
+.venv/bin/python -m unittest tests.test_clip_collisions
 ```
 
 All also run inside `.venv/bin/python -m unittest discover -s tests`.
