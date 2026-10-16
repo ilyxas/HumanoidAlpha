@@ -1,0 +1,25 @@
+{
+ "reports": [
+  {
+   "file": "Xandra_Animated.react.json",
+   "glb": "Xandra_Animated.glb",
+   "clips": [
+    "Idle",
+    "Jump",
+    "Run_Fwd",
+    "Squat",
+    "ToBridge",
+    "ToPlank",
+    "Walk_Back",
+    "Walk_Fwd"
+   ]
+  },
+  {
+   "file": "animation.react.json",
+   "glb": "animation.glb",
+   "clips": [
+    "XMS_Bundle"
+   ]
+  }
+ ]
+}

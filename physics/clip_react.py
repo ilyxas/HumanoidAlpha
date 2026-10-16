@@ -38,7 +38,7 @@ import mujoco
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from clip_collisions import ROOT, ClipCollisions, contact_points, events  # noqa: E402
+from clip_collisions import ROOT, ClipCollisions, contact_points, events, write_index  # noqa: E402
 from clip_retarget import GLB, Glb, qconj, qmul, qnorm, qrotvec  # noqa: E402
 
 OUT = ROOT / "reports" / "clip_react"
@@ -276,6 +276,7 @@ def run(glb_path: Path, out_dir: Path, hz=15.0, only=None, fps=30.0):
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = glb_path.name[:-4] if glb_path.name.lower().endswith(".glb") else glb_path.name
     (out_dir / f"{stem}.react.json").write_text(json.dumps(doc, separators=(",", ":")))
+    write_index(out_dir)
     (out_dir / f"{stem}.react.md").write_text(markdown(glb_path.name, doc))
     return doc
 

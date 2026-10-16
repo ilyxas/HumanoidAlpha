@@ -11,7 +11,7 @@
 // "hulls" draws the convex hulls that were actually tested (one per body part, placed on the
 // clip's bones for that frame): the hits come from these shapes touching, not from the skin.
 import * as THREE from 'three';
-import { dominantClip, frameAt, glbFromReport } from './collision-data.js';
+import { dominantClip, frameAt, glbFromReport, loadReport } from './collision-data.js';
 
 const KIND_COLOR = { self: 0xff3b30, joint: 0xffb020, floor: 0x3aa0ff };
 
@@ -70,7 +70,7 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
 
   async function load() {
     if (base || loading) return loading;
-    loading = fetch(url, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+    loading = loadReport(url)
       .then(j => { base = j; status(); })
       .catch(e => { base = null; loading = null; status(`no report (${e.message}): run .venv/bin/python physics/clip_collisions.py`); });
     return loading;

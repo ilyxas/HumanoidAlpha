@@ -5,7 +5,7 @@
 // neck, fingers) keeps the clip, so where nothing touches the skin equals the animation.
 // Shows, per frame, how far the reacted pose is from the clip.
 import * as THREE from 'three';
-import { frameAt, dominantClip } from './collision-data.js';
+import { frameAt, dominantClip, loadReport } from './collision-data.js';
 
 const QC = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // Z up -> Y up
 // Parents before children (world orientations are applied top-down).
@@ -23,7 +23,7 @@ export function createReactLink({ url, onStatus }) {
 
   function load() {
     if (report || loading) return loading;
-    loading = fetch(url, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+    loading = loadReport(url)
       .then(j => {
         report = j;
         for (const [body, r] of Object.entries(j.rest)) { const [w, x, y, z] = r.quat_rest_wxyz; rest.set(body, { bone: r.bone, q: new THREE.Quaternion(x, y, z, w) }); }

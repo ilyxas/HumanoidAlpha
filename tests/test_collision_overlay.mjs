@@ -27,3 +27,21 @@ for (const [name, c] of Object.entries(report.clips)) {
   }
 }
 console.log('test_collision_overlay OK');
+
+// A GLB renamed to Xandra_Animated.glb still finds its clip through index.json.
+{
+  const { loadReport } = await import('../viewer/animation/collision-data.js');
+  const files = {
+    'r/Xandra_Animated.json': { glb: 'Xandra_Animated.glb', clips: { Idle: { n: 1 } } },
+    'r/animation.json': { glb: 'animation.glb', clips: { XMS_Bundle: { n: 2 }, Idle: { n: 3 } } },
+    'r/index.json': { reports: [{ file: 'Xandra_Animated.json', clips: ['Idle'] }, { file: 'animation.json', clips: ['Idle', 'XMS_Bundle'] }] },
+  };
+  const fetchJson = async u => files[u] ?? null;
+  const merged = await loadReport('r/Xandra_Animated.json', fetchJson);
+  assert.equal(merged.clips.Idle.n, 1); // own clips win
+  assert.equal(merged.clips.XMS_Bundle.n, 2);
+  assert.equal(merged.sources.XMS_Bundle, 'animation.glb');
+  const orphan = await loadReport('r/missing.json', fetchJson); // no own report: index only
+  assert.ok(orphan.clips.XMS_Bundle);
+  console.log('test_collision_overlay loadReport OK');
+}

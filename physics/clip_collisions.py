@@ -232,6 +232,21 @@ def markdown(glb_name: str, clips: dict) -> str:
     return "\n".join(lines)
 
 
+def write_index(out_dir: Path) -> None:
+    """index.json: which report holds which clip. The Animation page uses it to find a clip whose
+    GLB was renamed (e.g. a RenderPipeline output copied over Xandra_Animated.glb)."""
+    reports = []
+    for f in sorted(out_dir.glob("*.json")):
+        if f.name == "index.json":
+            continue
+        try:
+            j = json.loads(f.read_text())
+        except ValueError:
+            continue
+        reports.append(dict(file=f.name, glb=j.get("glb"), clips=sorted(j.get("clips", {}))))
+    (out_dir / "index.json").write_text(json.dumps(dict(reports=reports), indent=1))
+
+
 def run(glb_path: Path, out_dir: Path, fps: float, min_depth_mm: float, model=None) -> dict:
     cc = ClipCollisions(model, Glb(glb_path))
     clips = cc.all(fps, min_depth_mm)
@@ -240,6 +255,7 @@ def run(glb_path: Path, out_dir: Path, fps: float, min_depth_mm: float, model=No
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = glb_path.name[:-4] if glb_path.name.lower().endswith(".glb") else glb_path.name
     (out_dir / f"{stem}.collisions.json").write_text(json.dumps(doc, separators=(",", ":")))
+    write_index(out_dir)
     (out_dir / f"{stem}.collisions.md").write_text(markdown(glb_path.name, clips))
     return doc
 
