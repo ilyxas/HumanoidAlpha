@@ -194,7 +194,9 @@ class Retargeter:
         pelvis_y = w["pelvis"][1]
         return out, np.array([pelvis_y[0], -pelvis_y[2], pelvis_y[1]])
 
-    def qpos_from(self, bq, pelvis_pos):
+    def qpos_from(self, bq, pelvis_pos, clamp_log=None, clamp=True):
+        """clamp_log: optional list; gets (joint name, degrees beyond the limit) for every limit hit.
+        clamp=False keeps the clip's angle (pure kinematics, may exceed the model's joint range)."""
         m = self.m
         q = m.qpos0.copy()
         q[0:3] = pelvis_pos
@@ -208,7 +210,10 @@ class Retargeter:
                 lim = m.jnt_range[js[0], 1]
                 ang = np.linalg.norm(rv)
                 if m.jnt_limited[js[0]] and ang > lim:
-                    rv *= lim / ang
+                    if clamp_log is not None:
+                        clamp_log.append((m.joint(js[0]).name, float(np.degrees(ang - lim))))
+                    if clamp:
+                        rv *= lim / ang
                 a = m.jnt_qposadr[js[0]]
                 q[a:a + 4] = qnorm(np.r_[np.cos(np.linalg.norm(rv) / 2), np.sinc(np.linalg.norm(rv) / 2 / np.pi) * rv / 2])
             else:
@@ -232,7 +237,9 @@ class Retargeter:
                     th += np.linalg.lstsq(jac, err, rcond=None)[0]
                 for j, a in zip(js, th):
                     lo, hi = m.jnt_range[j] if m.jnt_limited[j] else (-np.inf, np.inf)
-                    q[m.jnt_qposadr[j]] = np.clip(a, lo, hi)
+                    if clamp_log is not None and not lo <= a <= hi:
+                        clamp_log.append((m.joint(j).name, float(np.degrees(max(lo - a, a - hi)))))
+                    q[m.jnt_qposadr[j]] = np.clip(a, lo, hi) if clamp else a
         return q
 
     def _sole_corners(self):
