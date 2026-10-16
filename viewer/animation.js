@@ -460,6 +460,15 @@ window.__animation = {
   /** Test helper: rotate Xandra in place (she starts facing +Z) to check orientation independence. */
   setYaw(yaw) { const p = movement.snapshot().position; movement.reset({ x: p.x, z: p.z }, yaw); character.rotation.y = yaw; return true; },
   feet() { character.updateMatrixWorld(true); return feetWorld(); },
+  /** Test helper: Manual-mode preview of a clip frozen at time t (pauses playback). */
+  freeze(name, t) {
+    if (!anim) return false;
+    if (anim.mode !== 'manual') anim.setMode('manual');
+    const e = anim.entries.get(name); if (!e) return false;
+    anim.preview(name); anim.paused = false; anim.update(1); anim.paused = true; // finish the fade-in
+    e.action.time = t; anim.mixer.update(0);
+    return true;
+  },
   /** Test helper: place the orbit camera (world coords); follow is switched off so it stays put. */
   view(position, target) { follow = false; controls.target.set(...target); camera.position.set(...position); camera.up.set(0, 1, 0); camera.lookAt(controls.target); controls.update(); return true; },
   record(on = true) { recording = on ? [] : recording; return true; },

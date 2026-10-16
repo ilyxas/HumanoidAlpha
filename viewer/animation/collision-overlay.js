@@ -8,6 +8,8 @@
 // Panel coordinates are the report's: metres, Blender/MuJoCo frame (Z up), clip-local.
 // The frame shown is the one of the clip with the largest weight; during a crossfade the body is
 // a blend of clips, so the overlay is marked "≈".
+// "hulls" draws the convex hulls that were actually tested (one per body part, placed on the
+// clip's bones for that frame): the hits come from these shapes touching, not from the skin.
 import * as THREE from 'three';
 import { dominantClip, frameAt, glbFromReport } from './collision-data.js';
 
@@ -16,7 +18,9 @@ const KIND_COLOR = { self: 0xff3b30, joint: 0xffb020, floor: 0x3aa0ff };
 const fmt = p => `(${p.map(v => (v >= 0 ? '+' : '') + v.toFixed(3)).join(', ')})`;
 
 export function createCollisionOverlay({ scene, container, url, onStatus }) {
-  let enabled = false, report = null, loading = null, root = null, showJoint = true, lastKey = '';
+  let enabled = false, report = null, loading = null, root = null, showJoint = true, showHulls = false, lastKey = '';
+  let hullRoot = null; // Z-up frame of the report under the GLB root; one child per body
+  const hullBodies = new Map();
   const group = new THREE.Group(); group.name = 'CollisionOverlay'; group.visible = false; group.renderOrder = 999;
   scene.add(group);
   const sphereGeo = new THREE.SphereGeometry(0.016, 12, 8);
@@ -33,13 +37,34 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
 
   const panel = document.createElement('div');
   panel.className = 'coll-panel'; panel.hidden = true;
-  panel.innerHTML = '<div class="cp-head"><span class="cp-title"></span><label><input type="checkbox" checked> joint</label></div>'
+  panel.innerHTML = '<div class="cp-head"><span class="cp-title"></span><span><label><input type="checkbox" data-opt="hulls"> hulls</label> <label><input type="checkbox" data-opt="joint" checked> joint</label></span></div>'
     + '<canvas class="cp-strip" width="300" height="34"></canvas><div class="cp-rows"></div>';
   container.append(panel);
   const title = panel.querySelector('.cp-title'), rowsEl = panel.querySelector('.cp-rows'), strip = panel.querySelector('.cp-strip');
-  panel.querySelector('input').onchange = e => { showJoint = e.target.checked; lastKey = ''; };
+  panel.querySelector('[data-opt="joint"]').onchange = e => { showJoint = e.target.checked; lastKey = ''; };
+  panel.querySelector('[data-opt="hulls"]').onchange = e => setHulls(e.target.checked);
 
   function setModel(gltfRoot) { root = gltfRoot; }
+
+  function buildHulls() {
+    if (hullRoot || !report?.hulls || !root) return;
+    hullRoot = new THREE.Group(); hullRoot.name = 'CollisionHulls';
+    hullRoot.rotation.x = -Math.PI / 2; // report frame (Z up) -> GLB (Y up), same as glbFromReport
+    const fill = new THREE.MeshBasicMaterial({ color: 0x40e0d0, transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide });
+    const edge = new THREE.LineBasicMaterial({ color: 0x40e0d0, transparent: true, opacity: 0.7 });
+    for (const h of report.hulls) {
+      let body = hullBodies.get(h.body);
+      if (!body) { body = new THREE.Group(); body.name = `hull_${h.body}`; hullBodies.set(h.body, body); hullRoot.add(body); }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(h.verts.flat(), 3));
+      geo.setIndex(h.faces.flat());
+      body.add(new THREE.Mesh(geo, fill), new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), edge));
+    }
+    root.add(hullRoot);
+    hullRoot.visible = false;
+  }
+
+  function setHulls(on) { showHulls = !!on; buildHulls(); if (hullRoot) hullRoot.visible = enabled && showHulls; }
 
   async function load() {
     if (report || loading) return loading;
@@ -56,6 +81,7 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
 
   function setEnabled(on) {
     enabled = !!on; panel.hidden = !enabled; group.visible = enabled; lastKey = '';
+    if (hullRoot) hullRoot.visible = enabled && showHulls;
     if (enabled) load();
     status();
   }
@@ -77,11 +103,19 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
 
   /** Per frame, after the mixer: snapshot = anim.snapshot(). Returns the hits shown (for tests). */
   function update(snapshot) {
-    if (!enabled || !report || !root || !snapshot) { group.visible = false; return null; }
+    if (!enabled || !report || !root || !snapshot) { group.visible = false; if (hullRoot) hullRoot.visible = false; return null; }
     const dom = dominantClip(snapshot), clip = dom && report.clips[dom.name];
-    if (!clip) { group.visible = false; title.textContent = dom ? `${dom.name}: not in report` : 'no clip'; rowsEl.textContent = ''; return null; }
+    if (!clip) { group.visible = false; if (hullRoot) hullRoot.visible = false; title.textContent = dom ? `${dom.name}: not in report` : 'no clip'; rowsEl.textContent = ''; return null; }
     const fr = frameAt(clip, dom.time);
     const hits = fr.hits.filter(h => showJoint || h.kind !== 'joint');
+    if (showHulls && fr.bodies) {
+      buildHulls();
+      hullRoot.visible = true;
+      for (const [name, [x, y, z, qw, qx, qy, qz]] of Object.entries(fr.bodies)) {
+        const b = hullBodies.get(name);
+        if (b) { b.position.set(x, y, z); b.quaternion.set(qx, qy, qz, qw); }
+      }
+    } else if (hullRoot) hullRoot.visible = false;
     root.updateMatrixWorld(true);
     group.visible = true;
     hits.forEach((h, i) => {
@@ -109,5 +143,5 @@ export function createCollisionOverlay({ scene, container, url, onStatus }) {
     return hits;
   }
 
-  return { setModel, setEnabled, update, load, get enabled() { return enabled; }, get report() { return report; } };
+  return { setModel, setEnabled, setHulls, update, load, get enabled() { return enabled; }, get report() { return report; } };
 }

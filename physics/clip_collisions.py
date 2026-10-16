@@ -16,6 +16,8 @@ Reported per contact (penetration only, dist < 0 - the 6 mm contact margin is no
   kind   - "floor"; "joint" (neighbours across one joint: the child's distal guard hull against its
            parent, i.e. the joint bends the limb into its parent - hulls can overlap at the seam);
            "self" (any other two parts, e.g. hand-hand, thigh-thigh)
+Each frame also stores every body's world pose and the report carries the hull meshes, so the
+viewer can draw the exact shapes that were tested.
 Consecutive frames of the same pair are merged into events (start..end, worst frame).
 Joint limits: the clip is also retargeted to joint angles (clip_retarget) and every angle beyond
 the model's joint range is reported - the physical body could not perform that pose.
@@ -127,6 +129,31 @@ class ClipCollisions:
                                  depth_mm=round(depth, 1))
         return sorted(best.values(), key=lambda h: -h["depth_mm"])
 
+    def hull_shapes(self) -> list[dict]:
+        """The convex hulls mj_collision uses (skin surfaces, not the joint guards), body-local,
+        so a viewer can draw exactly what is being tested."""
+        m, out = self.m, []
+        for g in range(m.ngeom):
+            if m.geom_type[g] != mujoco.mjtGeom.mjGEOM_MESH or g in self.guards:
+                continue
+            mid = int(m.geom_dataid[g])
+            gr = m.mesh_graph[m.mesh_graphadr[mid]:]
+            nv, nf = int(gr[0]), int(gr[1])
+            faces = gr[2 + 3 * nv + 3 * nf: 2 + 3 * nv + 6 * nf].reshape(-1, 3)
+            used = np.unique(faces)
+            remap = {int(v): i for i, v in enumerate(used)}
+            va = m.mesh_vertadr[mid]
+            mat = np.zeros(9)
+            mujoco.mju_quat2Mat(mat, m.geom_quat[g])
+            verts = m.mesh_vert[va + used] @ mat.reshape(3, 3).T + m.geom_pos[g]  # in the body frame
+            out.append(dict(geom=m.geom(g).name, body=self.part(g), verts=np.round(verts, 4).tolist(),
+                            faces=[[remap[int(i)] for i in f] for f in faces]))
+        return out
+
+    def body_poses(self) -> dict:
+        """World pose of every placed body after place(): {body: [x, y, z, qw, qx, qy, qz]}."""
+        return {body: np.round(np.r_[self.d.xpos[bid], self.d.xquat[bid]], 4).tolist() for bid, body, _ in self.bodies}
+
     def at(self, chans, t) -> list[dict]:
         self.place(chans, t)
         return self.hits()
@@ -138,7 +165,7 @@ class ClipCollisions:
         frames, limits = [], {}
         for t in ts:
             hits = [h for h in self.at(chans, t) if h["depth_mm"] >= min_depth_mm]
-            frames.append(dict(t=round(float(t), 4), hits=hits))
+            frames.append(dict(t=round(float(t), 4), hits=hits, bodies=self.body_poses()))
             log: list = []
             self.rt.qpos_from(*self.rt.body_quats(chans, t), clamp_log=log)
             for joint, excess in log:
@@ -209,7 +236,7 @@ def run(glb_path: Path, out_dir: Path, fps: float, min_depth_mm: float, model=No
     cc = ClipCollisions(model, Glb(glb_path))
     clips = cc.all(fps, min_depth_mm)
     doc = dict(format=FORMAT, glb=glb_path.name, frame="world, metres, Z up (MuJoCo = Blender), clip-local",
-               min_depth_mm=min_depth_mm, clips=clips)
+               min_depth_mm=min_depth_mm, hulls=cc.hull_shapes(), clips=clips)
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = glb_path.name[:-4] if glb_path.name.lower().endswith(".glb") else glb_path.name
     (out_dir / f"{stem}.collisions.json").write_text(json.dumps(doc, separators=(",", ":")))

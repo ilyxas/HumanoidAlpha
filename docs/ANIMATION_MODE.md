@@ -180,7 +180,8 @@ On the page, **COLLISIONS** (under PHYSICS) loads that JSON. For the clip with t
 it draws each hit as a coloured sphere on `a`, a white sphere on `b` and a line (red self, amber
 joint, blue floor; visible through the skin), and lists both points in a panel with a strip of the
 clip's events and a time cursor. During a crossfade the body is a blend, marked "≈". Off while
-PHYSICS owns the pose. The checkbox hides `joint` hits.
+PHYSICS owns the pose. The `joint` checkbox hides `joint` hits; `hulls` draws the convex hulls
+that were tested, posed for the frame shown (each frame of the report stores every body's pose).
 
 ## Tests
 
